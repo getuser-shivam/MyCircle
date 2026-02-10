@@ -1,0 +1,49 @@
+name: my_circle
+description: A Flutter app inspired by RedGifs with media sharing and browsing features
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  http: ^1.1.0
+  cached_network_image: ^3.3.0
+  video_player: ^2.8.1
+  chewie: ^1.7.4
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  image_picker: ^1.0.4
+  file_picker: ^6.1.1
+  permission_handler: ^11.1.0
+  flutter_staggered_grid_view: ^0.7.0
+  shimmer: ^3.0.0
+  infinite_scroll_pagination: ^4.0.0
+  url_launcher: ^6.2.1
+  share_plus: ^7.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+  
+  fonts:
+    - family: DM Sans
+      fonts:
+        - asset: assets/fonts/DMSans-Regular.ttf
+        - asset: assets/fonts/DMSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/DMSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/DMSans-Black.ttf
+          weight: 900

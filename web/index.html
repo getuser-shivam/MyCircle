@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RedGifs Clone - Web Preview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px;
+      background: linear-gradient(135deg, #e5194d, #ebfa63);
+      border-radius: 15px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .feature-card {
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(229, 25, 77, 0.3);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .feature-title {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: #e5194d;
+    }
+
+    .feature-description {
+      color: #ccc;
+      line-height: 1.6;
+    }
+
+    .demo-section {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .demo-item {
+      background: #2a2a2a;
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .demo-item:hover {
+      transform: scale(1.05);
+    }
+
+    .demo-item-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 15px;
+      color: #fff;
+    }
+
+    .demo-item-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .demo-item-stats {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .install-section {
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .install-steps {
+      text-align: left;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .install-step {
+      margin-bottom: 15px;
+      padding: 15px;
+      background: #333;
+      border-radius: 8px;
+      border-left: 4px solid #e5194d;
+    }
+
+    .code-block {
+      background: #000;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #e5194d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: bold;
+      margin: 10px;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #ff1744;
+    }
+
+    .btn-secondary {
+      background: #ebfa63;
+      color: #000;
+    }
+
+    .btn-secondary:hover {
+      background: #d4e552;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+      }
+      
+      .demo-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎬 RedGifs Clone</h1>
+      <p>A modern Flutter app for media sharing and browsing</p>
+    </div>
+
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <div class="feature-title">Cross-Platform</div>
+        <div class="feature-description">
+          Built with Flutter for seamless performance on iOS, Android, and Web platforms.
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <div class="feature-title">Modern UI</div>
+        <div class="feature-description">
+          Beautiful Material 3 design with dark/light themes and smooth animations.
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📹</div>
+        <div class="feature-title">Media Support</div>
+        <div class="feature-description">
+          Full support for GIFs, videos, and images with optimized loading and playback.
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-title">Smart Search</div>
+        <div class="feature-description">
+          Advanced search with filters, suggestions, and category-based browsing.
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">⬆️</div>
+        <div class="feature-title">Easy Upload</div>
+        <div class="feature-description">
+          Simple media upload with metadata, privacy controls, and progress tracking.
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">👤</div>
+        <div class="feature-title">User Profiles</div>
+        <div class="feature-description">
+          Complete user authentication, profiles, and social features.
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>📱 App Preview</h2>
+      <p>Experience the modern, intuitive interface designed for optimal media browsing.</p>
+      
+      <div class="demo-grid">
+        <div class="demo-item">
+          <div class="demo-item-content">
+            <div class="demo-item-title">Trending Content</div>
+            <div class="demo-item-stats">👁 1.2M views ❤ 45K likes</div>
+          </div>
+        </div>
+        <div class="demo-item">
+          <div class="demo-item-content">
+            <div class="demo-item-title">Popular Video</div>
+            <div class="demo-item-stats">👁 890K views ❤ 32K likes</div>
+          </div>
+        </div>
+        <div class="demo-item">
+          <div class="demo-item-content">
+            <div class="demo-item-title">New Upload</div>
+            <div class="demo-item-stats">👁 45K views ❤ 2.1K likes</div>
+          </div>
+        </div>
+        <div class="demo-item">
+          <div class="demo-item-content">
+            <div class="demo-item-title">Hot GIF</div>
+            <div class="demo-item-stats">👁 2.3M views ❤ 89K likes</div>
+          </div>
+        </div>
+        <div class="demo-item">
+          <div class="demo-item-content">
+            <div class="demo-item-title">Viral Clip</div>
+            <div class="demo-item-stats">👁 567K views ❤ 18K likes</div>
+          </div>
+        </div>
+        <div class="demo-item">
+          <div class="demo-item-content">
+            <div class="demo-item-title">Featured</div>
+            <div class="demo-item-stats">👁 3.1M views ❤ 120K likes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="install-section">
+      <h2>🚀 How to Run the App</h2>
+      <p>Follow these steps to get the Flutter app running on your device:</p>
+      
+      <div class="install-steps">
+        <div class="install-step">
+          <strong>Step 1: Install Flutter SDK</strong>
+          <p>Download and install Flutter from <a href="https://flutter.dev/docs/get-started/install/windows" style="color: #e5194d;">flutter.dev</a></p>
+          <div class="code-block">
+# Extract to C:\flutter and add to PATH
+flutter --version
+          </div>
+        </div>
+
+        <div class="install-step">
+          <strong>Step 2: Install Dependencies</strong>
+          <div class="code-block">
+cd c:/Users/Work/Desktop/Projects/MyCircle
+flutter pub get
+          </div>
+        </div>
+
+        <div class="install-step">
+          <strong>Step 3: Run the App</strong>
+          <div class="code-block">
+# For web
+flutter run -d chrome
+
+# For mobile (connect device first)
+flutter run
+          </div>
+        </div>
+
+        <div class="install-step">
+          <strong>Step 4: Setup Emulator/Device</strong>
+          <p>For mobile testing, set up Android Studio or Xcode with an emulator/device.</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 30px;">
+        <a href="https://flutter.dev/docs/get-started/install/windows" class="btn" target="_blank">
+          📥 Download Flutter
+        </a>
+        <a href="https://github.com/flutter/flutter" class="btn btn-secondary" target="_blank">
+          📚 Flutter Documentation
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Add interactive hover effects
+    document.querySelectorAll('.demo-item').forEach(item => {
+      item.addEventListener('click', () => {
+        alert('Media player would open here in the actual app!');
+      });
+    });
+
+    // Add smooth scroll behavior
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
