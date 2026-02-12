@@ -6,16 +6,6 @@ import '../../widgets/media/media_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-<<<<<<< HEAD:lib/screens/profile_screen.dart
-import 'package:cached_network_image/cached_network_image.dart';
-import '../providers/auth_provider.dart';
-import '../providers/media_provider.dart';
-import '../widgets/media_card.dart';
-import '../widgets/media_player.dart';
-=======
-
-
->>>>>>> a7119c3 (WIP: Final Reorganized State):lib/screens/user/profile_screen.dart
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -86,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             ),
             const SizedBox(height: 24),
             Text(
-              'Welcome to RedGifs Clone',
+              'Welcome to MyCircle',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),

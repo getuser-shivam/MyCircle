@@ -1,4 +1,5 @@
 import '../providers/media_provider.dart';
+import '../models/media_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,25 +42,26 @@ class OptimizedMediaProvider extends MediaProvider {
   static const Duration _categoryCacheExpiry = Duration(minutes: 3);
 
   @override
-  Future<void> loadMedia({String? category}) async {
+  Future<void> loadMedia({int page = 1, int limit = 20, String? category}) async {
     final cacheKey = category ?? 'all';
     final timestamp = _categoryTimestamps[cacheKey];
     
-    if (timestamp != null && 
+    if (page == 1 &&
+        timestamp != null && 
         DateTime.now().difference(timestamp) < _categoryCacheExpiry &&
         _categoryCache[cacheKey] != null) {
       
-      mediaItems = _categoryCache[cacheKey]!;
+      mediaItems = List<MediaItem>.from(_categoryCache[cacheKey]!);
       isLoading = false;
       error = null;
       notifyListeners();
       return;
     }
 
-    await super.loadMedia(category: category);
+    await super.loadMedia(page: page, limit: limit, category: category);
     
-    if (error == null) {
-      _categoryCache[cacheKey] = mediaItems;
+    if (page == 1 && error == null) {
+      _categoryCache[cacheKey] = List<MediaItem>.from(mediaItems);
       _categoryTimestamps[cacheKey] = DateTime.now();
     }
   }

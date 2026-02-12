@@ -1,8 +1,9 @@
 import '../providers/auth_provider.dart';
 import '../providers/media_provider.dart';
+import '../models/media_item.dart';
 import '../providers/notification_provider.dart';
 import '../providers/theme_provider.dart';
-import '../widgets/lazy_load_media_grid.dart';
+import '../widgets/media/lazy_load_media_grid.dart';
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
@@ -76,19 +77,14 @@ class SuperiorMediaProvider extends ChangeNotifier {
         userAvatar: 'https://picsum.photos/100/100?random=ai$index',
         views: random.nextInt(1000000) + 100000,
         likes: random.nextInt(50000) + 5000,
-        duration: random.nextInt(120) + 30,
+        duration: (random.nextInt(120) + 30).toString(),
         tags: ['ai-generated', 'neural', 'superior', 'quantum'],
         isVerified: true,
         createdAt: DateTime.now().subtract(Duration(days: random.nextInt(30))),
         type: MediaType.video,
         category: 'ai-curated',
         isPrivate: false,
-        isApproved: true,
-        author: {
-          'username': 'AI_Creator_${index}',
-          'avatar': 'https://picsum.photos/100/100?random=ai$index',
-          'isVerified': true,
-        },
+        authorId: 'ai_auth_$index',
       );
     });
   }
@@ -151,19 +147,14 @@ class SuperiorMediaProvider extends ChangeNotifier {
           userAvatar: 'https://picsum.photos/100/100?random=std$index',
           views: random.nextInt(500000) + 50000,
           likes: random.nextInt(25000) + 2500,
-          duration: random.nextInt(120) + 30,
+          duration: (random.nextInt(120) + 30).toString(),
           tags: ['superior', 'enhanced', 'optimized', 'premium'],
           isVerified: random.nextDouble() > 0.7,
           createdAt: DateTime.now().subtract(Duration(days: random.nextInt(60))),
           type: MediaType.video,
           category: category ?? 'trending',
           isPrivate: false,
-          isApproved: true,
-          author: {
-            'username': 'Creator_${index}',
-            'avatar': 'https://picsum.photos/100/100?random=std$index',
-            'isVerified': random.nextDouble() > 0.7,
-          },
+          authorId: 'auth_$index',
         );
       });
       
@@ -217,19 +208,14 @@ class SuperiorMediaProvider extends ChangeNotifier {
           userAvatar: 'https://picsum.photos/100/100?random=search$index',
           views: random.nextInt(800000) + 80000,
           likes: random.nextInt(40000) + 4000,
-          duration: random.nextInt(120) + 30,
+          duration: (random.nextInt(120) + 30).toString(),
           tags: ['ai-search', 'neural-match', query.toLowerCase()],
           isVerified: true,
           createdAt: DateTime.now().subtract(Duration(hours: random.nextInt(24))),
           type: MediaType.video,
           category: 'ai-search-result',
           isPrivate: false,
-          isApproved: true,
-          author: {
-            'username': 'AI_Match_${index}',
-            'avatar': 'https://picsum.photos/100/100?random=search$index',
-            'isVerified': true,
-          },
+          authorId: 'search_auth_$index',
         );
       });
       

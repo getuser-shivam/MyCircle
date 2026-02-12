@@ -1,94 +1,12 @@
 import '../models/media_item.dart';
+export '../models/media_item.dart';
 import '../config/app_config.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-<<<<<<< HEAD
-class MediaItem {
-  final String id;
-  final String title;
-  final String url;
-  final String thumbnailUrl;
-  final String userName;
-  final String userAvatar;
-  final int views;
-  final int likes;
-  final int duration;
-  final List<String> tags;
-  final bool isVerified;
-  final DateTime createdAt;
-  final MediaType type;
-  final String category;
-  final bool isPrivate;
-  final bool isApproved;
-  final Map<String, dynamic> author;
 
-  MediaItem({
-    required this.id,
-    required this.title,
-    required this.url,
-    required this.thumbnailUrl,
-    required this.userName,
-    required this.userAvatar,
-    this.views = 0,
-    this.likes = 0,
-    this.duration = 0,
-    this.tags = const [],
-    this.isVerified = false,
-    required this.createdAt,
-    this.type = MediaType.gif,
-    this.category = 'general',
-    this.isPrivate = false,
-    this.isApproved = false,
-    this.author = const {},
-  });
-
-  factory MediaItem.fromJson(Map<String, dynamic> json) {
-    final author = json['author'] ?? {};
-    return MediaItem(
-      id: json['_id'] ?? json['id'] ?? '',
-      title: json['title'] ?? '',
-      url: json['fileUrl'] ?? json['url'] ?? '',
-      thumbnailUrl: json['thumbnailUrl'] ?? '',
-      userName: author['username'] ?? '',
-      userAvatar: author['avatar'] ?? '',
-      views: json['stats']?['views'] ?? json['views'] ?? 0,
-      likes: json['stats']?['likes'] ?? json['likes'] ?? 0,
-      duration: json['duration'] ?? 0,
-      tags: List<String>.from(json['tags'] ?? []),
-      isVerified: author['isVerified'] ?? false,
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      type: _parseMediaType(json['type']),
-      category: json['category'] ?? 'general',
-      isPrivate: json['isPrivate'] ?? false,
-      isApproved: json['isApproved'] ?? false,
-      author: author,
-    );
-  }
-
-  static MediaType _parseMediaType(String? type) {
-    switch (type) {
-      case 'video':
-        return MediaType.video;
-      case 'image':
-        return MediaType.image;
-      case 'gif':
-      default:
-        return MediaType.gif;
-    }
-  }
-}
-
-enum MediaType {
-  gif,
-  video,
-  image,
-}
-=======
-
->>>>>>> a7119c3 (WIP: Final Reorganized State)
 
 class MediaProvider extends ChangeNotifier {
   final String baseUrl = AppConfig.baseUrl;
@@ -101,14 +19,36 @@ class MediaProvider extends ChangeNotifier {
   bool _isLoading = false;
   String _searchQuery = '';
   String _selectedCategory = 'all';
+  String? _error;
 
   PagingController<int, MediaItem> get pagingController => _pagingController;
   List<MediaItem> get trendingMedia => _trendingMedia;
   List<MediaItem> get searchResults => _searchResults;
+  List<MediaItem> get mediaItems => _searchQuery.isEmpty ? _trendingMedia : _searchResults;
+  set mediaItems(List<MediaItem> value) {
+    if (_searchQuery.isEmpty) {
+      _trendingMedia = value;
+    } else {
+      _searchResults = value;
+    }
+    notifyListeners();
+  }
+
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  set error(String? value) {
+    _error = value;
+    notifyListeners();
+  }
+
   List<String> get categories => _categories;
   bool get isLoading => _isLoading;
   String get searchQuery => _searchQuery;
   String get selectedCategory => _selectedCategory;
+  String? get error => _error;
 
   MediaProvider() {
     _pagingController.addPageRequestListener((pageKey) {
@@ -120,10 +60,30 @@ class MediaProvider extends ChangeNotifier {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
+      _error = null;
       await _loadMediaFeed(page: pageKey, category: _selectedCategory);
     } catch (error) {
+      _error = error.toString();
       _pagingController.error = error;
     }
+  }
+
+  Future<void> loadMedia({int page = 1, int limit = 20, String? category}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      await _loadMediaFeed(page: page, limit: limit, category: category ?? _selectedCategory);
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadMoreMedia({int page = 1, int limit = 20}) async {
+    await _loadMediaFeed(page: page, limit: limit, category: _selectedCategory);
   }
 
   Future<void> _loadMediaFeed({
@@ -152,6 +112,20 @@ class MediaProvider extends ChangeNotifier {
           final mediaList = (data['data']['media'] as List)
               .map((item) => MediaItem.fromJson(item))
               .toList();
+
+          if (page == 1) {
+            if (_searchQuery.isEmpty) {
+              _trendingMedia = mediaList;
+            } else {
+              _searchResults = mediaList;
+            }
+          } else {
+            if (_searchQuery.isEmpty) {
+              _trendingMedia.addAll(mediaList);
+            } else {
+              _searchResults.addAll(mediaList);
+            }
+          }
 
           final isLastPage = mediaList.length < limit;
           if (isLastPage) {
@@ -198,19 +172,30 @@ class MediaProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> searchMedia(String query) async {
+  Future<void> searchMedia({
+    required String query,
+    String? category,
+    String? sortBy,
+    List<String>? tags,
+  }) async {
     _searchQuery = query;
     _isLoading = true;
+    _error = null;
     notifyListeners();
 
     try {
-      if (query.trim().isEmpty) {
+      if (query.trim().isEmpty && (tags == null || tags.isEmpty)) {
         _searchResults.clear();
       } else {
-        final uri = Uri.parse('$baseUrl/media/search').replace(queryParameters: {
+        final queryParams = {
           'q': query.trim(),
+          if (category != null && category != 'all') 'category': category,
+          if (sortBy != null) 'sort': sortBy,
+          if (tags != null && tags.isNotEmpty) 'tags': tags.join(','),
           'limit': '20',
-        });
+        };
+
+        final uri = Uri.parse('$baseUrl/media/search').replace(queryParameters: queryParams);
 
         final response = await http.get(uri);
 
@@ -221,10 +206,13 @@ class MediaProvider extends ChangeNotifier {
                 .map((item) => MediaItem.fromJson(item))
                 .toList();
           }
+        } else {
+          throw Exception('Failed to search media');
         }
       }
     } catch (error) {
       debugPrint('Search media error: $error');
+      _error = error.toString();
     } finally {
       _isLoading = false;
       notifyListeners();

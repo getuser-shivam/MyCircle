@@ -158,7 +158,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
     );
   }
 
-  Widget _buildNotificationCard(Notification notification) {
+  Widget _buildNotificationCard(AppNotification notification) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       elevation: notification.isRead ? 1 : 3,
@@ -345,7 +345,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
     }
   }
 
-  void _handleNotificationAction(Notification notification) {
+  void _handleNotificationAction(AppNotification notification) {
     // Handle navigation based on notification type
     switch (notification.type) {
       case 'like':

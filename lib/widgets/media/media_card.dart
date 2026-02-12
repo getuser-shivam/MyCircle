@@ -1,4 +1,5 @@
 import '../../providers/media_provider.dart';
+import '../../models/media_item.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -119,7 +120,7 @@ class MediaCard extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  _formatDuration(media.duration),
+                  _formatDuration(int.tryParse(media.duration ?? '0') ?? 0),
                   style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 10,

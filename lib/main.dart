@@ -1,21 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-<<<<<<< HEAD
-import 'screens/home_screen.dart';
-import 'screens/search_screen.dart';
-import 'screens/upload_screen.dart';
-import 'screens/profile_screen.dart';
-import 'providers/media_provider.dart';
-=======
->>>>>>> a7119c3 (WIP: Final Reorganized State)
 import 'providers/auth_provider.dart';
 import 'providers/media_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/notification_provider.dart';
 import 'widgets/navigation/main_wrapper.dart';
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,20 +19,20 @@ void main() async {
         ChangeNotifierProvider(create: (_) => MediaProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],
-      child: const RedGifsApp(),
+      child: const MyCircleApp(),
     ),
   );
 }
 
-class RedGifsApp extends StatelessWidget {
-  const RedGifsApp({super.key});
+class MyCircleApp extends StatelessWidget {
+  const MyCircleApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
-          title: 'RedGifs Clone',
+          title: 'MyCircle',
           debugShowCheckedModeBanner: false,
           theme: themeProvider.lightTheme,
           darkTheme: themeProvider.darkTheme,
@@ -53,42 +43,3 @@ class RedGifsApp extends StatelessWidget {
     );
   }
 }
-<<<<<<< HEAD
-
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
-
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
-
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const SearchScreen(),
-    const UploadScreen(),
-    const ProfileScreen(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: CustomBottomNav(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
-    );
-  }
-}
-=======
->>>>>>> a7119c3 (WIP: Final Reorganized State)

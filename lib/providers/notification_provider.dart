@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../config/app_config.dart';
 
-class Notification {
+class AppNotification {
   final String id;
   final String title;
   final String body;
@@ -14,7 +14,7 @@ class Notification {
   final bool isRead;
   final Map<String, dynamic>? data;
 
-  Notification({
+  AppNotification({
     required this.id,
     required this.title,
     required this.body,
@@ -24,8 +24,8 @@ class Notification {
     this.data,
   });
 
-  factory Notification.fromJson(Map<String, dynamic> json) {
-    return Notification(
+  factory AppNotification.fromJson(Map<String, dynamic> json) {
+    return AppNotification(
       id: json['_id'] ?? json['id'] ?? '',
       title: json['title'] ?? json['message'] ?? '',
       body: json['body'] ?? json['message'] ?? '',
@@ -50,12 +50,12 @@ class Notification {
 }
 
 class NotificationProvider extends ChangeNotifier {
-  List<Notification> _notifications = [];
+  List<AppNotification> _notifications = [];
   bool _isOnline = true;
   int _unreadCount = 0;
   bool _isLoading = false;
 
-  List<Notification> get notifications => _notifications;
+  List<AppNotification> get notifications => _notifications;
   bool get isOnline => _isOnline;
   int get unreadCount => _unreadCount;
   bool get isLoading => _isLoading;
@@ -87,7 +87,7 @@ class NotificationProvider extends ChangeNotifier {
         if (data['success']) {
           final List<dynamic> notificationsJson = data['data']['notifications'];
           _notifications = notificationsJson
-              .map((json) => Notification.fromJson(json))
+              .map((json) => AppNotification.fromJson(json))
               .toList();
           _unreadCount = data['data']['unreadCount'];
         }
@@ -108,7 +108,7 @@ class NotificationProvider extends ChangeNotifier {
       
       if (_notifications.isEmpty) {
         _notifications = notificationsJson
-            .map((json) => Notification.fromJson(Map<String, dynamic>.from(
+            .map((json) => AppNotification.fromJson(Map<String, dynamic>.from(
                   jsonDecode(json) as Map
                 )))
             .toList();
@@ -149,7 +149,7 @@ class NotificationProvider extends ChangeNotifier {
     required String type,
     Map<String, dynamic>? data,
   }) {
-    final notification = Notification(
+    final notification = AppNotification(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       title: title,
       body: body,
@@ -180,7 +180,7 @@ class NotificationProvider extends ChangeNotifier {
         );
 
         if (response.statusCode == 200) {
-          _notifications[index] = Notification(
+          _notifications[index] = AppNotification(
             id: _notifications[index].id,
             title: _notifications[index].title,
             body: _notifications[index].body,
@@ -211,7 +211,7 @@ class NotificationProvider extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        _notifications = _notifications.map((notification) => Notification(
+        _notifications = _notifications.map((notification) => AppNotification(
           id: notification.id,
           title: notification.title,
           body: notification.body,
@@ -248,7 +248,7 @@ class NotificationProvider extends ChangeNotifier {
     _unreadCount = _notifications.where((n) => !n.isRead).length;
   }
 
-  void _showInAppNotification(Notification notification) {
+  void _showInAppNotification(AppNotification notification) {
     // This would integrate with a snackbar or custom notification widget
     debugPrint('New notification: ${notification.title} - ${notification.body}');
   }

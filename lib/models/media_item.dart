@@ -1,58 +1,89 @@
 
 
+enum MediaType {
+  gif,
+  video,
+  image,
+}
+
 class MediaItem {
   final String id;
   final String title;
   final String? description;
-  final String? thumbnailUrl;
+  final String url;
+  final String thumbnailUrl;
   final String? videoUrl;
   final String? duration;
   final int views;
   final int likes;
   final String category;
   final String authorId;
-  final String authorName;
+  final String userName;
+  final String userAvatar;
   final DateTime createdAt;
   final List<String> tags;
   final bool isPremium;
   final bool isPrivate;
+  final bool isVerified;
+  final MediaType type;
 
   MediaItem({
     required this.id,
     required this.title,
     this.description,
-    this.thumbnailUrl,
+    required this.url,
+    required this.thumbnailUrl,
     this.videoUrl,
     this.duration,
     required this.views,
     required this.likes,
     required this.category,
     required this.authorId,
-    required this.authorName,
+    required this.userName,
+    required this.userAvatar,
     required this.createdAt,
     this.tags = const [],
     this.isPremium = false,
     this.isPrivate = false,
+    this.isVerified = false,
+    this.type = MediaType.gif,
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json) {
+    final author = json['author'] ?? {};
     return MediaItem(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String?,
-      thumbnailUrl: json['thumbnailUrl'] as String?,
-      videoUrl: json['videoUrl'] as String?,
-      duration: json['duration'] as String?,
-      views: json['views'] as int? ?? 0,
-      likes: json['likes'] as int? ?? 0,
-      category: json['category'] as String? ?? 'General',
-      authorId: json['authorId'] as String,
-      authorName: json['authorName'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      id: json['_id'] ?? json['id'] ?? '',
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      url: json['fileUrl'] ?? json['url'] ?? '',
+      thumbnailUrl: json['thumbnailUrl'] ?? '',
+      videoUrl: json['videoUrl'] ?? json['fileUrl'] ?? json['url'] ?? '',
+      duration: json['duration']?.toString() ?? '0',
+      views: json['stats']?['views'] ?? json['views'] ?? 0,
+      likes: json['stats']?['likes'] ?? json['likes'] ?? 0,
+      category: json['category'] ?? 'General',
+      authorId: author['id'] ?? author['_id'] ?? json['authorId'] ?? '',
+      userName: author['username'] ?? json['authorName'] ?? '',
+      userAvatar: author['avatar'] ?? '',
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
       tags: (json['tags'] as List<dynamic>?)?.cast<String>() ?? [],
-      isPremium: json['isPremium'] as bool? ?? false,
-      isPrivate: json['isPrivate'] as bool? ?? false,
+      isPremium: json['isPremium'] ?? false,
+      isPrivate: json['isPrivate'] ?? false,
+      isVerified: author['isVerified'] ?? false,
+      type: _parseMediaType(json['type']),
     );
+  }
+
+  static MediaType _parseMediaType(String? type) {
+    switch (type) {
+      case 'video':
+        return MediaType.video;
+      case 'image':
+        return MediaType.image;
+      case 'gif':
+      default:
+        return MediaType.gif;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -60,6 +91,7 @@ class MediaItem {
       'id': id,
       'title': title,
       'description': description,
+      'url': url,
       'thumbnailUrl': thumbnailUrl,
       'videoUrl': videoUrl,
       'duration': duration,
@@ -67,47 +99,14 @@ class MediaItem {
       'likes': likes,
       'category': category,
       'authorId': authorId,
-      'authorName': authorName,
+      'userName': userName,
+      'userAvatar': userAvatar,
       'createdAt': createdAt.toIso8601String(),
       'tags': tags,
       'isPremium': isPremium,
       'isPrivate': isPrivate,
+      'isVerified': isVerified,
+      'type': type.toString().split('.').last,
     };
-  }
-
-  MediaItem copyWith({
-    String? id,
-    String? title,
-    String? description,
-    String? thumbnailUrl,
-    String? videoUrl,
-    String? duration,
-    int? views,
-    int? likes,
-    String? category,
-    String? authorId,
-    String? authorName,
-    DateTime? createdAt,
-    List<String>? tags,
-    bool? isPremium,
-    bool? isPrivate,
-  }) {
-    return MediaItem(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
-      videoUrl: videoUrl ?? this.videoUrl,
-      duration: duration ?? this.duration,
-      views: views ?? this.views,
-      likes: likes ?? this.likes,
-      category: category ?? this.category,
-      authorId: authorId ?? this.authorId,
-      authorName: authorName ?? this.authorName,
-      createdAt: createdAt ?? this.createdAt,
-      tags: tags ?? this.tags,
-      isPremium: isPremium ?? this.isPremium,
-      isPrivate: isPrivate ?? this.isPrivate,
-    );
   }
 }

@@ -1,4 +1,5 @@
 import '../../providers/media_provider.dart';
+import '../../models/media_item.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';

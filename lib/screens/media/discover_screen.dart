@@ -38,7 +38,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   }
 
   Future<void> _loadTrendingContent() async {
-    await context.read<MediaProvider>().loadTrendingMedia();
+    await context.read<MediaProvider>().loadMedia();
   }
 
   @override

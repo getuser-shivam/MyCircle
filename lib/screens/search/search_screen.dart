@@ -74,7 +74,7 @@ class _SearchScreenState extends State<SearchScreen> {
             onPressed: () {
               // Clear search and go back
               _searchController.clear();
-              context.read<MediaProvider>().searchMedia('');
+              context.read<MediaProvider>().searchMedia(query: '');
             },
             icon: const Icon(Icons.arrow_back),
           ),
@@ -94,7 +94,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ? IconButton(
                           onPressed: () {
                             _searchController.clear();
-                            context.read<MediaProvider>().searchMedia('');
+                            context.read<MediaProvider>().searchMedia(query: '');
                           },
                           icon: const Icon(Icons.clear),
                         )
@@ -356,7 +356,7 @@ class _SearchScreenState extends State<SearchScreen> {
       });
     }
 
-    context.read<MediaProvider>().searchMedia(query.trim());
+    context.read<MediaProvider>().searchMedia(query: query.trim());
   }
 
   void _openMediaPlayer(BuildContext context, dynamic media) {

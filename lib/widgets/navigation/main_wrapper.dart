@@ -73,7 +73,7 @@ class _MainWrapperState extends State<MainWrapper> {
                     _currentIndex = index;
                   });
                 },
-                backgroundColor: themeProvider.isDarkMode 
+                backgroundColor: themeProvider.themeMode == ThemeMode.dark 
                     ? Colors.grey[900] 
                     : Colors.white,
                 destinations: [

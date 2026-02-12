@@ -1,14 +1,7 @@
-<<<<<<< HEAD:lib/screens/upload_screen.dart
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-=======
->>>>>>> a7119c3 (WIP: Final Reorganized State):lib/screens/media/upload_screen.dart
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-
-
 class UploadScreen extends StatefulWidget {
   const UploadScreen({super.key});
 

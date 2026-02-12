@@ -1,4 +1,5 @@
 import '../../providers/media_provider.dart';
+import '../../models/media_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -283,7 +284,7 @@ class _LazyLoadMediaGridState extends State<LazyLoadMediaGrid>
                             )
                           : _buildPlaceholderImage(),
                     ),
-                    if (media.type == 'video')
+                    if (media.type == MediaType.video)
                       Positioned(
                         bottom: 8,
                         right: 8,

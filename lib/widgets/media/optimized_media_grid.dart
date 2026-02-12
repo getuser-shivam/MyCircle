@@ -1,4 +1,5 @@
 import '../../providers/media_provider.dart';
+import '../../models/media_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -218,7 +219,7 @@ class _OptimizedMediaGridState extends State<OptimizedMediaGrid>
                                         color: Colors.grey,
                                       ),
                               ),
-                              if (media.type == 'video')
+                              if (media.type == MediaType.video)
                                 Positioned(
                                   bottom: 8,
                                   right: 8,
@@ -323,13 +324,13 @@ class _OptimizedMediaGridState extends State<OptimizedMediaGrid>
                     ),
                   ),
                 ),
-              ),
             );
           },
         ),
       );
-    );
-  }
+    },
+  );
+}
 
   String _formatCount(int count) {
     if (count >= 1000000) {
