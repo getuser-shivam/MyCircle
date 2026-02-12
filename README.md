@@ -1,13 +1,13 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Flutter-3.10+-02569B?style=for-the-badge&logo=flutter&logoColor=white" />
-  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white" />
-  <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white" />
+  <img src="https://img.shields.io/badge/Firebase-Backend-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
+  <img src="https://img.shields.io/badge/Firestore-Database-FF6F00?style=for-the-badge&logo=firebase&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" />
 </p>
 
 # 🔵 MyCircle — Social Discovery & Media Platform
 
-> A premium, enterprise-grade social discovery and media-sharing platform built with Flutter & Node.js. Inspired by **Skout**, **Tagged**, and **Tinder** — featuring real-time social discovery, Tinder-style swiping, proximity-based user grids, and a glassmorphic UI.
+> A premium, enterprise-grade social discovery and media-sharing platform built with Flutter & Firebase. Inspired by **Skout**, **Tagged**, and **Tinder** — featuring real-time social discovery, Tinder-style swiping, proximity-based user grids, and a glassmorphic UI.
 
 ---
 
@@ -19,10 +19,10 @@
 | 💘 **Swipe Discovery** | Tinder-style swipeable card deck with gesture-driven like/nope actions |
 | 👤 **Social Profiles** | Full-screen user profiles with hero images, bios, interests, and action buttons |
 | 🎬 **Media Hub** | Video/image/GIF browsing with staggered grids and infinite scroll |
-| 🔔 **Real-Time Notifications** | Socket.IO powered notification system with bell badges |
+| 🔔 **Real-Time Notifications** | Firestore-powered notification system with bell badges |
 | 🎨 **Premium UI** | Glassmorphism, dynamic gradients, micro-animations, and DM Sans typography |
 | 🌗 **Dark/Light Themes** | Persistent theme switching with Material 3 design tokens |
-| 🔐 **Full Auth System** | JWT-based authentication with registration, login, and profile management |
+| 🔐 **Firebase Auth** | Email/password authentication with registration, login, and profile management |
 
 ---
 
@@ -55,13 +55,13 @@
 
 ### 📤 Media Upload
 - Camera and gallery integration
+- Upload to Firebase Storage with progress indication
 - Title, description, category, and tag metadata
 - Privacy toggle (public/private)
 - File validation and size limits (100MB max)
-- Video processing with background queue
 
 ### 🔔 Notifications
-- Real-time push via Socket.IO
+- Real-time via Firestore listeners
 - Notification categories: likes, comments, follows, system
 - Mark as read/unread, bulk actions
 - Badge count on navigation bar
@@ -72,25 +72,23 @@
 - Profile editing and settings
 - Dark mode toggle, logout
 
-### 💬 Chat (Foundation)
-- Chat screen scaffold ready for messaging integration
-
 ---
 
 ## 🏗️ Architecture
 
 ```
 MyCircle/
-├── lib/                          # Flutter Frontend
-│   ├── main.dart                 # App entry point + MultiProvider setup
+├── lib/                          # Flutter App
+│   ├── main.dart                 # App entry + Firebase init + MultiProvider
+│   ├── firebase_options.dart     # Firebase configuration (auto-generated)
 │   ├── models/
-│   │   ├── media_item.dart       # Media data model
-│   │   └── social_user.dart      # Social user model (status, gender, interests)
+│   │   ├── media_item.dart       # Media data model (Firestore mapping)
+│   │   └── social_user.dart      # Social user model (Firestore mapping)
 │   ├── providers/
-│   │   ├── auth_provider.dart    # JWT authentication state
-│   │   ├── media_provider.dart   # Media feed & upload state
-│   │   ├── notification_provider.dart  # Real-time notification state
-│   │   ├── social_provider.dart  # Social discovery & nearby users
+│   │   ├── auth_provider.dart    # FirebaseAuth authentication state
+│   │   ├── media_provider.dart   # Firestore media feed & pagination
+│   │   ├── notification_provider.dart  # Firestore real-time notifications
+│   │   ├── social_provider.dart  # Firestore social discovery & nearby users
 │   │   └── theme_provider.dart   # Theme persistence & management
 │   ├── screens/
 │   │   ├── home/
@@ -103,7 +101,7 @@ MyCircle/
 │   │   │   ├── search_screen.dart
 │   │   │   └── advanced_search_screen.dart
 │   │   ├── media/
-│   │   │   ├── upload_screen.dart
+│   │   │   ├── upload_screen.dart          # Firebase Storage uploads
 │   │   │   └── discover_screen.dart
 │   │   └── user/
 │   │       ├── profile_screen.dart
@@ -122,37 +120,12 @@ MyCircle/
 │       │   ├── main_wrapper.dart        # Bottom nav + screen management
 │       │   └── custom_bottom_nav.dart
 │       └── common/
-│           ├── connectivity_banner.dart
-│           └── ...
-│
-├── backend/                      # Node.js + Express Backend
-│   ├── server.js                 # Express server with Socket.IO
-│   ├── controllers/
-│   │   ├── authController.js     # Login, register, JWT management
-│   │   └── mediaController.js    # Upload, CRUD, search, likes
-│   ├── models/
-│   │   ├── User.js               # User schema (Mongoose)
-│   │   ├── Media.js              # Media schema with stats
-│   │   └── Notification.js       # Notification schema
-│   ├── routes/
-│   │   ├── auth.js               # Authentication routes
-│   │   ├── media.js              # Media CRUD routes
-│   │   ├── users.js              # User profile routes
-│   │   ├── comments.js           # Comment system routes
-│   │   ├── notifications.js      # Notification routes
-│   │   └── admin.js              # Admin panel routes
-│   ├── middleware/
-│   │   ├── auth.js               # JWT verification
-│   │   ├── upload.js             # Multer file handling
-│   │   └── rateLimiter.js        # Rate limiting
-│   └── utils/
-│       ├── s3Service.js          # AWS S3 file storage
-│       └── videoProcessor.js     # Background video processing
+│           └── connectivity_banner.dart
 │
 ├── assets/                       # Fonts, images, icons
 ├── web/                          # Flutter web configuration
-├── android/                      # Android platform
-├── ios/                          # iOS platform
+├── android/                      # Android platform (google-services.json)
+├── ios/                          # iOS platform (GoogleService-Info.plist)
 └── pubspec.yaml                  # Flutter dependencies
 ```
 
@@ -182,15 +155,12 @@ MyCircle/
 | **Connectivity Plus** | Network status monitoring |
 | **Shimmer** | Premium loading skeletons |
 
-### Backend
+### Backend (Firebase)
 | Technology | Purpose |
 |-----------|---------|
-| **Node.js + Express** | REST API server |
-| **MongoDB + Mongoose** | Document database |
-| **JWT** | Token-based authentication |
-| **Socket.IO** | Real-time notifications |
-| **Multer + Sharp** | File upload & image processing |
-| **AWS S3** | Cloud file storage |
+| **Firebase Auth** | Email/password authentication |
+| **Cloud Firestore** | Real-time document database |
+| **Firebase Storage** | File uploads & media hosting |
 
 ---
 
@@ -199,8 +169,7 @@ MyCircle/
 ### Prerequisites
 
 - **Flutter SDK** ≥ 3.10.0
-- **Node.js** ≥ 18.0
-- **MongoDB** (Atlas or local)
+- **Firebase Project** configured at [console.firebase.google.com](https://console.firebase.google.com)
 - **Android Studio** / **Xcode** (for mobile)
 
 ### Installation
@@ -213,58 +182,27 @@ cd MyCircle
 # 2. Install Flutter dependencies
 flutter pub get
 
-# 3. Install backend dependencies
-cd backend
-npm install
-
-# 4. Configure environment
-cp .env.example .env
-# Edit .env with your MongoDB URI, JWT secret, AWS keys
+# 3. Configure Firebase (if not already done)
+# - Place google-services.json in android/app/
+# - Place GoogleService-Info.plist in ios/Runner/
+# - Ensure firebase_options.dart matches your project
 ```
 
 ### Running
 
 ```bash
-# Start the backend server
-cd backend
-npm run dev
-
-# In a new terminal, run the Flutter app
 flutter run -d chrome    # Web
 flutter run -d edge      # Edge
 flutter run               # Connected device
 ```
 
-### Environment Variables
+### Firebase Collections
 
-```env
-PORT=5000
-MONGODB_URI=mongodb+srv://your-cluster.mongodb.net/mycircle
-JWT_SECRET=your-jwt-secret
-AWS_ACCESS_KEY_ID=your-aws-key
-AWS_SECRET_ACCESS_KEY=your-aws-secret
-AWS_BUCKET_NAME=your-s3-bucket
-AWS_REGION=us-east-1
-```
-
----
-
-## 📋 API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/auth/register` | Create new account |
-| `POST` | `/api/auth/login` | Authenticate user |
-| `GET` | `/api/media/feed` | Get media feed (paginated) |
-| `POST` | `/api/media/upload` | Upload media file |
-| `GET` | `/api/media/:id` | Get single media |
-| `PUT` | `/api/media/:id` | Update media |
-| `DELETE` | `/api/media/:id` | Delete media |
-| `POST` | `/api/media/:id/like` | Toggle like |
-| `GET` | `/api/media/search` | Search media |
-| `GET` | `/api/users/profile` | Get user profile |
-| `GET` | `/api/notifications` | Get notifications |
-| `POST` | `/api/comments` | Create comment |
+| Collection | Purpose |
+|-----------|---------|
+| `users` | User profiles, preferences, social data |
+| `media` | Uploaded media metadata (title, URL, tags, stats) |
+| `notifications` | In-app notifications (likes, follows, system) |
 
 ---
 

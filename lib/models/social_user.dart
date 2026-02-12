@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum UserStatus { online, offline, live, away }
 enum Gender { male, female, other }
@@ -30,32 +31,36 @@ class SocialUser {
     this.bio,
   });
 
-  factory SocialUser.fromJson(Map<String, dynamic> json) {
+  factory SocialUser.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return SocialUser(
-      id: json['id'] ?? json['_id'] ?? '',
-      username: json['username'] ?? '',
-      avatar: json['avatar'] ?? '',
-      age: json['age'] ?? 20,
-      gender: _parseGender(json['gender']),
-      locationSnippet: json['locationSnippet'] ?? 'Nearby',
-      distanceKm: (json['distanceKm'] as num?)?.toDouble() ?? 5.0,
-      status: _parseStatus(json['status']),
-      isVerified: json['isVerified'] ?? false,
-      interests: List<String>.from(json['interests'] ?? []),
-      bio: json['bio'],
+      id: doc.id,
+      username: data['username'] ?? '',
+      avatar: data['avatar'] ?? 'https://i.pravatar.cc/300',
+      age: data['age'] ?? 20,
+      gender: _parseGender(data['gender']),
+      // Mock location for now as Firestore doesn't store it yet
+      locationSnippet: data['locationSnippet'] ?? 'Nearby',
+      distanceKm: (data['distanceKm'] as num?)?.toDouble() ?? 5.0,
+      status: _parseStatus(data['status']),
+      isVerified: data['isVerified'] ?? false,
+      interests: List<String>.from(data['interests'] ?? []),
+      bio: data['bio'],
     );
   }
 
   static Gender _parseGender(dynamic gender) {
-    if (gender == 'male') return Gender.male;
-    if (gender == 'female') return Gender.female;
+    final value = gender?.toString().toLowerCase();
+    if (value == 'male') return Gender.male;
+    if (value == 'female') return Gender.female;
     return Gender.other;
   }
 
   static UserStatus _parseStatus(dynamic status) {
-    if (status == 'online') return UserStatus.online;
-    if (status == 'live') return UserStatus.live;
-    if (status == 'away') return UserStatus.away;
+    final value = status?.toString().toLowerCase();
+    if (value == 'online') return UserStatus.online;
+    if (value == 'live') return UserStatus.live;
+    if (value == 'away') return UserStatus.away;
     return UserStatus.offline;
   }
 }

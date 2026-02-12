@@ -1,5 +1,7 @@
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 enum MediaType {
   gif,
   video,
@@ -74,8 +76,34 @@ class MediaItem {
     );
   }
 
+  factory MediaItem.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return MediaItem(
+      id: doc.id,
+      title: data['title'] ?? '',
+      description: data['description'] ?? '',
+      url: data['url'] ?? '',
+      thumbnailUrl: data['thumbnailUrl'] ?? '',
+      videoUrl: data['videoUrl'],
+      duration: data['duration']?.toString() ?? '0',
+      views: data['views'] ?? 0,
+      likes: data['likes'] ?? 0,
+      category: data['category'] ?? 'General',
+      authorId: data['authorId'] ?? '',
+      userName: data['userName'] ?? 'Unknown',
+      userAvatar: data['userAvatar'] ?? '',
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      tags: List<String>.from(data['tags'] ?? []),
+      isPremium: data['isPremium'] ?? false,
+      isPrivate: data['isPrivate'] ?? false,
+      isVerified: data['isVerified'] ?? false,
+      type: _parseMediaType(data['type']),
+    );
+  }
+
   static MediaType _parseMediaType(String? type) {
-    switch (type) {
+    if (type == null) return MediaType.gif;
+    switch (type.toLowerCase()) {
       case 'video':
         return MediaType.video;
       case 'image':

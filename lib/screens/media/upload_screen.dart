@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:path/path.dart' as path;
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+
 class UploadScreen extends StatefulWidget {
   const UploadScreen({super.key});
 
@@ -15,10 +19,11 @@ class _UploadScreenState extends State<UploadScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _tagsController = TextEditingController();
   
-  List<String> _selectedFiles = [];
+  File? _selectedFile;
   bool _isUploading = false;
   bool _isPrivate = false;
   String _selectedCategory = 'General';
+  double _uploadProgress = 0.0;
 
   final List<String> _categories = [
     'General',
@@ -42,19 +47,6 @@ class _UploadScreenState extends State<UploadScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Upload Content'),
-        actions: [
-          TextButton(
-            onPressed: _selectedFiles.isEmpty ? null : _showPreviewDialog,
-            child: Text(
-              'Preview',
-              style: TextStyle(
-                color: _selectedFiles.isEmpty
-                    ? Colors.grey
-                    : Theme.of(context).colorScheme.primary,
-              ),
-            ),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -62,6 +54,12 @@ class _UploadScreenState extends State<UploadScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildUploadArea(),
+            if (_isUploading) ...[
+              const SizedBox(height: 24),
+              LinearProgressIndicator(value: _uploadProgress),
+              const SizedBox(height: 8),
+              Text('${(_uploadProgress * 100).toStringAsFixed(1)}% Uploaded'),
+            ],
             const SizedBox(height: 24),
             _buildTitleField(),
             const SizedBox(height: 16),
@@ -87,13 +85,13 @@ class _UploadScreenState extends State<UploadScreen> {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
           style: BorderStyle.solid,
         ),
       ),
-      child: _selectedFiles.isEmpty
+      child: _selectedFile == null
           ? _buildEmptyUploadArea()
-          : _buildSelectedFilesArea(),
+          : _buildSelectedFileArea(),
     );
   }
 
@@ -117,7 +115,7 @@ class _UploadScreenState extends State<UploadScreen> {
         Text(
           'GIF, MP4, JPG, PNG up to 100MB',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
           ),
         ),
         const SizedBox(height: 16),
@@ -140,74 +138,49 @@ class _UploadScreenState extends State<UploadScreen> {
     );
   }
 
-  Widget _buildSelectedFilesArea() {
+  Widget _buildSelectedFileArea() {
     return Stack(
       children: [
-        PageView.builder(
-          itemCount: _selectedFiles.length,
-          itemBuilder: (context, index) {
-            final file = _selectedFiles[index];
-            return Container(
-              margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Theme.of(context).colorScheme.surface,
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                _getFileIcon(_selectedFile!.path),
+                size: 48,
+                color: Theme.of(context).colorScheme.primary,
               ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          _getFileIcon(file),
-                          size: 48,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            file.split('/').last,
-                            style: Theme.of(context).textTheme.bodySmall,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: GestureDetector(
-                      onTap: () => _removeFile(index),
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  path.basename(_selectedFile!.path),
+                  style: Theme.of(context).textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            );
-          },
+            ],
+          ),
         ),
         Positioned(
-          bottom: 8,
+          top: 8,
           right: 8,
-          child: FloatingActionButton.small(
-            onPressed: _pickFromGallery,
-            child: const Icon(Icons.add),
+          child: GestureDetector(
+            onTap: _removeFile,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.close,
+                color: Colors.white,
+                size: 16,
+              ),
+            ),
           ),
         ),
       ],
@@ -298,7 +271,7 @@ class _UploadScreenState extends State<UploadScreen> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _selectedFiles.isEmpty ? null : _uploadContent,
+        onPressed: (_selectedFile == null || _isUploading) ? null : _uploadContent,
         style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
@@ -308,21 +281,7 @@ class _UploadScreenState extends State<UploadScreen> {
           ),
         ),
         child: _isUploading
-            ? const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  Text('Uploading...'),
-                ],
-              )
+            ? const Text('Uploading...')
             : const Text(
                 'Upload Content',
                 style: TextStyle(
@@ -335,7 +294,7 @@ class _UploadScreenState extends State<UploadScreen> {
   }
 
   IconData _getFileIcon(String filePath) {
-    final extension = filePath.split('.').last.toLowerCase();
+    final extension = path.extension(filePath).toLowerCase().replaceAll('.', '');
     switch (extension) {
       case 'jpg':
       case 'jpeg':
@@ -356,7 +315,7 @@ class _UploadScreenState extends State<UploadScreen> {
       final XFile? file = await _imagePicker.pickMedia();
       if (file != null) {
         setState(() {
-          _selectedFiles.add(file.path);
+          _selectedFile = File(file.path);
         });
       }
     } catch (e) {
@@ -371,7 +330,7 @@ class _UploadScreenState extends State<UploadScreen> {
       );
       if (file != null) {
         setState(() {
-          _selectedFiles.add(file.path);
+          _selectedFile = File(file.path);
         });
       }
     } catch (e) {
@@ -379,9 +338,9 @@ class _UploadScreenState extends State<UploadScreen> {
     }
   }
 
-  void _removeFile(int index) {
+  void _removeFile() {
     setState(() {
-      _selectedFiles.removeAt(index);
+      _selectedFile = null;
     });
   }
 
@@ -391,15 +350,62 @@ class _UploadScreenState extends State<UploadScreen> {
       return;
     }
 
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      _showErrorDialog('You must be logged in to upload content');
+      return;
+    }
+
     setState(() {
       _isUploading = true;
+      _uploadProgress = 0.0;
     });
 
     try {
-      // Simulate upload process
-      await Future.delayed(const Duration(seconds: 3));
+      // 1. Upload to Firebase Storage
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}_${path.basename(_selectedFile!.path)}';
+      final ref = FirebaseStorage.instance.ref().child('media/$fileName');
+      final uploadTask = ref.putFile(_selectedFile!);
 
-      // Show success dialog
+      uploadTask.snapshotEvents.listen((event) {
+        setState(() {
+          _uploadProgress = event.bytesTransferred / event.totalBytes;
+        });
+      });
+
+      await uploadTask;
+      final downloadUrl = await ref.getDownloadURL();
+
+      // 2. Determine file type
+      final extension = path.extension(_selectedFile!.path).toLowerCase();
+      String mediaType = 'image';
+      if (['.mp4', '.mov', '.avi'].contains(extension)) {
+        mediaType = 'video';
+      } else if (extension == '.gif') {
+        mediaType = 'gif';
+      }
+
+      // 3. Save metadata to Firestore
+      final tags = _tagsController.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      
+      await FirebaseFirestore.instance.collection('media').add({
+        'title': _titleController.text.trim(),
+        'description': _descriptionController.text.trim(),
+        'url': downloadUrl,
+        'thumbnailUrl': mediaType == 'video' ? '' : downloadUrl, // TODO: Generate thumbnail for video
+        'type': mediaType,
+        'category': _selectedCategory,
+        'tags': tags,
+        'authorId': user.uid,
+        'userName': user.displayName ?? 'Unknown',
+        'userAvatar': user.photoURL ?? '',
+        'createdAt': FieldValue.serverTimestamp(),
+        'likes': 0,
+        'views': 0,
+        'isPrivate': _isPrivate,
+        'isPremium': false,
+      });
+
       _showSuccessDialog();
     } catch (e) {
       _showErrorDialog('Upload failed: $e');
@@ -408,47 +414,6 @@ class _UploadScreenState extends State<UploadScreen> {
         _isUploading = false;
       });
     }
-  }
-
-  void _showPreviewDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Upload Preview'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Title: ${_titleController.text}'),
-              const SizedBox(height: 8),
-              Text('Description: ${_descriptionController.text}'),
-              const SizedBox(height: 8),
-              Text('Tags: ${_tagsController.text}'),
-              const SizedBox(height: 8),
-              Text('Category: $_selectedCategory'),
-              const SizedBox(height: 8),
-              Text('Files: ${_selectedFiles.length}'),
-              const SizedBox(height: 8),
-              Text('Private: $_isPrivate'),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _uploadContent();
-            },
-            child: const Text('Upload'),
-          ),
-        ],
-      ),
-    );
   }
 
   void _showSuccessDialog() {

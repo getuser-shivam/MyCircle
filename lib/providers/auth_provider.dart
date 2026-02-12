@@ -1,12 +1,8 @@
-import 'dart:convert';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/media_item.dart';
-import '../config/app_config.dart';
+import '../models/social_user.dart';
 
 class User {
   final String id;
@@ -18,8 +14,6 @@ class User {
   final int followersCount;
   final int followingCount;
   final int postsCount;
-  final Map<String, dynamic> stats;
-  final Map<String, dynamic> preferences;
 
   User({
     required this.id,
@@ -31,103 +25,53 @@ class User {
     this.followersCount = 0,
     this.followingCount = 0,
     this.postsCount = 0,
-    this.stats = const {},
-    this.preferences = const {},
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
+  factory User.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return User(
-      id: json['id'] ?? json['_id'] ?? '',
-      username: json['username'] ?? '',
-      email: json['email'] ?? '',
-      avatar: json['avatar'] ?? '',
-      isVerified: json['isVerified'] ?? false,
-      isPremium: json['isPremium'] ?? false,
-      followersCount: json['followerCount'] ?? json['followersCount'] ?? 0,
-      followingCount: json['followingCount'] ?? 0,
-      postsCount: json['postCount'] ?? json['postsCount'] ?? 0,
-      stats: json['stats'] ?? {},
-      preferences: json['preferences'] ?? {},
+      id: doc.id,
+      username: data['username'] ?? '',
+      email: data['email'] ?? '',
+      avatar: data['avatar'] ?? 'https://i.pravatar.cc/300',
+      isVerified: data['isVerified'] ?? false,
+      isPremium: data['isPremium'] ?? false,
+      followersCount: data['followersCount'] ?? 0,
+      followingCount: data['followingCount'] ?? 0,
+      postsCount: data['postsCount'] ?? 0,
     );
   }
 }
 
 class AuthProvider extends ChangeNotifier {
-  final String baseUrl = 'http://localhost:5000/api';
+  final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
   User? _currentUser;
-  String? _token;
-  String? _refreshToken;
   bool _isLoading = false;
-  bool _isLoggedIn = false;
-
+  
   User? get currentUser => _currentUser;
+  bool get isLoggedIn => _auth.currentUser != null;
   bool get isLoading => _isLoading;
-  bool get isLoggedIn => _isLoggedIn;
-  String? get token => _token;
 
-  // Load saved tokens on startup
   Future<void> initialize() async {
-    final prefs = await SharedPreferences.getInstance();
-    _token = prefs.getString('auth_token');
-    _refreshToken = prefs.getString('refresh_token');
-
-    if (_token != null) {
-      try {
-        await getProfile();
-      } catch (e) {
-        // Token expired, logout
-        await logout();
+    _auth.authStateChanges().listen((firebaseUser) async {
+      if (firebaseUser != null) {
+        await _fetchUserProfile(firebaseUser.uid);
+      } else {
+        _currentUser = null;
+        notifyListeners();
       }
-    }
-  }
-
-  Future<void> _saveTokens() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (_token != null) {
-      await prefs.setString('auth_token', _token!);
-    }
-    if (_refreshToken != null) {
-      await prefs.setString('refresh_token', _refreshToken!);
-    }
-  }
-
-  Future<void> _clearTokens() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('auth_token');
-    await prefs.remove('refresh_token');
-    _token = null;
-    _refreshToken = null;
+    });
   }
 
   Future<void> login(String email, String password) async {
     _isLoading = true;
     notifyListeners();
-
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      );
-
-      final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && data['success']) {
-        _token = data['data']['token'];
-        _refreshToken = data['data']['refreshToken'];
-        _currentUser = User.fromJson(data['data']['user']);
-        _isLoggedIn = true;
-
-        await _saveTokens();
-      } else {
-        throw Exception(data['message'] ?? 'Login failed');
-      }
-    } catch (error) {
-      debugPrint('Login error: $error');
-      throw error;
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw Exception(e.message);
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -137,33 +81,32 @@ class AuthProvider extends ChangeNotifier {
   Future<void> register(String username, String email, String password) async {
     _isLoading = true;
     notifyListeners();
-
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/register'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'username': username,
-          'email': email,
-          'password': password,
-        }),
+      // Create user in Auth
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
       );
 
-      final data = jsonDecode(response.body);
+      // Create user document in Firestore
+      if (userCredential.user != null) {
+        await _firestore.collection('users').doc(userCredential.user!.uid).set({
+          'username': username,
+          'email': email,
+          'avatar': 'https://i.pravatar.cc/300?u=${userCredential.user!.uid}',
+          'createdAt': FieldValue.serverTimestamp(),
+          'isVerified': false,
+          'isPremium': false,
+          'followersCount': 0,
+          'followingCount': 0,
+          'postsCount': 0,
+        });
 
-      if (response.statusCode == 201 && data['success']) {
-        _token = data['data']['token'];
-        _refreshToken = data['data']['refreshToken'];
-        _currentUser = User.fromJson(data['data']['user']);
-        _isLoggedIn = true;
-
-        await _saveTokens();
-      } else {
-        throw Exception(data['message'] ?? 'Registration failed');
+        await userCredential.user!.updateDisplayName(username);
+        await _fetchUserProfile(userCredential.user!.uid);
       }
-    } catch (error) {
-      debugPrint('Registration error: $error');
-      throw error;
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw Exception(e.message);
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -171,45 +114,20 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    _isLoading = true;
+    await _auth.signOut();
+    _currentUser = null;
     notifyListeners();
-
-    try {
-      // Call logout endpoint if needed
-      _currentUser = null;
-      _isLoggedIn = false;
-      await _clearTokens();
-    } catch (error) {
-      debugPrint('Logout error: $error');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
   }
 
-  Future<void> getProfile() async {
-    if (_token == null) throw Exception('Not authenticated');
-
+  Future<void> _fetchUserProfile(String uid) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/auth/profile'),
-        headers: {
-          'Authorization': 'Bearer $_token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && data['success']) {
-        _currentUser = User.fromJson(data['data']['user']);
-        _isLoggedIn = true;
-      } else {
-        throw Exception(data['message'] ?? 'Failed to get profile');
+      final doc = await _firestore.collection('users').doc(uid).get();
+      if (doc.exists) {
+        _currentUser = User.fromFirestore(doc);
+        notifyListeners();
       }
-    } catch (error) {
-      debugPrint('Get profile error: $error');
-      throw error;
+    } catch (e) {
+      debugPrint('Error fetching user profile: $e');
     }
   }
 
@@ -219,68 +137,40 @@ class AuthProvider extends ChangeNotifier {
     String? avatar,
     String? bio,
   }) async {
-    if (_token == null) throw Exception('Not authenticated');
+    final user = _auth.currentUser;
+    if (user == null) throw Exception('Not authenticated');
 
     _isLoading = true;
     notifyListeners();
 
     try {
-      final response = await http.put(
-        Uri.parse('$baseUrl/auth/profile'),
-        headers: {
-          'Authorization': 'Bearer $_token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          if (username != null) 'username': username,
-          if (email != null) 'email': email,
-          if (avatar != null) 'avatar': avatar,
-          if (bio != null) 'bio': bio,
-        }),
-      );
-
-      final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && data['success']) {
-        _currentUser = User.fromJson(data['data']['user']);
-      } else {
-        throw Exception(data['message'] ?? 'Failed to update profile');
+      final updates = <String, dynamic>{};
+      if (username != null) {
+        updates['username'] = username;
+        await user.updateDisplayName(username);
       }
-    } catch (error) {
-      debugPrint('Update profile error: $error');
-      throw error;
+      if (email != null) {
+        updates['email'] = email;
+        await user.verifyBeforeUpdateEmail(email);
+      }
+      if (avatar != null) {
+        updates['avatar'] = avatar;
+        await user.updatePhotoURL(avatar);
+      }
+      if (bio != null) {
+        updates['bio'] = bio;
+      }
+
+      if (updates.isNotEmpty) {
+        await _firestore.collection('users').doc(user.uid).update(updates);
+        await _fetchUserProfile(user.uid);
+      }
+    } catch (e) {
+      debugPrint('Update profile error: $e');
+      throw e;
     } finally {
       _isLoading = false;
       notifyListeners();
-    }
-  }
-
-  Future<void> refreshToken() async {
-    if (_refreshToken == null) throw Exception('No refresh token');
-
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/refresh-token'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'refreshToken': _refreshToken,
-        }),
-      );
-
-      final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && data['success']) {
-        _token = data['data']['token'];
-        _refreshToken = data['data']['refreshToken'];
-        await _saveTokens();
-      } else {
-        // Refresh failed, logout
-        await logout();
-        throw Exception('Session expired');
-      }
-    } catch (error) {
-      await logout();
-      throw error;
     }
   }
 }
