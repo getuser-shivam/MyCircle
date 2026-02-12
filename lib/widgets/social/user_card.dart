@@ -22,7 +22,7 @@ class UserCard extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -53,8 +53,8 @@ class UserCard extends StatelessWidget {
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.1),
-                        Colors.black.withOpacity(0.8),
+                        Colors.black.withValues(alpha: 0.1),
+                        Colors.black.withValues(alpha: 0.8),
                       ],
                       stops: const [0.0, 0.6, 1.0],
                     ),
@@ -113,7 +113,7 @@ class UserCard extends StatelessWidget {
                     Text(
                       user.locationSnippet,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha: 0.7),
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                       ),
@@ -129,7 +129,7 @@ class UserCard extends StatelessWidget {
   }
 
   Widget _buildStatusPulsar(BuildContext context) {
-    Color statusColor;
+    Color statusColor = Colors.grey;
     bool isLive = user.status == UserStatus.live;
 
     switch (user.status) {
@@ -143,8 +143,6 @@ class UserCard extends StatelessWidget {
         statusColor = Colors.orangeAccent;
         break;
       case UserStatus.offline:
-      default:
-        return const SizedBox.shrink();
     }
 
     return Container(
@@ -156,7 +154,7 @@ class UserCard extends StatelessWidget {
         border: Border.all(color: Colors.white, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: statusColor.withOpacity(0.5),
+            color: statusColor.withValues(alpha: 0.5),
             blurRadius: 4,
             spreadRadius: 2,
           ),
@@ -174,9 +172,9 @@ class UserCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.4),
+        color: Colors.black.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: Colors.white.withOpacity(0.1), width: 0.5),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1), width: 0.5),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
