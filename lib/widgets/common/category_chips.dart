@@ -1,6 +1,8 @@
+import '../../providers/media_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/media_provider.dart';
+
+
 
 class CategoryChips extends StatelessWidget {
   const CategoryChips({super.key});

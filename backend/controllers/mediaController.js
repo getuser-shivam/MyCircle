@@ -1,5 +1,6 @@
 const Media = require('../models/Media');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const { validationResult } = require('express-validator');
 const multer = require('multer');
 const sharp = require('sharp');
@@ -298,7 +299,13 @@ const toggleLike = async (req, res) => {
 
       // Create notification for media author
       if (!media.author.equals(userId)) {
-        // TODO: Create notification
+        await Notification.create({
+          recipient: media.author,
+          sender: userId,
+          type: 'like',
+          referenceId: media._id,
+          message: `${req.user.username} liked your media "${media.title}"`
+        });
       }
     }
 

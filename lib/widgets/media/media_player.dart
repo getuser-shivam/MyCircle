@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import '../../providers/media_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import '../providers/media_provider.dart';
+import 'package:video_player/video_player.dart';
+
+
 
 class MediaPlayer extends StatefulWidget {
   final MediaItem media;

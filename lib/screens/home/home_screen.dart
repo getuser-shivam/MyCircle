@@ -1,12 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import '../../providers/media_provider.dart';
+import '../../widgets/common/category_chips.dart';
+import '../../widgets/media/media_card.dart';
+import '../../widgets/media/media_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-import '../providers/media_provider.dart';
-import '../widgets/media_card.dart';
-import '../widgets/category_chips.dart';
-import '../widgets/media_player.dart';
+
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -1,8 +1,11 @@
+import '../models/media_item.dart';
+import '../config/app_config.dart';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+<<<<<<< HEAD
 class MediaItem {
   final String id;
   final String title;
@@ -83,9 +86,12 @@ enum MediaType {
   video,
   image,
 }
+=======
+
+>>>>>>> a7119c3 (WIP: Final Reorganized State)
 
 class MediaProvider extends ChangeNotifier {
-  final String baseUrl = 'http://localhost:5000/api';
+  final String baseUrl = AppConfig.baseUrl;
   final PagingController<int, MediaItem> _pagingController =
       PagingController(firstPageKey: 1);
 

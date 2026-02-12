@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+<<<<<<< HEAD
 import 'screens/home_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/upload_screen.dart';
 import 'screens/profile_screen.dart';
 import 'providers/media_provider.dart';
+=======
+>>>>>>> a7119c3 (WIP: Final Reorganized State)
 import 'providers/auth_provider.dart';
+import 'providers/media_provider.dart';
 import 'providers/theme_provider.dart';
-import 'widgets/custom_bottom_nav.dart';
+import 'providers/notification_provider.dart';
+import 'widgets/navigation/main_wrapper.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +27,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider(prefs)),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => MediaProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],
       child: const RedGifsApp(),
     ),
@@ -39,12 +47,13 @@ class RedGifsApp extends StatelessWidget {
           theme: themeProvider.lightTheme,
           darkTheme: themeProvider.darkTheme,
           themeMode: themeProvider.themeMode,
-          home: const MainScreen(),
+          home: const MainWrapper(),
         );
       },
     );
   }
 }
+<<<<<<< HEAD
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -81,3 +90,5 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+=======
+>>>>>>> a7119c3 (WIP: Final Reorganized State)

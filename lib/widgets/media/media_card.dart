@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
+import '../../providers/media_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../providers/media_provider.dart';
+import 'package:flutter/material.dart';
+
+
 
 class MediaCard extends StatelessWidget {
   final MediaItem media;

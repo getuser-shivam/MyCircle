@@ -1,8 +1,10 @@
+import '../../providers/media_provider.dart';
+import '../../widgets/media/media_card.dart';
+import '../../widgets/media/media_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/media_provider.dart';
-import '../widgets/media_card.dart';
-import '../widgets/media_player.dart';
+
+
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
