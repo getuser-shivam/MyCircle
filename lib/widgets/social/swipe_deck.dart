@@ -96,49 +96,131 @@ class _SwipeDeckState extends State<SwipeDeck> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     if (_deck.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.refresh_rounded, size: 64, color: Colors.grey),
-            SizedBox(height: 16),
-            Text('No more people nearby!', style: TextStyle(color: Colors.grey)),
+            Icon(Icons.explore_off_rounded, size: 80, color: Theme.of(context).colorScheme.primary.withOpacity(0.4)),
+            const SizedBox(height: 16),
+            Text('No more people nearby!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5))),
+            const SizedBox(height: 8),
+            Text('Check back later for new matches', style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3))),
           ],
         ),
       );
     }
 
-    return Stack(
-      children: _deck.asMap().entries.map((entry) {
-        final index = entry.key;
-        final user = entry.value;
-        final isFront = index == 0;
+    return Column(
+      children: [
+        // Card stack area
+        Expanded(
+          child: Stack(
+            children: _deck.asMap().entries.map((entry) {
+              final index = entry.key;
+              final user = entry.value;
+              final isFront = index == 0;
 
-        return Positioned.fill(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: isFront
-                ? AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (context, child) {
-                      final offset = _animationController.isAnimating 
-                          ? _swipeAnimation.value 
-                          : _dragOffset;
-                      final angle = (offset.dx / 400) * (math.pi / 12);
+              return Positioned.fill(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: isFront
+                      ? AnimatedBuilder(
+                          animation: _animationController,
+                          builder: (context, child) {
+                            final offset = _animationController.isAnimating 
+                                ? _swipeAnimation.value 
+                                : _dragOffset;
+                            final angle = (offset.dx / 400) * (math.pi / 12);
 
-                      return Transform.translate(
-                        offset: offset,
-                        child: Transform.rotate(
-                          angle: angle,
-                          child: _buildCard(user, isFront: true),
-                        ),
-                      );
-                    },
-                  )
-                : _buildCard(user, isFront: false),
+                            return Transform.translate(
+                              offset: offset,
+                              child: Transform.rotate(
+                                angle: angle,
+                                child: _buildCard(user, isFront: true),
+                              ),
+                            );
+                          },
+                        )
+                      : _buildCard(user, isFront: false),
+                ),
+              );
+            }).toList().reversed.toList(),
           ),
-        );
-      }).toList().reversed.toList(), // Render bottom cards first
+        ),
+        // Action buttons Row
+        _buildActionButtons(),
+      ],
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24, left: 40, right: 40),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // NOPE button
+          _buildCircleButton(
+            icon: Icons.close_rounded,
+            color: Colors.redAccent,
+            size: 60,
+            onTap: () => _swipe(false),
+          ),
+          // SUPER LIKE button
+          _buildCircleButton(
+            icon: Icons.star_rounded,
+            color: Colors.blueAccent,
+            size: 48,
+            onTap: () {
+              if (_deck.isNotEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('⭐ Super Liked ${_deck.first.username}!'),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.blueAccent,
+                  ),
+                );
+                _swipe(true);
+              }
+            },
+          ),
+          // LIKE button
+          _buildCircleButton(
+            icon: Icons.favorite_rounded,
+            color: Colors.greenAccent.shade400,
+            size: 60,
+            onTap: () => _swipe(true),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCircleButton({
+    required IconData icon,
+    required Color color,
+    required double size,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Theme.of(context).colorScheme.surface,
+          border: Border.all(color: color.withOpacity(0.4), width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.2),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Icon(icon, color: color, size: size * 0.5),
+      ),
     );
   }
 
