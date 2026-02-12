@@ -1,3 +1,5 @@
+import 'dart:ui';
+import '../../providers/media_provider.dart';
 import '../../models/media_item.dart';
 import 'package:flutter/material.dart';
 
@@ -68,91 +70,87 @@ class _ContentCardState extends State<ContentCard>
           builder: (context, child) {
             return Transform.scale(
               scale: _scaleAnimation.value,
-              child: Container(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: _isHovered
-                      ? [
-                          BoxShadow(
-                            color: Theme.of(context).primaryColor.withOpacity(0.3),
-                            blurRadius: 12,
-                            spreadRadius: 2,
-                          ),
-                        ]
-                      : [],
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _isHovered 
+                          ? Theme.of(context).colorScheme.primary.withOpacity(0.2) 
+                          : Colors.black.withOpacity(0.1),
+                      blurRadius: _isHovered ? 20 : 10,
+                      offset: Offset(0, _isHovered ? 10 : 5),
+                    ),
+                  ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(20),
                   child: Stack(
                     children: [
-                      // Thumbnail
+                      // Thumbnail with parallax-like effect
                       Positioned.fill(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[800],
-                            borderRadius: BorderRadius.circular(12),
+                        child: AnimatedScale(
+                          scale: _isHovered ? 1.1 : 1.0,
+                          duration: const Duration(milliseconds: 500),
+                          child: Container(
+                            color: Theme.of(context).colorScheme.surface,
+                            child: widget.mediaItem.thumbnailUrl != null
+                                ? Image.network(
+                                    widget.mediaItem.thumbnailUrl!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
+                                  )
+                                : _buildPlaceholder(),
                           ),
-                          child: widget.mediaItem.thumbnailUrl != null
-                              ? Image.network(
-                                  widget.mediaItem.thumbnailUrl!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return _buildPlaceholder();
-                                  },
-                                )
-                              : _buildPlaceholder(),
                         ),
                       ),
                       
-                      // Overlay gradient
+                      // Polished Gradient Overlay
                       Positioned.fill(
-                        child: Container(
+                        child: DecoratedBox(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.transparent,
-                                Colors.black.withOpacity(0.7),
+                                Colors.black.withOpacity(0.2),
+                                Colors.black.withOpacity(0.8),
                               ],
+                              stops: const [0.0, 0.4, 1.0],
                             ),
                           ),
                         ),
                       ),
                       
-                      // Duration badge
-                      if (widget.mediaItem.duration != null)
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              widget.mediaItem.duration!,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
+                      // Premium Badges
+                      Positioned(
+                        top: 12,
+                        left: 12,
+                        right: 12,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (widget.mediaItem.type != null)
+                              _buildGlassBadge(
+                                text: widget.mediaItem.type.toString().split('.').last.toUpperCase(),
+                                icon: widget.mediaItem.type == MediaType.video ? Icons.play_arrow_rounded : Icons.gif_rounded,
                               ),
-                            ),
-                          ),
+                            if (widget.mediaItem.duration != null)
+                              _buildGlassBadge(text: widget.mediaItem.duration!),
+                          ],
                         ),
+                      ),
                       
-                      // Title and stats
+                      // Title and stats with Micro-animations
                       Positioned(
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
+                        child: AnimatedPadding(
+                          duration: const Duration(milliseconds: 300),
+                          padding: EdgeInsets.all(_isHovered ? 16 : 12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
@@ -161,42 +159,22 @@ class _ContentCardState extends State<ContentCard>
                                 widget.mediaItem.title,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: -0.5,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 8),
                               Row(
                                 children: [
-                                  Icon(
-                                    Icons.visibility,
-                                    color: Colors.white.withOpacity(0.8),
-                                    size: 14,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    _formatViews(widget.mediaItem.views),
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.8),
-                                      fontSize: 12,
-                                    ),
-                                  ),
+                                  _buildStatItem(Icons.visibility_rounded, _formatViews(widget.mediaItem.views)),
                                   const SizedBox(width: 12),
-                                  Icon(
-                                    Icons.thumb_up,
-                                    color: Colors.white.withOpacity(0.8),
-                                    size: 14,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    _formatLikes(widget.mediaItem.likes),
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.8),
-                                      fontSize: 12,
-                                    ),
-                                  ),
+                                  _buildStatItem(Icons.favorite_rounded, _formatLikes(widget.mediaItem.likes)),
+                                  const Spacer(),
+                                  if (widget.mediaItem.isVerified)
+                                    const Icon(Icons.verified_rounded, color: Colors.blueAccent, size: 16),
                                 ],
                               ),
                             ],
@@ -204,19 +182,27 @@ class _ContentCardState extends State<ContentCard>
                         ),
                       ),
                       
-                      // Play button overlay
+                      // Hover Play Glow
                       if (_isHovered)
                         Positioned.fill(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.play_circle_filled,
-                                color: Colors.white,
-                                size: 48,
+                          child: Center(
+                            child: AnimatedOpacity(
+                              opacity: _isHovered ? 1.0 : 0.0,
+                              duration: const Duration(milliseconds: 300),
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                                      blurRadius: 15,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 32),
                               ),
                             ),
                           ),
@@ -229,6 +215,50 @@ class _ContentCardState extends State<ContentCard>
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildGlassBadge({required String text, IconData? icon}) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.4),
+            border: Border.all(color: Colors.white.withOpacity(0.1), width: 0.5),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, color: Colors.white, size: 14),
+                const SizedBox(width: 4),
+              ],
+              Text(
+                text,
+                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatItem(IconData icon, String value) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: Colors.white.withOpacity(0.7), size: 14),
+        const SizedBox(width: 4),
+        Text(
+          value,
+          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12, fontWeight: FontWeight.w600),
+        ),
+      ],
     );
   }
 

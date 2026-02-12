@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo RedGifs Clone - Setup and Run Script
+echo MyCircle - Setup and Run Script
 echo ========================================
 echo.
 

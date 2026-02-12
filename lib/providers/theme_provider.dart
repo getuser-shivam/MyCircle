@@ -52,14 +52,15 @@ class ThemeProvider extends ChangeNotifier {
         displayMedium: TextStyle(color: Colors.black),
       ),
       colorScheme: const ColorScheme.light(
-        primary: Color(0xFFE5194D),
-        secondary: Color(0xFFEBFA63),
+        primary: Color(0xFF6366F1), // Indigo
+        secondary: Color(0xFF8B5CF6), // Violet
+        tertiary: Color(0xFFF43F5E), // Rose
         surface: Colors.white,
-        background: Colors.white,
+        background: Color(0xFFF8FAFC), // Slate 50
         onPrimary: Colors.white,
-        onSecondary: Colors.black,
-        onSurface: Colors.black,
-        onBackground: Colors.black,
+        onSecondary: Colors.white,
+        onSurface: Color(0xFF0F172A), // Slate 900
+        onBackground: Color(0xFF0F172A),
       ),
     );
   }
@@ -88,14 +89,15 @@ class ThemeProvider extends ChangeNotifier {
         displayMedium: TextStyle(color: Colors.white),
       ),
       colorScheme: const ColorScheme.dark(
-        primary: Color(0xFFE5194D),
-        secondary: Color(0xFFEBFA63),
-        surface: Color(0xFF1A1A1A),
-        background: Color(0xFF0F0F0F),
+        primary: Color(0xFF818CF8), // Indigo 400
+        secondary: Color(0xFFA78BFA), // Violet 400
+        tertiary: Color(0xFFFB7185), // Rose 400
+        surface: Color(0xFF1E293B), // Slate 800
+        background: Color(0xFF0F172A), // Slate 900
         onPrimary: Colors.white,
-        onSecondary: Colors.black,
-        onSurface: Colors.white,
-        onBackground: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: Color(0xFFF1F5F9), // Slate 100
+        onBackground: Color(0xFFF1F5F9),
       ),
     );
   }

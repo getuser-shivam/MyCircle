@@ -23,11 +23,18 @@ class MediaCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           color: Theme.of(context).colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -45,17 +52,24 @@ class MediaCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                errorWidget: (context, url, error) => Container(
-                  color: Theme.of(context).colorScheme.surface,
-                  child: Icon(
-                    Icons.error_outline,
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                  ),
-                ),
+                errorWidget: (context, url, error) => _buildPlaceholder(context),
               ),
               _buildOverlay(context),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder(BuildContext context) {
+    return Container(
+      color: Theme.of(context).colorScheme.surface,
+      child: Center(
+        child: Icon(
+          Icons.play_circle_outline_rounded,
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+          size: 48,
         ),
       ),
     );
@@ -73,24 +87,39 @@ class MediaCard extends StatelessWidget {
 
   Widget _buildTopOverlay(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.black.withOpacity(0.6),
+            Colors.black.withOpacity(0.7),
             Colors.transparent,
           ],
         ),
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 16,
-            backgroundImage: CachedNetworkImageProvider(media.userAvatar),
+          Container(
+            padding: const EdgeInsets.all(1.5),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary],
+              ),
+              shape: BoxShape.circle,
+            ),
+            child: CircleAvatar(
+              radius: 14,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              backgroundImage: media.userAvatar.isNotEmpty 
+                  ? CachedNetworkImageProvider(media.userAvatar) 
+                  : null,
+              child: media.userAvatar.isEmpty 
+                  ? const Icon(Icons.person, size: 14) 
+                  : null,
+            ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,41 +133,30 @@ class MediaCard extends StatelessWidget {
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.2,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     if (media.isVerified) ...[
                       const SizedBox(width: 4),
-                      Icon(
-                        Icons.verified,
-                        color: Colors.blue,
-                        size: 14,
-                      ),
+                      const Icon(Icons.verified_rounded, color: Colors.blueAccent, size: 12),
                     ],
                   ],
                 ),
                 Text(
                   _formatDuration(int.tryParse(media.duration ?? '0') ?? 0),
-                  style: const TextStyle(
-                    color: Colors.white70,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
                     fontSize: 10,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
           ),
-          IconButton(
-            onPressed: () {
-              // More options
-            },
-            icon: const Icon(
-              Icons.more_vert,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
+          _buildGlassIconButton(Icons.more_vert_rounded),
         ],
       ),
     );
@@ -146,15 +164,16 @@ class MediaCard extends StatelessWidget {
 
   Widget _buildBottomOverlay(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
             Colors.transparent,
-            Colors.black.withOpacity(0.8),
+            Colors.black.withOpacity(0.9),
           ],
+          stops: const [0.0, 1.0],
         ),
       ),
       child: Column(
@@ -166,78 +185,74 @@ class MediaCard extends StatelessWidget {
             style: const TextStyle(
               color: Colors.white,
               fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.3,
+              shadows: [Shadow(blurRadius: 10, color: Colors.black26, offset: Offset(0, 2))],
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Row(
             children: [
-              Icon(
-                Icons.visibility_outlined,
-                color: Colors.white70,
-                size: 14,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                _formatViews(media.views),
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 12,
-                ),
-              ),
+              _buildStat(Icons.remove_red_eye_rounded, _formatViews(media.views)),
               const SizedBox(width: 12),
-              Icon(
-                Icons.favorite_border,
-                color: Colors.white70,
-                size: 14,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                _formatLikes(media.likes),
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 12,
-                ),
-              ),
+              _buildStat(Icons.favorite_rounded, _formatLikes(media.likes)),
               const Spacer(),
-              if (media.type == MediaType.video)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    'VIDEO',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 8,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              else if (media.type == MediaType.gif)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    'GIF',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 8,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+              _buildTypeBadge(context),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStat(IconData icon, String value) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: Colors.white.withOpacity(0.6), size: 14),
+        const SizedBox(width: 4),
+        Text(
+          value,
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.6),
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTypeBadge(BuildContext context) {
+    final isVideo = media.type == MediaType.video;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: isVideo ? Colors.redAccent.withOpacity(0.8) : Colors.greenAccent.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        isVideo ? 'LIVE' : 'GIF',
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 9,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGlassIconButton(IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(icon, color: Colors.white, size: 18),
     );
   }
 

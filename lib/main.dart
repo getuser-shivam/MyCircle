@@ -5,7 +5,7 @@ import 'providers/auth_provider.dart';
 import 'providers/media_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/notification_provider.dart';
-import 'widgets/navigation/main_wrapper.dart';
+import 'providers/social_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +18,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => MediaProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
+        ChangeNotifierProvider(create: (_) => SocialProvider()),
       ],
       child: const MyCircleApp(),
     ),

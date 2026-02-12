@@ -1,15 +1,15 @@
-import '../../providers/notification_provider.dart';
-import '../../providers/theme_provider.dart';
-import '../../screens/search/advanced_search_screen.dart';
-import '../../screens/user/profile_screen.dart';
-import '../../screens/home/ultimate_home_screen.dart';
-import '../../screens/media/upload_screen.dart';
-import '../common/connectivity_banner.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-
+import 'package:connectivity_plus/connectivity_plus.dart';
+import '../../providers/notification_provider.dart';
+import '../../providers/theme_provider.dart';
+import '../../providers/social_provider.dart';
+import '../../screens/social/meet_me_screen.dart';
+import '../../screens/home/ultimate_home_screen.dart';
+import '../../screens/media/upload_screen.dart';
+import '../../screens/user/profile_screen.dart';
+import '../common/connectivity_banner.dart';
 
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
@@ -24,7 +24,7 @@ class _MainWrapperState extends State<MainWrapper> {
   
   final List<Widget> _screens = [
     const UltimateHomeScreen(),
-    const AdvancedSearchScreen(),
+    const MeetMeScreen(),
     const UploadScreen(),
     const ProfileScreen(),
   ];
@@ -64,107 +64,118 @@ class _MainWrapperState extends State<MainWrapper> {
       ),
       bottomNavigationBar: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
+          final isDark = themeProvider.isDarkMode;
           return Consumer<NotificationProvider>(
             builder: (context, notificationProvider, child) {
-              return NavigationBar(
-                selectedIndex: _currentIndex,
-                onDestinationSelected: (index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-                backgroundColor: themeProvider.themeMode == ThemeMode.dark 
-                    ? Colors.grey[900] 
-                    : Colors.white,
-                destinations: [
-                  NavigationDestination(
-                    icon: const Icon(Icons.home_outlined),
-                    selectedIcon: const Icon(Icons.home),
-                    label: 'Home',
+              return Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
+                      width: 0.5,
+                    ),
                   ),
-                  NavigationDestination(
-                    icon: const Icon(Icons.search_outlined),
-                    selectedIcon: const Icon(Icons.search),
-                    label: 'Search',
-                  ),
-                  NavigationDestination(
-                    icon: const Icon(Icons.add_circle_outline),
-                    selectedIcon: const Icon(Icons.add_circle),
-                    label: 'Upload',
-                  ),
-                  NavigationDestination(
-                    icon: Stack(
-                      children: [
-                        const Icon(Icons.person_outline),
-                        if (notificationProvider.unreadCount > 0)
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(6),
+                ),
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: NavigationBar(
+                      selectedIndex: _currentIndex,
+                      onDestinationSelected: (index) {
+                        setState(() {
+                          _currentIndex = index;
+                        });
+                      },
+                      backgroundColor: isDark 
+                          ? const Color(0xFF0F172A).withOpacity(0.7) 
+                          : Colors.white.withOpacity(0.7),
+                      indicatorColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      surfaceTintColor: Colors.transparent,
+                      height: 70,
+                      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+                      destinations: [
+                        NavigationDestination(
+                          icon: Icon(Icons.home_outlined, 
+                            color: _currentIndex == 0 ? Theme.of(context).colorScheme.primary : null),
+                          selectedIcon: Icon(Icons.home_rounded, 
+                            color: Theme.of(context).colorScheme.primary),
+                          label: 'Discover',
+                        ),
+                        NavigationDestination(
+                          icon: Icon(Icons.people_outline_rounded,
+                            color: _currentIndex == 1 ? Theme.of(context).colorScheme.primary : null),
+                          selectedIcon: Icon(Icons.people_rounded,
+                            color: Theme.of(context).colorScheme.primary),
+                          label: 'Meet',
+                        ),
+                        NavigationDestination(
+                          icon: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Theme.of(context).colorScheme.primary,
+                                  Theme.of(context).colorScheme.secondary,
+                                ],
                               ),
-                              constraints: const BoxConstraints(
-                                minWidth: 12,
-                                minHeight: 12,
-                              ),
-                              child: Text(
-                                notificationProvider.unreadCount > 9 
-                                    ? '9+' 
-                                    : '${notificationProvider.unreadCount}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
+                              ],
                             ),
+                            child: const Icon(Icons.add, color: Colors.white, size: 24),
                           ),
+                          label: 'Create',
+                        ),
+                        NavigationDestination(
+                          icon: _buildProfileIcon(notificationProvider, false),
+                          selectedIcon: _buildProfileIcon(notificationProvider, true),
+                          label: 'Studio',
+                        ),
                       ],
                     ),
-                    selectedIcon: Stack(
-                      children: [
-                        const Icon(Icons.person),
-                        if (notificationProvider.unreadCount > 0)
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              constraints: const BoxConstraints(
-                                minWidth: 12,
-                                minHeight: 12,
-                              ),
-                              child: Text(
-                                notificationProvider.unreadCount > 9 
-                                    ? '9+' 
-                                    : '${notificationProvider.unreadCount}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    label: 'Profile',
                   ),
-                ],
+                ),
               );
             },
           );
         },
       ),
+    );
+  }
+
+  Widget _buildProfileIcon(NotificationProvider provider, bool isSelected) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Icon(
+          isSelected ? Icons.person_rounded : Icons.person_outline_rounded,
+          color: isSelected ? Theme.of(context).colorScheme.primary : null,
+        ),
+        if (provider.unreadCount > 0)
+          Positioned(
+            right: -4,
+            top: -4,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.tertiary,
+                shape: BoxShape.circle,
+                border: Border.all(color: Theme.of(context).scaffoldBackgroundColor, width: 2),
+              ),
+              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+              child: Text(
+                '${provider.unreadCount}',
+                style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

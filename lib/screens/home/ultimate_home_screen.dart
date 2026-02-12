@@ -1,3 +1,4 @@
+import 'dart:ui';
 import '../../providers/media_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../widgets/media/lazy_load_media_grid.dart';
@@ -111,137 +112,117 @@ class _UltimateHomeScreenState extends State<UltimateHomeScreen>
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              expandedHeight: 120,
+              expandedHeight: 200,
               floating: false,
               pinned: true,
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              stretch: true,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
               flexibleSpace: FlexibleSpaceBar(
-                title: const Text(
-                  'MyCircle',
+                stretchModes: const [
+                  StretchMode.zoomBackground,
+                  StretchMode.blurBackground,
+                  StretchMode.fadeTitle,
+                ],
+                centerTitle: false,
+                titlePadding: const EdgeInsets.only(left: 20, bottom: 60),
+                title: Text(
+                  'Explore MyCircle',
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                ),
-                background: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Theme.of(context).primaryColor.withOpacity(0.8),
-                        Theme.of(context).primaryColor.withOpacity(0.4),
-                      ],
-                    ),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: 20,
-                        right: 20,
-                        child: Consumer<NotificationProvider>(
-                          builder: (context, notificationProvider, child) {
-                            return Stack(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.notifications, color: Colors.white),
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/notifications');
-                                  },
-                                ),
-                                if (notificationProvider.unreadCount > 0)
-                                  Positioned(
-                                    right: 8,
-                                    top: 8,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(2),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      constraints: const BoxConstraints(
-                                        minWidth: 16,
-                                        minHeight: 16,
-                                      ),
-                                      child: Text(
-                                        notificationProvider.unreadCount > 99 
-                                            ? '99+' 
-                                            : '${notificationProvider.unreadCount}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            );
-                          },
-                        ),
+                    fontWeight: FontWeight.w800,
+                    fontSize: 28,
+                    color: Colors.white,
+                    letterSpacing: -1,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
                 ),
-              ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.search, color: Colors.white),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/advanced-search');
-                  },
-                ),
-                Consumer<NotificationProvider>(
-                  builder: (context, notificationProvider, child) {
-                    return IconButton(
-                      icon: Icon(
-                        notificationProvider.isOnline 
-                            ? Icons.cloud_done 
-                            : Icons.cloud_off,
-                        color: Colors.white,
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.network(
+                      'https://picsum.photos/1200/800?random=hero',
+                      fit: BoxFit.cover,
+                    ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Theme.of(context).colorScheme.background.withOpacity(0.8),
+                            Theme.of(context).colorScheme.background,
+                          ],
+                          stops: const [0.0, 0.7, 1.0],
+                        ),
                       ),
-                      onPressed: () {
-                        // Show connectivity status
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              notificationProvider.isOnline 
-                                  ? 'Connected to internet' 
-                                  : 'No internet connection',
-                            ),
-                            backgroundColor: notificationProvider.isOnline 
-                                ? Colors.green 
-                                : Colors.orange,
-                          ),
-                        );
-                      },
-                    );
-                  },
+                    ),
+                  ],
                 ),
+              ),
+              leadingWidth: 0,
+              leading: const SizedBox.shrink(),
+              actions: [
+                _buildGlasActionButton(
+                  icon: Icons.search_rounded,
+                  onPressed: () => Navigator.pushNamed(context, '/advanced-search'),
+                ),
+                const SizedBox(width: 8),
+                _buildGlasActionButton(
+                  icon: Icons.notifications_none_rounded,
+                  onPressed: () => Navigator.pushNamed(context, '/notifications'),
+                  showBadge: true,
+                ),
+                const SizedBox(width: 16),
               ],
-              bottom: TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabAlignment: TabAlignment.center,
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(60),
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.background.withOpacity(0.5),
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
+                          ),
+                        ),
+                      ),
+                      child: TabBar(
+                        controller: _tabController,
+                        isScrollable: true,
+                        tabAlignment: TabAlignment.start,
+                        labelPadding: const EdgeInsets.symmetric(horizontal: 20),
+                        indicatorColor: Theme.of(context).colorScheme.primary,
+                        indicatorWeight: 3,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          letterSpacing: -0.5,
+                        ),
+                        unselectedLabelStyle: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                        ),
+                        onTap: (index) {
+                          _loadCategoryData(_categories[index]);
+                        },
+                        tabs: _categories.map((category) {
+                          return Tab(text: category);
+                        }).toList(),
+                      ),
+                    ),
+                  ),
                 ),
-                unselectedLabelStyle: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                onTap: (index) {
-                  _loadCategoryData(_categories[index]);
-                },
-                tabs: _categories.map((category) {
-                  return Tab(
-                    text: category,
-                    icon: Icon(_getCategoryIcon(category)),
-                  );
-                }).toList(),
               ),
             ),
           ];
@@ -285,83 +266,103 @@ class _UltimateHomeScreenState extends State<UltimateHomeScreen>
   Widget _buildTrendingBanner() {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(20),
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
         gradient: LinearGradient(
-          colors: [
-            Colors.orange[400]!,
-            Colors.red[400]!,
-          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.secondary,
+          ],
         ),
-        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.orange[400]!.withValues(alpha: 0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.local_fire_department,
-                color: Colors.white,
-                size: 24,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: Stack(
+          children: [
+            Positioned(
+              right: -50,
+              top: -50,
+              child: Opacity(
+                opacity: 0.1,
+                child: Icon(Icons.local_fire_department, size: 200, color: Colors.white),
               ),
-              const SizedBox(width: 8),
-              const Text(
-                '🔥 Trending Now',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Check out what\'s hot today',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
             ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  _tabController.animateTo(1); // Switch to Trending tab
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.orange[600],
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                ),
-                child: const Text('Explore'),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.trending_up, color: Colors.white, size: 16),
+                        SizedBox(width: 6),
+                        Text(
+                          'HOT RIGHT NOW',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Reimagine Your Stream',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Discover peak performance content curated just for you.',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () => _tabController.animateTo(1),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Theme.of(context).colorScheme.primary,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text('EXPLORE NOW', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/advanced-search');
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                ),
-                child: const Text('Search'),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -369,22 +370,16 @@ class _UltimateHomeScreenState extends State<UltimateHomeScreen>
   Widget _buildPremiumBanner() {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.amber[400]!,
-            Colors.yellow[600]!,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
-            color: Colors.amber.withOpacity(0.3),
-            blurRadius: 8,
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
@@ -394,46 +389,88 @@ class _UltimateHomeScreenState extends State<UltimateHomeScreen>
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.diamond,
-                color: Colors.white,
-                size: 24,
+              ShaderMask(
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: [Colors.amber[400]!, Colors.orange[400]!],
+                ).createShader(bounds),
+                child: const Icon(Icons.diamond_rounded, color: Colors.white, size: 32),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               const Text(
-                '💎 Premium Content',
+                'MyCircle Studio',
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          const Text(
-            'Exclusive content for premium members',
+          const SizedBox(height: 12),
+          Text(
+            'Unlock elite features, unlimited storage, and high-fidelity playback.',
             style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+              fontSize: 15,
             ),
           ),
-          const SizedBox(height: 12),
-          ElevatedButton(
-            onPressed: () {
-              // Navigate to premium upgrade
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Premium upgrade coming soon!')),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.amber[800],
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
+              child: const Text('UPGRADE TO PREMIUM', style: TextStyle(fontWeight: FontWeight.w900)),
             ),
-            child: const Text('Upgrade to Premium'),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildGlasActionButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+    bool showBadge = false,
+  }) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+          ),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              IconButton(
+                icon: Icon(icon, color: Colors.white, size: 22),
+                onPressed: onPressed,
+              ),
+              if (showBadge)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.tertiary,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

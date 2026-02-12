@@ -71,7 +71,7 @@ const register = async (req, res) => {
     try {
       await sendEmail({
         to: user.email,
-        subject: 'Welcome to RedGifs Clone - Verify Your Email',
+        subject: 'Welcome to MyCircle - Verify Your Email',
         template: 'welcome',
         data: { username: user.username, verificationToken }
       });
@@ -287,7 +287,7 @@ const forgotPassword = async (req, res) => {
     try {
       await sendEmail({
         to: user.email,
-        subject: 'Password Reset - RedGifs Clone',
+        subject: 'Password Reset - MyCircle',
         template: 'passwordReset',
         data: { username: user.username, resetToken }
       });
