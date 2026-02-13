@@ -174,7 +174,7 @@ class _ContentCardState extends State<ContentCard>
                                   _buildStatItem(Icons.favorite_rounded, _formatLikes(widget.mediaItem.likes)),
                                   const Spacer(),
                                   if (widget.mediaItem.isVerified)
-                                    const Icon(Icons.verified_rounded, color: Colors.blueAccent, size: 16),
+                                    Icon(Icons.verified_rounded, color: Theme.of(context).colorScheme.primary, size: 16),
                                 ],
                               ),
                             ],

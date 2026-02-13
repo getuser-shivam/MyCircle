@@ -15,10 +15,13 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A1A1A),
+      decoration: BoxDecoration(
+        color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
         border: Border(
-          top: BorderSide(color: Color(0xFF2A2A2A), width: 1),
+          top: BorderSide(
+            color: Theme.of(context).dividerColor,
+            width: 1,
+          ),
         ),
       ),
       child: SafeArea(

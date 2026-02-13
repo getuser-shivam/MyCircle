@@ -93,6 +93,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
           _buildNotificationsList(false),
           _buildNotificationsList(true),
         ],
+      ),
     );
   }
 
