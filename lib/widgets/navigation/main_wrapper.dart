@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/theme_provider.dart';
-import '../../providers/social_provider.dart';
 import '../../screens/social/meet_me_screen.dart';
 import '../../screens/home/ultimate_home_screen.dart';
 import '../../screens/media/upload_screen.dart';

@@ -1,6 +1,5 @@
 import 'dart:ui';
 import '../../providers/media_provider.dart';
-import '../../providers/notification_provider.dart';
 import '../../widgets/media/lazy_load_media_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

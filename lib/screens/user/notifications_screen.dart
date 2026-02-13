@@ -93,14 +93,6 @@ class _NotificationsScreenState extends State<NotificationsScreen>
           _buildNotificationsList(false),
           _buildNotificationsList(true),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.read<NotificationProvider>().simulateRealtimeNotification();
-        },
-        icon: const Icon(Icons.notifications_active),
-        label: const Text('Test Notification'),
-      ),
     );
   }
 

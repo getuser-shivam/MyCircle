@@ -25,6 +25,7 @@ class MediaProvider extends ChangeNotifier {
   List<MediaItem> get searchResults => _searchResults;
   List<MediaItem> get mediaItems => _searchQuery.isEmpty ? _trendingMedia : _searchResults;
 
+  List<String> get categories => _categories;
   bool get isLoading => _isLoading;
   String get searchQuery => _searchQuery;
   String get selectedCategory => _selectedCategory;
