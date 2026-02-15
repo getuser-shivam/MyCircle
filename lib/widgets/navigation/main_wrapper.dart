@@ -32,17 +32,17 @@ class _MainWrapperState extends State<MainWrapper> {
   void initState() {
     super.initState();
     _checkConnectivity();
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
       setState(() {
-        _isConnected = result != ConnectivityResult.none;
+        _isConnected = results.any((result) => result != ConnectivityResult.none);
       });
     });
   }
 
   Future<void> _checkConnectivity() async {
-    final result = await Connectivity().checkConnectivity();
+    final results = await Connectivity().checkConnectivity();
     setState(() {
-      _isConnected = result != ConnectivityResult.none;
+      _isConnected = results.any((result) => result != ConnectivityResult.none);
     });
   }
 

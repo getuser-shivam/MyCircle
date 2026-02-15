@@ -171,6 +171,9 @@ MyCircle/
 - **Flutter SDK** ≥ 3.10.0
 - **Firebase Project** configured at [console.firebase.google.com](https://console.firebase.google.com)
 - **Android Studio** / **Xcode** (for mobile)
+- **Visual Studio 2022** (for Windows Desktop)
+  - **Edition**: Community (Stable) - *Preview versions are NOT supported*
+  - **Workload**: "Desktop development with C++" must be selected during installation
 
 ### Installation
 
