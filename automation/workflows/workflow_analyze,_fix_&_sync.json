@@ -1,0 +1,45 @@
+{
+  "name": "Analyze, Fix & Sync",
+  "description": "Continuous improvement: analyze needs → fix/refactor → GitHub sync",
+  "steps": [
+    {
+      "name": "1. Analyze Needs",
+      "prompt": "Analyze the project at {project_path}. 1. Run 'flutter analyze' and identify core issues.\n2. Check 'git status' for uncommitted changes.\n3. Identify what needs to be fixed, refactored, or organized.",
+      "delay_after": 5.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "2. Organize & Refactor",
+      "prompt": "Based on the analysis, organize the file structure and fix issues. Move related widgets into subfolders, ensure coding standards are met, and fix any syntax or linting errors found.",
+      "delay_after": 10.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "3. Sync to GitHub",
+      "prompt": "Commit all changes to the local repository with a clear message summarizing the fixes and organization done. Push the changes to the remote branch on GitHub.Analyze the project at ../. 1. Run 'flutter analyze' and identify core issues.\n2. Check 'git status' for uncommitted changes.\n3. Identify what needs to be fixed, refactored, or organized.\n",
+      "delay_after": 5.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "Step 4",
+      "prompt": "Think what things new to be better. Do and fix (Don't RUN KEYWORD: RedGifs) and enhance the UI.",
+      "delay_after": 5.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "Step 5",
+      "prompt": "Think more of of Desktop App. Update README GIT. ",
+      "delay_after": 5.0,
+      "condition": "",
+      "enabled": true
+    }
+  ],
+  "variables": {
+    "project_path": "../"
+  },
+  "created_at": "2026-02-16T21:03:26.582428"
+}

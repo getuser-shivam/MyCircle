@@ -356,7 +356,7 @@ class _SearchScreenState extends State<SearchScreen> {
       });
     }
 
-    context.read<MediaProvider>().searchMedia(query: query.trim());
+    context.read<MediaProvider>().searchMedia(query.trim());
   }
 
   void _openMediaPlayer(BuildContext context, dynamic media) {

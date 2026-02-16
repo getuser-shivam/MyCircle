@@ -1,5 +1,5 @@
 import '../../providers/media_provider.dart';
-import '../../widgets/common/category_chips.dart';
+import '../../widgets/media/category_chips.dart';
 import '../../widgets/media/media_card.dart';
 import '../../widgets/media/media_player.dart';
 import 'package:flutter/material.dart';
@@ -180,13 +180,13 @@ class _HomeScreenState extends State<HomeScreen>
                 Icon(
                   Icons.hourglass_empty,
                   size: 64,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'No recent content',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -255,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen>
       itemBuilder: (context, index) {
         return Shimmer.fromColors(
           baseColor: Theme.of(context).colorScheme.surface,
-          highlightColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+          highlightColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,

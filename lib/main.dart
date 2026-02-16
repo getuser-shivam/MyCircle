@@ -1,23 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'providers/auth_provider.dart';
-import 'providers/media_provider.dart';
-import 'providers/theme_provider.dart';
-import 'providers/notification_provider.dart';
-import 'providers/social_provider.dart';
-import 'providers/comment_provider.dart';
-import 'providers/social_graph_provider.dart';
-import 'providers/subscription_provider.dart';
-import 'providers/antigravity_provider.dart';
-import 'screens/premium/subscription_tier_screen.dart';
-import 'screens/media/media_detail_screen.dart';
-import 'screens/search/advanced_search_screen.dart';
-import 'widgets/navigation/main_wrapper.dart';
-import 'models/media_item.dart';
-
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'supabase_options.dart';
+
+// Local imports
+import 'exports.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,22 +14,44 @@ void main() async {
     anonKey: SupabaseOptions.anonKey,
   );
   final prefs = await SharedPreferences.getInstance();
+  final themeProvider = ThemeProvider(prefs);
   
   final authProvider = AuthProvider();
   await authProvider.initialize();
 
+  final mediaProvider = MediaProvider();
+  final notificationProvider = NotificationProvider();
+  final socialProvider = SocialProvider();
+  final commentProvider = CommentProvider();
+  final socialGraphProvider = SocialGraphProvider();
+  final subscriptionProvider = SubscriptionProvider();
+  final antigravityProvider = AntigravityProvider();
+
+  final combinedProvider = CombinedProvider(
+    authProvider: authProvider,
+    mediaProvider: mediaProvider,
+    notificationProvider: notificationProvider,
+    socialProvider: socialProvider,
+    themeProvider: themeProvider,
+    commentProvider: commentProvider,
+    socialGraphProvider: socialGraphProvider,
+    subscriptionProvider: subscriptionProvider,
+    antigravityProvider: antigravityProvider,
+  );
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider(prefs)),
+        ChangeNotifierProvider.value(value: themeProvider),
         ChangeNotifierProvider.value(value: authProvider),
-        ChangeNotifierProvider(create: (_) => MediaProvider()),
-        ChangeNotifierProvider(create: (_) => NotificationProvider()),
-        ChangeNotifierProvider(create: (_) => SocialProvider()),
-        ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
-        ChangeNotifierProvider(create: (_) => CommentProvider()),
-        ChangeNotifierProvider(create: (_) => SocialGraphProvider()),
-        ChangeNotifierProvider(create: (_) => AntigravityProvider()),
+        ChangeNotifierProvider.value(value: mediaProvider),
+        ChangeNotifierProvider.value(value: notificationProvider),
+        ChangeNotifierProvider.value(value: socialProvider),
+        ChangeNotifierProvider.value(value: commentProvider),
+        ChangeNotifierProvider.value(value: socialGraphProvider),
+        ChangeNotifierProvider.value(value: subscriptionProvider),
+        ChangeNotifierProvider.value(value: antigravityProvider),
+        ChangeNotifierProvider.value(value: combinedProvider),
       ],
       child: const MyCircleApp(),
     ),
@@ -66,6 +75,7 @@ class MyCircleApp extends StatelessWidget {
             '/': (context) => const MainWrapper(),
             '/subscriptions': (context) => const SubscriptionTierScreen(),
             '/advanced-search': (context) => const AdvancedSearchScreen(),
+            '/upload': (context) => const UploadScreen(),
           },
           onGenerateRoute: (settings) {
             if (settings.name == '/media') {
