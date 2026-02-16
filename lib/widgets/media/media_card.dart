@@ -27,7 +27,7 @@ class MediaCard extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -68,7 +68,7 @@ class MediaCard extends StatelessWidget {
       child: Center(
         child: Icon(
           Icons.play_circle_outline_rounded,
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
           size: 48,
         ),
       ),
@@ -93,7 +93,7 @@ class MediaCard extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.black.withOpacity(0.7),
+            Colors.black.withValues(alpha: 0.7),
             Colors.transparent,
           ],
         ),
@@ -148,7 +148,7 @@ class MediaCard extends StatelessWidget {
                 Text(
                   _formatDuration(int.tryParse(media.duration ?? '0') ?? 0),
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
                   ),
@@ -171,7 +171,7 @@ class MediaCard extends StatelessWidget {
           end: Alignment.bottomCenter,
           colors: [
             Colors.transparent,
-            Colors.black.withOpacity(0.9),
+            Colors.black.withValues(alpha: 0.9),
           ],
           stops: const [0.0, 1.0],
         ),
@@ -211,12 +211,12 @@ class MediaCard extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: Colors.white.withOpacity(0.6), size: 14),
+        Icon(icon, color: Colors.white.withValues(alpha: 0.6), size: 14),
         const SizedBox(width: 4),
         Text(
           value,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.white.withValues(alpha: 0.6),
             fontSize: 11,
             fontWeight: FontWeight.w600,
           ),
@@ -230,7 +230,7 @@ class MediaCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: isVideo ? Colors.redAccent.withOpacity(0.8) : Colors.greenAccent.withOpacity(0.8),
+        color: isVideo ? Colors.redAccent.withValues(alpha: 0.8) : Colors.greenAccent.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -249,7 +249,7 @@ class MediaCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(icon, color: Colors.white, size: 18),
