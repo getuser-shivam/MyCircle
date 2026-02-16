@@ -3,13 +3,13 @@
   <img src="https://img.shields.io/badge/Desktop-Windows-0078D4?style=for-the-badge&logo=windows&logoColor=white" />
   <img src="https://img.shields.io/badge/Mobile-Android/iOS-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
   <img src="https://img.shields.io/badge/Web-Chrome/Edge-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" />
-  <img src="https://img.shields.io/badge/Firebase-Backend-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
+  <img src="https://img.shields.io/badge/Supabase-Backend-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" />
 </p>
 
 # 🔵 MyCircle — Social Discovery & Media Platform
 
-> A premium, enterprise-grade social discovery and media-sharing platform built with Flutter & Firebase. Inspired by **Skout**, **Tagged**, and **Tinder** — featuring real-time social discovery, Tinder-style swiping, proximity-based user grids, and a glassmorphic UI.
+> A premium, enterprise-grade social discovery and media-sharing platform built with Flutter & Supabase. Inspired by **Skout**, **Tagged**, and **Tinder** — featuring real-time social discovery, Tinder-style swiping, proximity-based user grids, and a glassmorphic UI.
 
 ---
 
@@ -21,10 +21,10 @@
 | 💘 **Swipe Discovery** | Tinder-style swipeable card deck with gesture-driven like/nope actions |
 | 👤 **Social Profiles** | Full-screen user profiles with hero images, bios, interests, and action buttons |
 | 🎬 **Media Hub** | Video/image/GIF browsing with staggered grids and infinite scroll |
-| 🔔 **Real-Time Notifications** | Firestore-powered notification system with bell badges |
+| 🔔 **Real-Time Notifications** | Supabase-powered notification system with bell badges |
 | 🎨 **Premium UI** | Glassmorphism, dynamic gradients, micro-animations, and DM Sans typography |
 | 🌗 **Dark/Light Themes** | Persistent theme switching with Material 3 design tokens |
-| 🔐 **Firebase Auth** | Email/password authentication with registration, login, and profile management |
+| 🔐 **Supabase Auth** | Email/password authentication with registration, login, and profile management |
 | 🖥️ **Desktop Experience** | Native desktop features: multi-window, keyboard shortcuts, system tray, drag & drop |
 | ⌨️ **Power User Controls** | Global hotkeys, fullscreen media, advanced search filters, window management |
 
@@ -59,13 +59,13 @@
 
 ### 📤 Media Upload
 - Camera and gallery integration
-- Upload to Firebase Storage with progress indication
+- Upload to Supabase Storage with progress indication
 - Title, description, category, and tag metadata
 - Privacy toggle (public/private)
 - File validation and size limits (100MB max)
 
 ### 🔔 Notifications
-- Real-time via Firestore listeners
+- Real-time via Supabase listeners
 - Notification categories: likes, comments, follows, system
 - Mark as read/unread, bulk actions
 - Badge count on navigation bar
@@ -101,6 +101,9 @@ MyCircle provides a native desktop experience optimized for Windows, with featur
 | `Ctrl + R` | Refresh content | Any window |
 | `Ctrl + W` | Close current window | Any window |
 | `Ctrl + Q` | Quit application | Global |
+| `Ctrl + Shift + L` | Lock application | Global |
+| `Ctrl + Shift + D` | Toggle developer mode | Global |
+| `F12` | Open developer console | Debug |
 
 ### 🖱️ **Desktop Interactions**
 - **Drag & Drop Upload** — Drag files from desktop directly into upload area
@@ -142,6 +145,9 @@ MyCircle provides a native desktop experience optimized for Windows, with featur
 | `Ctrl + Shift + T` | New chat tab | Social |
 | `Ctrl + Shift + F` | Toggle fullscreen | Media |
 | `Ctrl + Shift + I` | Developer tools | Debug |
+| `Ctrl + Shift + E` | Export data | User |
+| `Ctrl + Shift + B` | Bookmark current page | Navigation |
+| `Ctrl + Shift + H` | History panel | Navigation |
 
 ### 🖱️ **Enhanced Desktop Interactions**
 - **Global Drag & Drop** — Drag files from desktop into any upload area
@@ -188,6 +194,40 @@ MyCircle provides a native desktop experience optimized for Windows, with featur
 - **Memory Management** — Efficient memory usage for large media libraries
 - **Battery Optimization** — Power-saving modes when on battery
 - **Network Optimization** — Smart bandwidth management
+
+---
+
+## 🚀 Desktop App Future Enhancements
+
+### 🤖 **AI-Powered Features**
+- **Smart Content Recommendations** — AI-driven personalized content suggestions
+- **Automated Tagging** — AI-powered content categorization and tagging
+- **Face Recognition** — Smart photo organization with face detection
+- **Content Moderation** — AI-assisted community moderation
+
+### 🌐 **Advanced Networking**
+- **P2P File Sharing** — Direct file transfers between users
+- **Offline Synchronization** — Smart sync when connection is restored
+- **Bandwidth Management** — Adaptive quality based on connection speed
+- **VPN Integration** — Built-in privacy protection
+
+### 🎮 **Gaming Integration**
+- **Discord Rich Presence** — Show MyCircle activity in Discord
+- **Game Streaming** — Integrated game streaming capabilities
+- **Achievement System** — Gamified social interactions
+- **Tournament Mode** — Competitive social discovery events
+
+### 📈 **Analytics & Insights**
+- **Usage Analytics** — Detailed user behavior insights
+- **Content Performance** — Advanced media analytics
+- **Social Graph Analysis** — Network visualization and insights
+- **Trend Prediction** — AI-powered trend forecasting
+
+### 🔧 **Developer Experience**
+- **Plugin System** — Extensible architecture for third-party integrations
+- **API Access** — RESTful API for external integrations
+- **Webhook Support** — Real-time event notifications
+- **Custom Themes** — User-created theme marketplace
 
 ---
 
@@ -304,12 +344,12 @@ MyCircle/
 | **Hotkey Manager** | Global keyboard shortcuts |
 | **System Tray** | System tray integration |
 
-### Backend (Firebase)
+### Backend (Supabase)
 | Technology | Purpose |
 |-----------|---------|
-| **Firebase Auth** | Email/password authentication |
-| **Cloud Firestore** | Real-time document database |
-| **Firebase Storage** | File uploads & media hosting |
+| **Supabase Auth** | Email/password authentication |
+| **Supabase Database** | Real-time PostgreSQL database |
+| **Supabase Storage** | File uploads & media hosting |
 
 ### Desktop Platform (Windows)
 | Technology | Purpose |
@@ -327,7 +367,7 @@ MyCircle/
 ### Prerequisites
 
 - **Flutter SDK** ≥ 3.10.0
-- **Firebase Project** configured at [console.firebase.google.com](https://console.firebase.google.com)
+- **Supabase Project** configured at [supabase.com](https://supabase.com)
 - **Android Studio** / **Xcode** (for mobile development)
 - **Visual Studio 2022** (for Windows Desktop)
   - **Edition**: Community (Stable) - *Preview versions are NOT supported*
@@ -381,10 +421,9 @@ cd MyCircle
 # 2. Install Flutter dependencies
 flutter pub get
 
-# 3. Configure Firebase (if not already done)
-# - Place google-services.json in android/app/
-# - Place GoogleService-Info.plist in ios/Runner/
-# - Ensure firebase_options.dart matches your project
+# 3. Configure Supabase (if not already done)
+# - Get your project URL and anon key from Supabase dashboard
+# - Update supabase_options.dart with your credentials
 ```
 
 ### Running
@@ -432,10 +471,10 @@ flutter devices
 flutter clean && flutter pub get && flutter run -d windows
 ```
 
-### Firebase Collections
+### Supabase Tables
 
-| Collection | Purpose |
-|-----------|---------|
+| Table | Purpose |
+|-------|---------|
 | `users` | User profiles, preferences, social data |
 | `media` | Uploaded media metadata (title, URL, tags, stats) |
 | `notifications` | In-app notifications (likes, follows, system) |

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AppNotification {
   final String id;
@@ -21,23 +20,33 @@ class AppNotification {
     this.data,
   });
 
-  factory AppNotification.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+  factory AppNotification.fromMap(Map<String, dynamic> data) {
     return AppNotification(
-      id: doc.id,
+      id: data['id']?.toString() ?? '',
       title: data['title'] ?? '',
       body: data['body'] ?? '',
       type: data['type'] ?? 'info',
-      timestamp: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      isRead: data['isRead'] ?? false,
+      timestamp: DateTime.parse(data['timestamp'] ?? DateTime.now().toIso8601String()),
+      isRead: data['is_read'] ?? false,
       data: data['data'],
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'body': body,
+      'type': type,
+      'timestamp': timestamp.toIso8601String(),
+      'is_read': isRead,
+      'data': data,
+    };
   }
 }
 
 class NotificationProvider extends ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final SupabaseClient _supabase = Supabase.instance.client;
   
   List<AppNotification> _notifications = [];
   int _unreadCount = 0;
@@ -52,114 +61,127 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   void _init() {
-    _auth.authStateChanges().listen((user) {
-      if (user != null) {
-        _listenToNotifications(user.uid);
-      } else {
-        _notifications = [];
-        _unreadCount = 0;
-        notifyListeners();
-      }
-    });
+    _loadNotifications();
+    _setupRealtimeSubscription();
   }
 
-  void _listenToNotifications(String uid) {
+  Future<void> _loadNotifications() async {
     _isLoading = true;
     notifyListeners();
 
-    _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('notifications')
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .listen((snapshot) {
-      _notifications = snapshot.docs
-          .map((doc) => AppNotification.fromFirestore(doc))
-          .toList();
-      
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) return;
+
+      final response = await _supabase
+          .from('notifications')
+          .select()
+          .eq('user_id', user.id)
+          .order('timestamp', ascending: false);
+
+      _notifications = response.map((data) => AppNotification.fromMap(data)).toList();
       _unreadCount = _notifications.where((n) => !n.isRead).length;
+    } catch (error) {
+      debugPrint('Load notifications error: $error');
+    } finally {
       _isLoading = false;
       notifyListeners();
-    }, onError: (e) {
-      debugPrint('Error listening to notifications: $e');
-      _isLoading = false;
-      notifyListeners();
-    });
+    }
+  }
+
+  void _setupRealtimeSubscription() {
+    final user = _supabase.auth.currentUser;
+    if (user == null) return;
+
+    _supabase
+        .channel('notifications')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'notifications',
+          filter: PostgresChangeFilter(type: PostgresChangeFilterType.eq, column: 'user_id', value: user.id),
+          callback: (payload) {
+            final newNotification = AppNotification.fromMap(payload.newRecord);
+            _notifications.insert(0, newNotification);
+            _unreadCount++;
+            notifyListeners();
+          },
+        )
+        .subscribe();
   }
 
   Future<void> markAsRead(String notificationId) async {
-    final user = _auth.currentUser;
+    final user = _supabase.auth.currentUser;
     if (user == null) return;
 
     try {
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('notifications')
-          .doc(notificationId)
-          .update({'isRead': true});
+      await _supabase
+          .from('notifications')
+          .update({'is_read': true})
+          .eq('id', notificationId)
+          .eq('user_id', user.id);
+
+      final notification = _notifications.firstWhere((n) => n.id == notificationId);
+      notification.isRead = true;
+      _unreadCount--;
+      notifyListeners();
     } catch (e) {
       debugPrint('Error marking notification as read: $e');
     }
   }
 
   Future<void> markAllAsRead() async {
-    final user = _auth.currentUser;
+    final user = _supabase.auth.currentUser;
     if (user == null) return;
 
     try {
-      final batch = _firestore.batch();
-      final unreadDocs = await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('notifications')
-          .where('isRead', isEqualTo: false)
-          .get();
+      await _supabase
+          .from('notifications')
+          .update({'is_read': true})
+          .eq('user_id', user.id)
+          .eq('is_read', false);
 
-      for (var doc in unreadDocs.docs) {
-        batch.update(doc.reference, {'isRead': true});
+      for (var notification in _notifications) {
+        notification.isRead = true;
       }
-
-      await batch.commit();
+      _unreadCount = 0;
+      notifyListeners();
     } catch (e) {
       debugPrint('Error marking all notifications as read: $e');
     }
   }
 
   Future<void> deleteNotification(String notificationId) async {
-    final user = _auth.currentUser;
+    final user = _supabase.auth.currentUser;
     if (user == null) return;
 
     try {
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('notifications')
-          .doc(notificationId)
-          .delete();
+      await _supabase
+          .from('notifications')
+          .delete()
+          .eq('id', notificationId)
+          .eq('user_id', user.id);
+
+      _notifications.removeWhere((n) => n.id == notificationId);
+      notifyListeners();
     } catch (e) {
       debugPrint('Error deleting notification: $e');
     }
   }
 
   void clearNotifications() async {
-    final user = _auth.currentUser;
+    final user = _supabase.auth.currentUser;
     if (user == null) return;
 
     try {
-      final batch = _firestore.batch();
-      final docs = await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('notifications')
-          .get();
+      await _supabase
+          .from('notifications')
+          .delete()
+          .eq('user_id', user.id);
 
-      for (var doc in docs.docs) {
-        batch.delete(doc.reference);
-      }
-
-      await batch.commit();
+      _notifications.clear();
+      _unreadCount = 0;
+      notifyListeners();
     } catch (e) {
       debugPrint('Error clearing notifications: $e');
     }
