@@ -101,7 +101,7 @@ class _MeetMeScreenState extends State<MeetMeScreen> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              color: Theme.of(context).colorScheme.background.withOpacity(0.8),
+              color: Theme.of(context).colorScheme.background.withValues(alpha: 0.8),
               padding: const EdgeInsets.only(top: 60, left: 20, right: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,7 +150,7 @@ class _MeetMeScreenState extends State<MeetMeScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -185,7 +185,7 @@ class _MeetMeScreenState extends State<MeetMeScreen> {
   Widget _buildFilterButton() {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: IconButton(

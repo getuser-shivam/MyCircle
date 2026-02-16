@@ -50,8 +50,8 @@ class SocialProfileScreen extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      Colors.black.withOpacity(0.3),
-                      Colors.black.withOpacity(0.8),
+                      Colors.black.withValues(alpha: 0.3),
+                      Colors.black.withValues(alpha: 0.8),
                     ],
                     stops: const [0.0, 0.5, 1.0],
                   ),
