@@ -81,7 +81,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isActive 
-              ? Theme.of(context).primaryColor.withOpacity(0.2)
+              ? Theme.of(context).primaryColor.withValues(alpha: 0.2)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
@@ -92,7 +92,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               isActive ? activeIcon : icon,
               color: isActive 
                   ? Theme.of(context).primaryColor 
-                  : Colors.white.withOpacity(0.7),
+                  : Colors.white.withValues(alpha: 0.7),
               size: 24,
             ),
             const SizedBox(height: 4),
@@ -122,7 +122,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           gradient: LinearGradient(
             colors: [
               Theme.of(context).primaryColor,
-              Theme.of(context).primaryColor.withOpacity(0.8),
+              Theme.of(context).primaryColor.withValues(alpha: 0.8),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -130,7 +130,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           borderRadius: BorderRadius.circular(28),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).primaryColor.withOpacity(0.3),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
               blurRadius: 8,
               spreadRadius: 2,
             ),
