@@ -100,11 +100,11 @@ class _SwipeDeckState extends State<SwipeDeck> with SingleTickerProviderStateMix
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.explore_off_rounded, size: 80, color: Theme.of(context).colorScheme.primary.withOpacity(0.4)),
+            Icon(Icons.explore_off_rounded, size: 80, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4)),
             const SizedBox(height: 16),
-            Text('No more people nearby!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5))),
+            Text('No more people nearby!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5))),
             const SizedBox(height: 8),
-            Text('Check back later for new matches', style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3))),
+            Text('Check back later for new matches', style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3))),
           ],
         ),
       );
@@ -210,10 +210,10 @@ class _SwipeDeckState extends State<SwipeDeck> with SingleTickerProviderStateMix
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Theme.of(context).colorScheme.surface,
-          border: Border.all(color: color.withOpacity(0.4), width: 2),
+          border: Border.all(color: color.withValues(alpha: 0.4), width: 2),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -234,7 +234,7 @@ class _SwipeDeckState extends State<SwipeDeck> with SingleTickerProviderStateMix
           color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 15,
               offset: const Offset(0, 8),
             ),
@@ -268,8 +268,8 @@ class _SwipeDeckState extends State<SwipeDeck> with SingleTickerProviderStateMix
             end: Alignment.bottomCenter,
             colors: [
               Colors.transparent,
-              Colors.black.withOpacity(0.2),
-              Colors.black.withOpacity(0.9),
+              Colors.black.withValues(alpha: 0.2),
+              Colors.black.withValues(alpha: 0.9),
             ],
             stops: const [0.0, 0.5, 1.0],
           ),
