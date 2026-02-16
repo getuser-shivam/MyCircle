@@ -32,7 +32,7 @@
     },
     {
       "name": "Step 5",
-      "prompt": "Think more of of Desktop App. Update README GIT. ",
+      "prompt": "Think more of of Desktop App. Update README GIT. You have the Supabase keep updating. (Replace Firebase)",
       "delay_after": 5.0,
       "condition": "",
       "enabled": true
