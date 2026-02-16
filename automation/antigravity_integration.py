@@ -16,17 +16,42 @@ logger = logging.getLogger(__name__)
 class AntigravityAI:
     """Antigravity AI integration for MyCircle automation"""
     
-    def __init__(self):
-        self.project_path = Path.cwd().parent
-        logger.info("Antigravity AI initialized")
+    SUPPORTED_MODELS = {
+        "antigravity": [
+            "antigravity-v1", 
+            "Gemini 3 Pro (High)", 
+            "Gemini 3 Pro (Low)", 
+            "Gemini 3 Flash",
+            "Claude Sonnet 4.5", 
+            "Claude Sonnet 4.5 (Thinking)", 
+            "Claude Opus 4.5 (Thinking)", 
+            "Claude Opus 4.6 (Thinking)",
+            "GPT-OSS 120B (Medium)"
+        ],
+        "glm": ["glm-5", "glm-4", "glm-4-air"],
+        "openai": ["gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo"]
+    }
     
-    def call_antigravity(self, prompt: str) -> str:
-        """Call Antigravity AI model"""
+    def __init__(self, model: str = "glm-5"):
+        self.project_path = Path.cwd().parent
+        self.model = model
+        logger.info(f"Antigravity AI initialized with model: {model}")
+    
+    def call_antigravity(self, prompt: str, model: str = None) -> str:
+        """Call Antigravity AI model with routing support"""
+        target_model = model or self.model
         try:
+            # Route based on model family
+            if target_model.startswith("glm-"):
+                return self._call_glm_api(prompt, target_model)
+            elif target_model.startswith("gpt-"):
+                return self._call_openai_api(prompt, target_model)
+            
+            # Default to native Antigravity CLI/API
             # Method 1: Try using antigravity CLI if available
             try:
                 result = subprocess.run(
-                    ["antigravity", "prompt", prompt],
+                    ["antigravity", "prompt", prompt, "--model", target_model],
                     capture_output=True,
                     text=True,
                     timeout=60
@@ -34,28 +59,53 @@ class AntigravityAI:
                 if result.returncode == 0:
                     return result.stdout
             except FileNotFoundError:
-                logger.info("Antigravity CLI not found, trying alternative methods...")
+                logger.debug("Antigravity CLI not found, trying simulation fallback...")
             
-            # Method 2: Try using web API if configured
-            api_key = os.getenv('ANTIGRAVITY_API_KEY')
-            if api_key:
-                import requests
-                
-                response = requests.post(
-                    "https://api.antigravity.ai/v1/generate",
-                    headers={
-                        "Authorization": f"Bearer {api_key}",
-                        "Content-Type": "application/json"
-                    },
-                    json={"prompt": prompt, "model": "antigravity-v1"},
-                    timeout=60
-                )
-                
-                if response.status_code == 200:
-                    return response.json().get("response", "")
+            # Fallback to intelligent simulation if nothing else works
+            return self._simulate_antigravity_response(prompt)
             
-            # Method 3: Fallback to intelligent simulation
-            logger.warning("Antigravity AI not available, using intelligent simulation")
+        except Exception as e:
+            logger.error(f"Error calling Antigravity: {e}")
+            return self._simulate_antigravity_response(prompt)
+    def _call_glm_api(self, prompt: str, model: str) -> str:
+        """Helper to call GLM API directly from Antigravity framework"""
+        import requests
+        api_key = os.getenv('GLM_KEY') or os.getenv('ANTIGRAVITY_API_KEY')
+        if not api_key:
+            logger.error("No API key found for GLM (GLM_KEY or ANTIGRAVITY_API_KEY)")
+            return self._simulate_antigravity_response(prompt)
+            
+        url = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}]
+        }
+        
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=60)
+            response.raise_for_status()
+            data = response.json()
+            return data['choices'][0]['message']['content']
+        except Exception as e:
+            logger.error(f"GLM API Routing Error: {e}")
+            return self._simulate_antigravity_response(prompt)
+
+    def _call_openai_api(self, prompt: str, model: str) -> str:
+        """Helper to call OpenAI API from Antigravity framework"""
+        try:
+            import openai
+            openai.api_key = os.getenv('OPENAI_API_KEY')
+            response = openai.ChatCompletion.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            logger.error(f"OpenAI Routing Error: {e}")
             return self._simulate_antigravity_response(prompt)
             
         except Exception as e:

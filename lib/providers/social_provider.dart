@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/social_user.dart';
 
 class SocialProvider extends ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final SupabaseClient _supabase = Supabase.instance.client;
   List<SocialUser> _nearbyUsers = [];
   bool _isLoading = false;
 
@@ -15,10 +15,9 @@ class SocialProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Real-time listener for users
-      // In a real app, you would use GeoFlutterFire for location-based queries
-      _firestore.collection('users').limit(50).snapshots().listen((snapshot) {
-        _nearbyUsers = snapshot.docs.map((doc) => SocialUser.fromFirestore(doc)).toList();
+      // Real-time stream for users
+      _supabase.from('users').stream(primaryKey: ['id']).limit(50).listen((data) {
+        _nearbyUsers = data.map((item) => SocialUser.fromMap(item)).toList();
         _isLoading = false;
         notifyListeners();
       });
@@ -29,3 +28,4 @@ class SocialProvider extends ChangeNotifier {
     }
   }
 }
+

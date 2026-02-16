@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
 
 class UploadScreen extends StatefulWidget {
@@ -350,7 +348,7 @@ class _UploadScreenState extends State<UploadScreen> {
       return;
     }
 
-    final user = FirebaseAuth.instance.currentUser;
+    final user = Supabase.instance.client.auth.currentUser;
     if (user == null) {
       _showErrorDialog('You must be logged in to upload content');
       return;
@@ -362,19 +360,20 @@ class _UploadScreenState extends State<UploadScreen> {
     });
 
     try {
-      // 1. Upload to Firebase Storage
+      // 1. Upload to Supabase Storage
       final fileName = '${DateTime.now().millisecondsSinceEpoch}_${path.basename(_selectedFile!.path)}';
-      final ref = FirebaseStorage.instance.ref().child('media/$fileName');
-      final uploadTask = ref.putFile(_selectedFile!);
+      final storage = Supabase.instance.client.storage;
+      
+      // Note: Supabase SDK doesn't have a built-in progress listener in the same way as Firebase,
+      // but we can simulate it or just show an indeterminate progress.
+      // For a real app, you'd use a custom stream if needed.
+      await storage.from('media').upload(
+        fileName,
+        _selectedFile!,
+        fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+      );
 
-      uploadTask.snapshotEvents.listen((event) {
-        setState(() {
-          _uploadProgress = event.bytesTransferred / event.totalBytes;
-        });
-      });
-
-      await uploadTask;
-      final downloadUrl = await ref.getDownloadURL();
+      final downloadUrl = storage.from('media').getPublicUrl(fileName);
 
       // 2. Determine file type
       final extension = path.extension(_selectedFile!.path).toLowerCase();
@@ -385,25 +384,24 @@ class _UploadScreenState extends State<UploadScreen> {
         mediaType = 'gif';
       }
 
-      // 3. Save metadata to Firestore
+      // 3. Save metadata to Postgres
       final tags = _tagsController.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
       
-      await FirebaseFirestore.instance.collection('media').add({
+      await Supabase.instance.client.from('media').insert({
         'title': _titleController.text.trim(),
         'description': _descriptionController.text.trim(),
         'url': downloadUrl,
-        'thumbnailUrl': mediaType == 'video' ? '' : downloadUrl, // TODO: Generate thumbnail for video
+        'thumbnail_url': mediaType == 'video' ? '' : downloadUrl,
         'type': mediaType,
         'category': _selectedCategory,
         'tags': tags,
-        'authorId': user.uid,
-        'userName': user.displayName ?? 'Unknown',
-        'userAvatar': user.photoURL ?? '',
-        'createdAt': FieldValue.serverTimestamp(),
-        'likes': 0,
-        'views': 0,
-        'isPrivate': _isPrivate,
-        'isPremium': false,
+        'author_id': user.id,
+        'user_name': user.userMetadata?['username'] ?? 'Unknown',
+        'user_avatar': user.userMetadata?['avatar'] ?? 'https://i.pravatar.cc/300?u=${user.id}',
+        'likes_count': 0,
+        'views_count': 0,
+        'is_private': _isPrivate,
+        'is_premium': false,
       });
 
       _showSuccessDialog();
@@ -451,3 +449,4 @@ class _UploadScreenState extends State<UploadScreen> {
     );
   }
 }
+

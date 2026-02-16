@@ -1,30 +1,33 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/media_item.dart';
 export '../models/media_item.dart';
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class MediaProvider extends ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final PagingController<int, MediaItem> _pagingController =
+  final SupabaseClient _supabase = Supabase.instance.client;
+  
+  // Separate controllers for different feeds to avoid collisions
+  final PagingController<int, MediaItem> _latestPagingController =
+      PagingController(firstPageKey: 0);
+  final PagingController<int, MediaItem> _trendingPagingController =
+      PagingController(firstPageKey: 0);
+  final PagingController<int, MediaItem> _searchPagingController =
       PagingController(firstPageKey: 0);
 
   static const int _pageSize = 20;
-  DocumentSnapshot? _lastDocument;
 
   List<MediaItem> _trendingMedia = [];
-  List<MediaItem> _searchResults = [];
   List<String> _categories = [];
   bool _isLoading = false;
   String _searchQuery = '';
   String _selectedCategory = 'all';
   String? _error;
 
-  PagingController<int, MediaItem> get pagingController => _pagingController;
+  PagingController<int, MediaItem> get pagingController => _searchQuery.isEmpty ? _latestPagingController : _searchPagingController;
+  PagingController<int, MediaItem> get trendingPagingController => _trendingPagingController;
+  
   List<MediaItem> get trendingMedia => _trendingMedia;
-  List<MediaItem> get searchResults => _searchResults;
-  List<MediaItem> get mediaItems => _searchQuery.isEmpty ? _trendingMedia : _searchResults;
-
   List<String> get categories => _categories;
   bool get isLoading => _isLoading;
   String get searchQuery => _searchQuery;
@@ -32,62 +35,60 @@ class MediaProvider extends ChangeNotifier {
   String? get error => _error;
 
   MediaProvider() {
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
+    _latestPagingController.addPageRequestListener((pageKey) {
+      _fetchPage(_latestPagingController, pageKey, category: _selectedCategory);
     });
+    
+    _searchPagingController.addPageRequestListener((pageKey) {
+      _fetchPage(_searchPagingController, pageKey, query: _searchQuery);
+    });
+
     _loadCategories();
     _loadTrendingMedia();
   }
 
-  Future<void> _fetchPage(int pageKey) async {
+  Future<void> _fetchPage(PagingController<int, MediaItem> controller, int pageKey, {String? category, String? query}) async {
     try {
-      final newItems = await _getMediaFromFirestore(
+      final newItems = await _getMediaFromSupabase(
         limit: _pageSize,
-        category: _selectedCategory,
-        startAfter: pageKey == 0 ? null : _lastDocument,
+        category: category,
+        query: query,
+        offset: pageKey,
       );
 
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
-        _pagingController.appendLastPage(newItems);
+        controller.appendLastPage(newItems);
       } else {
-        _pagingController.appendPage(newItems, pageKey + 1);
+        controller.appendPage(newItems, pageKey + newItems.length);
       }
     } catch (error) {
-      _pagingController.error = error;
+      controller.error = error;
     }
   }
 
-  Future<List<MediaItem>> _getMediaFromFirestore({
+  Future<List<MediaItem>> _getMediaFromSupabase({
     required int limit,
     String? category,
-    DocumentSnapshot? startAfter,
+    String? query,
+    int offset = 0,
   }) async {
-    Query query = _firestore.collection('media').orderBy('createdAt', descending: true);
+    var supabaseQuery = _supabase
+        .from('media')
+        .select('*, profiles(username, avatar_url, is_verified)')
+        .order('created_at', ascending: false)
+        .range(offset, offset + limit - 1);
 
     if (category != null && category != 'all') {
-      query = query.where('category', isEqualTo: category);
+      supabaseQuery = supabaseQuery.eq('category', category);
     }
-
-    if (startAfter != null) {
-      query = query.startAfterDocument(startAfter);
-    }
-
-    final querySnapshot = await query.limit(limit).get();
     
-    if (querySnapshot.docs.isNotEmpty) {
-      _lastDocument = querySnapshot.docs.last;
-      return querySnapshot.docs.map((doc) => MediaItem.fromFirestore(doc)).toList();
+    if (query != null && query.isNotEmpty) {
+      supabaseQuery = supabaseQuery.ilike('title', '%$query%');
     }
-    return [];
-  }
 
-  Future<void> loadMoreMedia({int page = 1, int limit = 20}) async {
-    // Pagination handled by PagingController
-    // This method is kept for compatibility with LazyLoadMediaGrid
-    if (!_isLoading) {
-       // Ideally we would trigger loading next page here if manual control is needed
-    }
+    final List<dynamic> data = await supabaseQuery;
+    return data.map((item) => MediaItem.fromMap(item as Map<String, dynamic>)).toList();
   }
 
   Future<void> _loadCategories() async {
@@ -108,13 +109,13 @@ class MediaProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final snapshot = await _firestore
-          .collection('media')
-          .orderBy('likesCount', descending: true)
-          .limit(10)
-          .get();
+      final List<dynamic> data = await _supabase
+          .from('media')
+          .select('*, profiles(username, avatar_url, is_verified)')
+          .order('likes_count', ascending: false)
+          .limit(10);
       
-      _trendingMedia = snapshot.docs.map((doc) => MediaItem.fromFirestore(doc)).toList();
+      _trendingMedia = data.map((item) => MediaItem.fromMap(item as Map<String, dynamic>)).toList();
     } catch (error) {
       debugPrint('Load trending media error: $error');
     } finally {
@@ -123,58 +124,32 @@ class MediaProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> searchMedia({
-    required String query,
-    String? category,
-    String? sortBy,
-    List<String>? tags,
-  }) async {
+  void searchMedia(String query) {
+    if (_searchQuery == query) return;
     _searchQuery = query;
-    _isLoading = true;
-    _error = null;
+    _searchPagingController.refresh();
     notifyListeners();
-
-    try {
-      if (query.trim().isEmpty) {
-        _searchResults.clear();
-      } else {
-        // Simple search by title (Note: Firestore doesn't support full-text search natively)
-        // For production, use Algolia or similar. Here we implement a basic prefix search.
-        final snapshot = await _firestore
-            .collection('media')
-            .where('title', isGreaterThanOrEqualTo: query)
-            .where('title', isLessThan: '${query}z')
-            .limit(20)
-            .get();
-
-        _searchResults = snapshot.docs.map((doc) => MediaItem.fromFirestore(doc)).toList();
-      }
-    } catch (error) {
-      debugPrint('Search media error: $error');
-      _error = error.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
   }
 
   void selectCategory(String category) {
+    if (_selectedCategory == category) return;
     _selectedCategory = category;
-    _pagingController.refresh();
-    _lastDocument = null; // Reset cursor
+    _latestPagingController.refresh();
     notifyListeners();
   }
 
   Future<void> refreshMedia() async {
-    _lastDocument = null;
-    _pagingController.refresh();
+    _latestPagingController.refresh();
+    _searchPagingController.refresh();
     await _loadTrendingMedia();
   }
 
-  Future<void> loadMedia({int page = 1, int limit = 20, String? category}) async {
-    // Legacy support for manual pagination calls
-    if (page == 1) {
-      _pagingController.refresh();
-    }
+  @override
+  void dispose() {
+    _latestPagingController.dispose();
+    _trendingPagingController.dispose();
+    _searchPagingController.dispose();
+    super.dispose();
   }
 }
+

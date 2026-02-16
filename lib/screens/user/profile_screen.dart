@@ -345,45 +345,70 @@ class _ProfileScreenState extends State<ProfileScreen>
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Sign In'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+      barrierDismissible: false,
+      builder: (context) => Consumer<AuthProvider>(
+        builder: (context, auth, _) => AlertDialog(
+          title: const Text('Sign In'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (auth.error != null)
+                Padding(
+                  padding: const EdgeInsets.bottom(16),
+                  child: Text(
+                    auth.error!,
+                    style: const TextStyle(color: Colors.red, fontSize: 13),
+                  ),
+                ),
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+                enabled: !auth.isLoading,
               ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: passwordController,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                obscureText: true,
+                enabled: !auth.isLoading,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: auth.isLoading ? null : () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
-              obscureText: true,
+            ElevatedButton(
+              onPressed: auth.isLoading
+                  ? null
+                  : () async {
+                      try {
+                        await auth.login(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                        );
+                        if (mounted) Navigator.of(context).pop();
+                      } catch (_) {
+                        // Error is handled by Consumer/auth.error
+                      }
+                    },
+              child: auth.isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Sign In'),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.read<AuthProvider>().login(
-                emailController.text,
-                passwordController.text,
-              );
-              Navigator.of(context).pop();
-            },
-            child: const Text('Sign In'),
-          ),
-        ],
       ),
     );
   }
@@ -395,56 +420,82 @@ class _ProfileScreenState extends State<ProfileScreen>
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Create Account'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: usernameController,
-                decoration: const InputDecoration(
-                  labelText: 'Username',
-                  border: OutlineInputBorder(),
+      barrierDismissible: false,
+      builder: (context) => Consumer<AuthProvider>(
+        builder: (context, auth, _) => AlertDialog(
+          title: const Text('Create Account'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (auth.error != null)
+                  Padding(
+                    padding: const EdgeInsets.bottom(16),
+                    child: Text(
+                      auth.error!,
+                      style: const TextStyle(color: Colors.red, fontSize: 13),
+                    ),
+                  ),
+                TextField(
+                  controller: usernameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
+                    border: OutlineInputBorder(),
+                  ),
+                  enabled: !auth.isLoading,
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
+                  enabled: !auth.isLoading,
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: passwordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
+                  enabled: !auth.isLoading,
                 ),
-                obscureText: true,
-              ),
-            ],
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: auth.isLoading ? null : () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: auth.isLoading
+                  ? null
+                  : () async {
+                      try {
+                        await auth.register(
+                          usernameController.text.trim(),
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                        );
+                        if (mounted) Navigator.of(context).pop();
+                      } catch (_) {
+                        // Error is handled by Consumer/auth.error
+                      }
+                    },
+              child: auth.isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Sign Up'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.read<AuthProvider>().register(
-                usernameController.text,
-                emailController.text,
-                passwordController.text,
-              );
-              Navigator.of(context).pop();
-            },
-            child: const Text('Sign Up'),
-          ),
-        ],
       ),
     );
   }

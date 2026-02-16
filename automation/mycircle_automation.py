@@ -16,6 +16,8 @@ from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from datetime import datetime
 import logging
+from antigravity_integration import AntigravityAI
+from antigravity_prompts import AntigravityPrompts
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -49,14 +51,60 @@ class FeatureRequest:
 class MyCircleAutomation:
     """Main automation class for MyCircle project"""
     
-    def __init__(self, project_path: str, github_token: str = None, openai_key: str = None):
+    def __init__(self, project_path: str, github_token: str = None, openai_key: str = None, flutter_path: str = "flutter", glm_key: str = None, ai_provider: str = "openai", ai_model: str = None):
         self.project_path = Path(project_path)
         self.github_token = github_token
         self.openai_key = openai_key
+        self.glm_key = glm_key
+        self.ai_provider = ai_provider
+        self.ai_model = ai_model or ("glm-5" if ai_provider == "glm" else "gpt-4")
+        self.flutter_path = flutter_path
         self.flutter_project = self.project_path / 'lib'
         self.backend_project = self.project_path / 'backend'
         
-        logger.info(f"MyCircle automation initialized for {project_path}")
+        self.antigravity = AntigravityAI(model=self.ai_model)
+        
+        logger.info(f"MyCircle automation initialized for {project_path} (Provider: {ai_provider}, Model: {self.ai_model})")
+
+    def build_app(self, platform: str = "windows") -> Dict[str, Any]:
+        """Build the Flutter application for a specific platform"""
+        logger.info(f"Building MyCircle for {platform}...")
+        try:
+            result = subprocess.run(
+                [self.flutter_path, "build", platform],
+                cwd=self.project_path,
+                capture_output=True,
+                text=True,
+                timeout=600  # 10 minute timeout for builds
+            )
+            return {
+                "status": "passed" if result.returncode == 0 else "failed",
+                "output": result.stdout + result.stderr
+            }
+        except Exception as e:
+            logger.error(f"Error building app: {e}")
+            return {"status": "error", "output": str(e)}
+
+    def run_app(self, platform: str = "windows") -> Dict[str, Any]:
+        """Run the Flutter application on a specific platform"""
+        logger.info(f"Running MyCircle on {platform}...")
+        try:
+            # We use Popen for run so it doesn't block the automation suite
+            process = subprocess.Popen(
+                [self.flutter_path, "run", "-d", platform],
+                cwd=self.project_path,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            return {
+                "status": "running",
+                "pid": process.pid,
+                "message": f"App started on {platform} (PID: {process.pid})"
+            }
+        except Exception as e:
+            logger.error(f"Error running app: {e}")
+            return {"status": "error", "output": str(e)}
     
     def analyze_project(self) -> ProjectAnalysis:
         """Analyze the Flutter project"""
@@ -320,8 +368,14 @@ class MyCircleAutomation:
     
     def generate_feature_ideas(self) -> List[FeatureRequest]:
         """Generate new feature ideas using real AI"""
-        if not self.openai_key:
+        if self.ai_provider == "antigravity":
+            # Direct use of Antigravity AI
+            pass # Continue to prompt generation
+        elif self.ai_provider == "openai" and not self.openai_key:
             logger.warning("OpenAI API key not provided. Using predefined features.")
+            return self._get_predefined_features()
+        elif self.ai_provider == "glm" and not self.glm_key:
+            logger.warning("GLM API key not provided. Using predefined features.")
             return self._get_predefined_features()
         
         try:
@@ -348,43 +402,81 @@ class MyCircleAutomation:
             Format as JSON array.
             """
             
-            try:
-                import openai
-                openai.api_key = self.openai_key
-                
-                response = openai.ChatCompletion.create(
-                    model="gpt-4",
-                    messages=[{"role": "user", "content": prompt}],
-                    max_tokens=1500,
-                    temperature=0.7
-                )
-                
-                features_json = response.choices[0].message.content
-                features_data = json.loads(features_json)
-                
-                features = []
-                for feature_data in features_data:
-                    feature = FeatureRequest(
-                        title=feature_data.get('title', ''),
-                        description=feature_data.get('description', ''),
-                        priority=feature_data.get('priority', 'Medium'),
-                        category=feature_data.get('category', 'General'),
-                        estimated_hours=float(feature_data.get('estimated_hours', 8.0)),
-                        dependencies=feature_data.get('dependencies', [])
-                    )
-                    features.append(feature)
-                
-                logger.info(f"Generated {len(features)} AI-powered features")
-                return features
-                
-            except Exception as api_error:
-                logger.error(f"OpenAI API error: {api_error}")
-                return self._get_ai_fallback_features(analysis)
+            if self.ai_provider == "antigravity":
+                prompt = AntigravityPrompts.create_feature_generation_prompt(analysis.to_dict() if hasattr(analysis, 'to_dict') else vars(analysis))
+                features_json = self.antigravity.call_antigravity(prompt, model=self.ai_model)
+                return self._parse_features(features_json)
+
+            if self.ai_provider == "glm":
+                return self._generate_with_glm(prompt, model=self.ai_model)
+            
+            import openai
+            openai.api_key = self.openai_key
+            
+            response = openai.ChatCompletion.create(
+                model=self.ai_model,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=1500,
+                temperature=0.7
+            )
+            
+            features_json = response.choices[0].message.content
+            return self._parse_features(features_json)
+        except Exception as api_error:
+            logger.error(f"AI API error: {api_error}")
+            return self._get_ai_fallback_features(analysis)
             
         except Exception as e:
             logger.error(f"Error generating features with AI: {e}")
             return self._get_predefined_features()
-    
+
+    def _generate_with_glm(self, prompt: str, model: str = "glm-4") -> List[FeatureRequest]:
+        """Generate features using Zhipu AI GLM API"""
+        import requests
+        
+        url = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {self.glm_key}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}]
+        }
+        
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+            response.raise_for_status()
+            data = response.json()
+            features_json = data['choices'][0]['message']['content']
+            # Remove any markdown code block artifacts
+            if "```json" in features_json:
+                features_json = features_json.split("```json")[1].split("```")[0].strip()
+            elif "```" in features_json:
+                features_json = features_json.split("```")[1].split("```")[0].strip()
+            
+            return self._parse_features(features_json)
+        except Exception as e:
+            logger.error(f"GLM API Error: {e}")
+            raise e
+
+    def _parse_features(self, features_json: str) -> List[FeatureRequest]:
+        """Parse JSON response into FeatureRequest objects"""
+        features_data = json.loads(features_json)
+        features = []
+        for feature_data in features_data:
+            feature = FeatureRequest(
+                title=feature_data.get('title', ''),
+                description=feature_data.get('description', ''),
+                priority=feature_data.get('priority', 'Medium'),
+                category=feature_data.get('category', 'General'),
+                estimated_hours=float(feature_data.get('estimated_hours', 8.0)),
+                dependencies=feature_data.get('dependencies', [])
+            )
+            features.append(feature)
+        return features
+
     def _get_ai_fallback_features(self, analysis) -> List[FeatureRequest]:
         """AI-powered fallback features based on analysis"""
         features = []
@@ -571,6 +663,81 @@ class MyCircleAutomation:
         
         return results
     
+    def auto_heal(self) -> Dict[str, Any]:
+        """Automatically identify and prepare fixes for project issues"""
+        logger.info("Attempting to auto-heal project...")
+        issues = self._find_issues()
+        
+        # Run a real check
+        report = self.run_tests()
+        lint_results = report.get("linting", {})
+        
+        task_content = f"""# Auto-Heal Task
+Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+## Issues Detected
+"""
+        if lint_results.get("status") == "failed":
+            task_content += f"\n### Lint Errors\n```\n{lint_results.get('output')}\n```\n"
+        
+        for issue in issues:
+            task_content += f"- {issue}\n"
+
+        task_content += """
+## Instructions for IDE Agent
+1. Review the errors and issues listed above.
+2. Propose and apply fixes to the relevant files.
+3. Ensure no new lint errors are introduced.
+4. Verify the fix by running `flutter analyze`.
+"""
+        
+        # Save to windsurf tasks
+        tasks_dir = self.project_path / '.windsurf' / 'tasks'
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        task_file = tasks_dir / 'auto_heal.md'
+        
+        with open(task_file, 'w', encoding='utf-8') as f:
+            f.write(task_content)
+            
+        return {
+            "status": "success",
+            "task_file": str(task_file),
+            "prompt": "Please fix the issues identified in .windsurf/tasks/auto_heal.md and run flutter analyze to verify."
+        }
+
+    def request_agent_help(self, user_prompt: str) -> Dict[str, Any]:
+        """Prepare a feature implementation task for the IDE Agent"""
+        logger.info(f"Preparing agent task for: {user_prompt}")
+        
+        task_content = f"""# Feature Implementation Task
+Request: {user_prompt}
+Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+## Requirements
+- Implement the requested feature in the MyCircle Flutter app.
+- Follow existing project patterns (Provider, Material 3).
+- Ensure high code quality and proper documentation.
+- Add necessary unit tests if applicable.
+
+## Context
+- Project: MyCircle
+- Stack: Flutter, Supabase
+- Current Screens: {self._count_screens()}
+"""
+        
+        tasks_dir = self.project_path / '.windsurf' / 'tasks'
+        tasks_dir.mkdir(parents=True, exist_ok=True)
+        task_file = tasks_dir / f'task_{datetime.now().strftime("%Y%m%d_%H%M%S")}.md'
+        
+        with open(task_file, 'w', encoding='utf-8') as f:
+            f.write(task_content)
+            
+        return {
+            "status": "success",
+            "task_file": str(task_file),
+            "prompt": f"I need help implementing a new feature: {user_prompt}. Detailed specs are in {task_file.name}. Please implement it following the guidelines."
+        }
+
     def generate_report(self) -> str:
         """Generate comprehensive project report"""
         logger.info("Generating project report...")

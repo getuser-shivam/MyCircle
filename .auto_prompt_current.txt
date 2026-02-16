@@ -1,0 +1,6 @@
+Review all the code created for '{feature_name}'. Check for:
+- Missing imports
+- Navigation routes registered
+- Provider registered in main.dart
+- No compile errors
+Fix any issues found and confirm the feature is fully integrated.

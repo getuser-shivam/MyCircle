@@ -4,10 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../screens/dashboard/enterprise_dashboard.dart';
 import '../../screens/social/meet_me_screen.dart';
 import '../../screens/home/ultimate_home_screen.dart';
 import '../../screens/media/upload_screen.dart';
 import '../../screens/user/profile_screen.dart';
+import '../../providers/auth_provider.dart';
 import '../common/connectivity_banner.dart';
 
 class MainWrapper extends StatefulWidget {
@@ -25,6 +27,7 @@ class _MainWrapperState extends State<MainWrapper> {
     const UltimateHomeScreen(),
     const MeetMeScreen(),
     const UploadScreen(),
+    const EnterpriseDashboard(),
     const ProfileScreen(),
   ];
 
@@ -94,18 +97,18 @@ class _MainWrapperState extends State<MainWrapper> {
                       labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
                       destinations: [
                         NavigationDestination(
-                          icon: Icon(Icons.home_outlined, 
+                          icon: Icon(Icons.dashboard_customize_outlined, 
                             color: _currentIndex == 0 ? Theme.of(context).colorScheme.primary : null),
-                          selectedIcon: Icon(Icons.home_rounded, 
+                          selectedIcon: Icon(Icons.dashboard_customize_rounded, 
                             color: Theme.of(context).colorScheme.primary),
                           label: 'Discover',
                         ),
                         NavigationDestination(
-                          icon: Icon(Icons.people_outline_rounded,
+                          icon: Icon(Icons.explore_outlined,
                             color: _currentIndex == 1 ? Theme.of(context).colorScheme.primary : null),
-                          selectedIcon: Icon(Icons.people_rounded,
+                          selectedIcon: Icon(Icons.explore_rounded,
                             color: Theme.of(context).colorScheme.primary),
-                          label: 'Meet',
+                          label: 'Connect',
                         ),
                         NavigationDestination(
                           icon: Container(
@@ -128,12 +131,19 @@ class _MainWrapperState extends State<MainWrapper> {
                             ),
                             child: const Icon(Icons.add, color: Colors.white, size: 24),
                           ),
-                          label: 'Create',
+                          label: 'Publish',
+                        ),
+                        NavigationDestination(
+                          icon: Icon(Icons.analytics_outlined,
+                            color: _currentIndex == 3 ? Theme.of(context).colorScheme.primary : null),
+                          selectedIcon: Icon(Icons.analytics_rounded,
+                            color: Theme.of(context).colorScheme.primary),
+                          label: 'Insights',
                         ),
                         NavigationDestination(
                           icon: _buildProfileIcon(notificationProvider, false),
                           selectedIcon: _buildProfileIcon(notificationProvider, true),
-                          label: 'Studio',
+                          label: 'Account',
                         ),
                       ],
                     ),

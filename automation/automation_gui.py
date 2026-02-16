@@ -106,6 +106,33 @@ class AutomationGUI:
         self.openai_key_var = tk.StringVar()
         self.openai_key_entry = ttk.Entry(config_frame, textvariable=self.openai_key_var, show="*")
         self.openai_key_entry.grid(row=2, column=1, sticky=(tk.W, tk.E), padx=(0, 10), pady=(10, 0))
+
+        # GLM API Key
+        ttk.Label(config_frame, text="GLM API Key:").grid(row=3, column=0, sticky=tk.W, padx=(0, 10), pady=(10, 0))
+        self.glm_key_var = tk.StringVar()
+        self.glm_key_entry = ttk.Entry(config_frame, textvariable=self.glm_key_var, show="*")
+        self.glm_key_entry.grid(row=3, column=1, sticky=(tk.W, tk.E), padx=(0, 10), pady=(10, 0))
+
+        # AI Provider
+        ttk.Label(config_frame, text="AI Provider:").grid(row=4, column=0, sticky=tk.W, padx=(0, 10), pady=(10, 0))
+        self.ai_provider_var = tk.StringVar(value="openai")
+        self.ai_provider_combo = ttk.Combobox(config_frame, textvariable=self.ai_provider_var, values=["openai", "glm", "antigravity"], state="readonly")
+        self.ai_provider_combo.grid(row=4, column=1, sticky=(tk.W, tk.E), padx=(0, 10), pady=(10, 0))
+        self.ai_provider_combo.bind("<<ComboboxSelected>>", self._update_model_dropdown)
+
+        # AI Model
+        ttk.Label(config_frame, text="AI Model:").grid(row=5, column=0, sticky=tk.W, padx=(0, 10), pady=(10, 0))
+        self.ai_model_var = tk.StringVar(value="gpt-4")
+        self.ai_model_combo = ttk.Combobox(config_frame, textvariable=self.ai_model_var, state="readonly")
+        self.ai_model_combo.grid(row=5, column=1, sticky=(tk.W, tk.E), padx=(0, 10), pady=(10, 0))
+        self._update_model_dropdown()
+
+        # Flutter SDK Path
+        ttk.Label(config_frame, text="Flutter Path:").grid(row=6, column=0, sticky=tk.W, padx=(0, 10), pady=(10, 0))
+        self.flutter_path_var = tk.StringVar(value="D:/Download/flutter_windows_3.38.9-stable/flutter/bin/flutter.bat")
+        self.flutter_path_entry = ttk.Entry(config_frame, textvariable=self.flutter_path_var)
+        self.flutter_path_entry.grid(row=6, column=1, sticky=(tk.W, tk.E), padx=(0, 10), pady=(10, 0))
+        ttk.Button(config_frame, text="Browse", command=self.browse_flutter_path).grid(row=6, column=2, pady=(10, 0))
         
         # Action Buttons Frame
         actions_frame = ttk.LabelFrame(main_frame, text="Actions", padding="10")
@@ -118,16 +145,36 @@ class AutomationGUI:
             ("🧪 Run Tests", "test", self.run_tests),
             ("📁 Organize Files", "organize", self.organize_files),
             ("📊 Generate Report", "report", self.generate_report),
+            ("🏗️ Build App", "build", self.build_app),
+            ("▶️ Run App", "run", self.run_app),
             ("🐙 GitHub Stats", "github_stats", self.github_stats),
             ("🌊 Windsurf Setup", "windsurf_setup", self.windsurf_setup),
-            ("🚀 Run All", "all", self.run_all_automation)
+            ("🚀 Run All", "all", self.run_all_automation),
+            ("🩹 Auto-Heal", "heal", self.auto_heal),
+            ("🛠️ Self-Repair", "enterprise_repair", self.run_enterprise_repair),
         ]
         
         for i, (text, action, command) in enumerate(buttons):
-            row = i // 4
-            col = i % 4
+            row = i // 5
+            col = i % 5
             btn = ttk.Button(actions_frame, text=text, command=command)
             btn.grid(row=row, column=col, padx=5, pady=5, sticky=(tk.W, tk.E))
+        
+        # Feature Implementation Frame
+        feature_frame = ttk.LabelFrame(main_frame, text="IDE Agent - Feature Implementation", padding="10")
+        feature_frame.grid(row=3, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
+        feature_frame.columnconfigure(1, weight=1)
+        
+        ttk.Label(feature_frame, text="Request Feature:").grid(row=0, column=0, sticky=tk.W, padx=(0, 10))
+        self.feature_request_var = tk.StringVar()
+        self.feature_request_entry = ttk.Entry(feature_frame, textvariable=self.feature_request_var)
+        self.feature_request_entry.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(0, 10))
+        ttk.Button(feature_frame, text="Generate Task", command=self.generate_agent_task).grid(row=0, column=2)
+
+        # Watch Mode Toggle
+        self.watch_mode_var = tk.BooleanVar(value=False)
+        self.watch_mode_check = ttk.Checkbutton(feature_frame, text="Watch Mode (Auto-Detect Issues)", variable=self.watch_mode_var, command=self.toggle_watch_mode)
+        self.watch_mode_check.grid(row=1, column=0, columnspan=3, sticky=tk.W, pady=(5, 0))
         
         # Configure button grid weights
         for i in range(4):
@@ -135,7 +182,7 @@ class AutomationGUI:
         
         # Output Frame
         output_frame = ttk.LabelFrame(main_frame, text="Output", padding="10")
-        output_frame.grid(row=3, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S))
+        output_frame.grid(row=4, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S))
         output_frame.columnconfigure(0, weight=1)
         output_frame.rowconfigure(0, weight=1)
         
@@ -180,6 +227,7 @@ class AutomationGUI:
         menubar.add_cascade(label="Help", menu=help_menu)
         help_menu.add_command(label="About", command=self.show_about)
         help_menu.add_command(label="Documentation", command=self.show_documentation)
+        help_menu.add_command(label="How to Use Agent AI", command=self.show_agent_help)
         
     def setup_automation(self):
         """Setup automation instances"""
@@ -192,6 +240,10 @@ class AutomationGUI:
             project_path = self.project_path_var.get()
             github_token = self.github_token_var.get() or None
             openai_key = self.openai_key_var.get() or None
+            glm_key = self.glm_key_var.get() or None
+            ai_provider = self.ai_provider_var.get() or "openai"
+            ai_model = self.ai_model_var.get() or None
+            flutter_path = self.flutter_path_var.get() or "flutter"
             
             # Check if project path exists
             if not Path(project_path).exists():
@@ -200,7 +252,15 @@ class AutomationGUI:
             
             # Initialize main automation
             try:
-                self.automation = MyCircleAutomation(project_path, github_token, openai_key)
+                self.automation = MyCircleAutomation(
+                    project_path=project_path, 
+                    github_token=github_token, 
+                    openai_key=openai_key, 
+                    flutter_path=flutter_path, 
+                    glm_key=glm_key, 
+                    ai_provider=ai_provider,
+                    ai_model=ai_model
+                )
                 self.log("Main automation initialized", "success")
             except Exception as e:
                 self.log(f"Error initializing main automation: {e}", "error")
@@ -238,6 +298,17 @@ class AutomationGUI:
         if path:
             self.project_path_var.set(path)
             self.setup_automation()
+
+    def browse_flutter_path(self):
+        """Browse for Flutter executable"""
+        path = filedialog.askopenfilename(
+            title="Select flutter.bat",
+            initialdir=os.path.dirname(self.flutter_path_var.get()),
+            filetypes=[("Executable files", "*.bat *.exe"), ("All files", "*.*")]
+        )
+        if path:
+            self.flutter_path_var.set(path)
+            self.setup_automation()
             
     def load_env_config(self):
         """Load configuration from .env file"""
@@ -257,8 +328,17 @@ class AutomationGUI:
                                     self.github_token_var.set(value)
                                 elif key == 'OPENAI_API_KEY':
                                     self.openai_key_var.set(value)
+                                elif key == 'GLM_KEY':
+                                    self.glm_key_var.set(value)
+                                elif key == 'AI_PROVIDER':
+                                    self.ai_provider_var.set(value)
+                                    self._update_model_dropdown()
+                                elif key == 'AI_MODEL':
+                                    self.ai_model_var.set(value)
                                 elif key == 'PROJECT_PATH':
                                     self.project_path_var.set(value)
+                                elif key == 'FLUTTER_PATH':
+                                    self.flutter_path_var.set(value)
                 
                 self.setup_automation()
                 self.log("Configuration loaded from .env file", "success")
@@ -275,7 +355,11 @@ class AutomationGUI:
                 f.write("# MyCircle Automation Configuration\n")
                 f.write(f"GITHUB_TOKEN={self.github_token_var.get()}\n")
                 f.write(f"OPENAI_API_KEY={self.openai_key_var.get()}\n")
+                f.write(f"GLM_KEY={self.glm_key_var.get()}\n")
+                f.write(f"AI_PROVIDER={self.ai_provider_var.get()}\n")
+                f.write(f"AI_MODEL={self.ai_model_var.get()}\n")
                 f.write(f"PROJECT_PATH={self.project_path_var.get()}\n")
+                f.write(f"FLUTTER_PATH={self.flutter_path_var.get()}\n")
                 
             self.log("Configuration saved to .env file", "success")
             
@@ -516,6 +600,240 @@ class AutomationGUI:
         except Exception as e:
             self.log(f"Error generating report: {e}", "error")
             
+    def build_app(self):
+        """Build the application"""
+        if not self.automation:
+            self.log("Please setup automation first", "error")
+            self.setup_automation()
+            if not self.automation:
+                return
+
+        self.run_in_thread(self._build_app)
+
+    def _build_app(self):
+        """Build app in thread"""
+        self.log("Starting application build (Windows)...")
+        self.set_progress(20)
+
+        try:
+            result = self.automation.build_app(platform="windows")
+            self.set_progress(100)
+
+            if result["status"] == "passed":
+                self.log("✅ Build completed successfully!", "success")
+            else:
+                self.log("❌ Build failed", "error")
+                self.log(result["output"])
+
+        except Exception as e:
+            self.log(f"Error during build: {e}", "error")
+
+    def run_app(self):
+        """Run the application"""
+        if not self.automation:
+            self.log("Please setup automation first", "error")
+            self.setup_automation()
+            if not self.automation:
+                return
+
+        self.run_in_thread(self._run_app)
+
+    def _run_app(self):
+        """Run app in thread"""
+        self.log("Launching application on Windows...")
+        self.set_progress(50)
+
+        try:
+            result = self.automation.run_app(platform="windows")
+            self.set_progress(100)
+
+            if result["status"] == "running":
+                self.log(f"✅ {result['message']}", "success")
+            else:
+                self.log("❌ Failed to launch app", "error")
+                if "output" in result:
+                    self.log(result["output"])
+
+        except Exception as e:
+            self.log(f"Error during launch: {e}", "error")
+
+    def run_enterprise_repair(self):
+        """Run Enterprise Self-Repair"""
+        if not self.automation:
+            self.log("Please setup automation first", "error")
+            self.setup_automation()
+            if not self.automation:
+                return
+
+        def job():
+            self.log("🚀 Starting Enterprise Self-Repair...")
+            self.set_progress(20)
+            
+            try:
+                from enterprise_repair import EnterpriseRepair
+                repairer = EnterpriseRepair(self.project_path_var.get())
+                
+                errors = repairer.run_analysis()
+                self.set_progress(40)
+                
+                if errors:
+                    self.log(f"Found {len(errors)} issues. Applying auto-repairs...", "info")
+                    repairer.repair_missing_imports(errors)
+                    self.set_progress(70)
+                    
+                    # Re-run after repair
+                    final_errors = repairer.run_analysis()
+                    repairer.generate_repair_report(final_errors)
+                    self.set_progress(100)
+                    
+                    self.log(f"✅ Enterprise repair finished. {len(final_errors)} issues remaining.", "success")
+                    self.log("📊 Check .windsurf/repair_report.md for details", "info")
+                else:
+                    self.set_progress(100)
+                    self.log("✅ No issues found to repair!", "success")
+            except Exception as e:
+                self.log(f"Error during enterprise repair: {e}", "error")
+
+        self.run_in_thread(job)
+
+    def auto_heal(self):
+        """Run auto-heal"""
+        if not self.automation:
+            self.log("Please setup automation first", "error")
+            self.setup_automation()
+            if not self.automation:
+                return
+
+        self.run_in_thread(self._auto_heal)
+
+    def _auto_heal(self):
+        """Auto-heal in thread"""
+        self.log("Starting Auto-Heal process...")
+        self.set_progress(30)
+
+        try:
+            result = self.automation.auto_heal()
+            self.set_progress(100)
+            
+            self.log("✅ Auto-Heal task prepared!", "success")
+            self.log(f"   Task File: {result['task_file']}")
+            self.log("📋 Prompt ready to copy", "info")
+            
+            # Show dialog with prompt and copy button
+            self.show_prompt_dialog("Auto-Heal Prompt", result['prompt'])
+
+        except Exception as e:
+            self.log(f"Error during auto-heal: {e}", "error")
+
+    def generate_agent_task(self):
+        """Generate a task for the IDE agent"""
+        prompt = self.feature_request_var.get().strip()
+        if not prompt:
+            messagebox.showwarning("Warning", "Please enter a feature request first.")
+            return
+
+        if not self.automation:
+            self.log("Please setup automation first", "error")
+            self.setup_automation()
+            if not self.automation:
+                return
+
+        self.run_in_thread(self._generate_agent_task, prompt)
+
+    def _generate_agent_task(self, prompt):
+        """Generate agent task in thread"""
+        self.log(f"Preparing agent task for: {prompt}")
+        self.set_progress(50)
+
+        try:
+            result = self.automation.request_agent_help(prompt)
+            self.set_progress(100)
+            
+            self.log("✅ Feature task prepared!", "success")
+            self.log(f"   Task File: {result['task_file']}")
+            
+            # Show dialog with prompt
+            self.show_prompt_dialog("Implement Feature Prompt", result['prompt'])
+
+        except Exception as e:
+            self.log(f"Error preparing task: {e}", "error")
+
+    def show_prompt_dialog(self, title, prompt):
+        """Show a dialog with the prompt and a copy to clipboard button"""
+        dialog = tk.Toplevel(self.root)
+        dialog.title(title)
+        dialog.geometry("500x300")
+        dialog.transient(self.root)
+        dialog.grab_set()
+
+        frame = ttk.Frame(dialog, padding="20")
+        frame.pack(fill=tk.BOTH, expand=True)
+
+        ttk.Label(frame, text="Copy this prompt to your IDE Agent (Windsurf):", font=('Arial', 10, 'bold')).pack(pady=(0, 10))
+        
+        text_area = scrolledtext.ScrolledText(frame, height=8, wrap=tk.WORD)
+        text_area.insert(tk.END, prompt)
+        text_area.configure(state='disabled')
+        text_area.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
+
+        def copy_to_clipboard():
+            self.root.clipboard_clear()
+            self.root.clipboard_append(prompt)
+            messagebox.showinfo("Success", "Prompt copied to clipboard!")
+            dialog.destroy()
+
+        ttk.Button(frame, text="Copy & Close", command=copy_to_clipboard).pack()
+
+    def toggle_watch_mode(self):
+        """Toggle watch mode on/off"""
+        if self.watch_mode_var.get():
+            self.log("Watch Mode enabled. Monitoring for issues...", "info")
+            self.start_watching()
+        else:
+            self.log("Watch Mode disabled.", "info")
+
+    def start_watching(self):
+        """Background loop for watching the project"""
+        if not self.watch_mode_var.get():
+            return
+
+        def watch_loop():
+            import time
+            while self.watch_mode_var.get():
+                try:
+                    # Run a quick check
+                    if self.automation:
+                        report = self.automation.run_tests()
+                        lint = report.get("linting", {})
+                        if lint.get("status") == "failed":
+                            self.log("⚠️ Issues detected in Watch Mode!", "error")
+                            # Automatically trigger auto-heal logic in the main thread
+                            self.root.after(0, self.auto_heal)
+                            # Sleep longer if we found issues to avoid spamming
+                            time.sleep(60) 
+                        else:
+                            time.sleep(30) # Check every 30 seconds if clean
+                except Exception as e:
+                    self.log(f"Watch Error: {e}", "error")
+                    time.sleep(10)
+
+        thread = threading.Thread(target=watch_loop)
+        thread.daemon = True
+        thread.start()
+
+    def show_agent_help(self):
+        """Show help for the Agent Bridge feature"""
+        help_text = """How to use AI without a Paid Key:
+
+1. Use 'Request Feature' or 'Auto-Heal' tools.
+2. The app will generate a technical 'Task' file in .windsurf/tasks/
+3. A prompt will be provided. Click 'Copy & Close'.
+4. Paste the prompt into your IDE's AI chat (Windsurf / Cascade).
+5. The IDE Agent will read the task file and perform the work!
+
+This 'Bridge' allows you to use the powerful AI already built into your editor to automate MyCircle development for free."""
+        messagebox.showinfo("IDE Agent Bridge Help", help_text)
+
     def github_stats(self):
         """Get GitHub statistics"""
         if not self.github_automation:
@@ -691,6 +1009,34 @@ class AutomationGUI:
             
         except Exception as e:
             self.log(f"Error opening folder: {e}", "error")
+
+    def _update_model_dropdown(self, event=None):
+        """Update the model dropdown based on selected provider"""
+        provider = self.ai_provider_var.get()
+        
+        models = {
+            "openai": ["gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo"],
+            "glm": ["glm-5", "glm-4", "glm-4-air"],
+            "antigravity": [
+                "antigravity-v1", 
+                "Gemini 3 Pro (High)", 
+                "Gemini 3 Pro (Low)", 
+                "Gemini 3 Flash",
+                "Claude Sonnet 4.5", 
+                "Claude Sonnet 4.5 (Thinking)", 
+                "Claude Opus 4.5 (Thinking)", 
+                "Claude Opus 4.6 (Thinking)",
+                "GPT-OSS 120B (Medium)"
+            ]
+        }
+        
+        provider_models = models.get(provider, ["default"])
+        self.ai_model_combo['values'] = provider_models
+        
+        # Set default if current selection not in new list
+        current_model = self.ai_model_var.get()
+        if current_model not in provider_models:
+            self.ai_model_var.set(provider_models[0])
             
     def show_about(self):
         """Show about dialog"""

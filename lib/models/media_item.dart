@@ -1,23 +1,16 @@
-
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-enum MediaType {
-  gif,
-  video,
-  image,
-}
+enum MediaType { image, video, gif }
 
 class MediaItem {
   final String id;
   final String title;
-  final String? description;
+  final String description;
   final String url;
   final String thumbnailUrl;
   final String? videoUrl;
-  final String? duration;
+  final String duration;
   final int views;
   final int likes;
+  final int commentsCount;
   final String category;
   final String authorId;
   final String userName;
@@ -32,13 +25,14 @@ class MediaItem {
   MediaItem({
     required this.id,
     required this.title,
-    this.description,
+    required this.description,
     required this.url,
     required this.thumbnailUrl,
     this.videoUrl,
-    this.duration,
-    required this.views,
-    required this.likes,
+    this.duration = '0',
+    this.views = 0,
+    this.likes = 0,
+    this.commentsCount = 0,
     required this.category,
     required this.authorId,
     required this.userName,
@@ -48,55 +42,32 @@ class MediaItem {
     this.isPremium = false,
     this.isPrivate = false,
     this.isVerified = false,
-    this.type = MediaType.gif,
+    required this.type,
   });
 
-  factory MediaItem.fromJson(Map<String, dynamic> json) {
-    final author = json['author'] ?? {};
+  factory MediaItem.fromMap(Map<String, dynamic> data) {
+    final authorProfile = data['profiles'] as Map<String, dynamic>?;
+    
     return MediaItem(
-      id: json['_id'] ?? json['id'] ?? '',
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      url: json['fileUrl'] ?? json['url'] ?? '',
-      thumbnailUrl: json['thumbnailUrl'] ?? '',
-      videoUrl: json['videoUrl'] ?? json['fileUrl'] ?? json['url'] ?? '',
-      duration: json['duration']?.toString() ?? '0',
-      views: json['stats']?['views'] ?? json['views'] ?? 0,
-      likes: json['stats']?['likes'] ?? json['likes'] ?? 0,
-      category: json['category'] ?? 'General',
-      authorId: author['id'] ?? author['_id'] ?? json['authorId'] ?? '',
-      userName: author['username'] ?? json['authorName'] ?? '',
-      userAvatar: author['avatar'] ?? '',
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      tags: (json['tags'] as List<dynamic>?)?.cast<String>() ?? [],
-      isPremium: json['isPremium'] ?? false,
-      isPrivate: json['isPrivate'] ?? false,
-      isVerified: author['isVerified'] ?? false,
-      type: _parseMediaType(json['type']),
-    );
-  }
-
-  factory MediaItem.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return MediaItem(
-      id: doc.id,
+      id: data['id']?.toString() ?? '',
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       url: data['url'] ?? '',
-      thumbnailUrl: data['thumbnailUrl'] ?? '',
-      videoUrl: data['videoUrl'],
+      thumbnailUrl: data['thumbnail_url'] ?? '',
+      videoUrl: data['video_url'],
       duration: data['duration']?.toString() ?? '0',
-      views: data['views'] ?? 0,
-      likes: data['likes'] ?? 0,
+      views: data['views_count'] ?? 0,
+      likes: data['likes_count'] ?? 0,
+      commentsCount: data['comments_count'] ?? 0,
       category: data['category'] ?? 'General',
-      authorId: data['authorId'] ?? '',
-      userName: data['userName'] ?? 'Unknown',
-      userAvatar: data['userAvatar'] ?? '',
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      authorId: data['author_id'] ?? '',
+      userName: authorProfile?['username'] ?? data['user_name'] ?? 'Unknown',
+      userAvatar: authorProfile?['avatar_url'] ?? data['user_avatar'] ?? '',
+      createdAt: DateTime.parse(data['created_at'] ?? DateTime.now().toIso8601String()),
       tags: List<String>.from(data['tags'] ?? []),
-      isPremium: data['isPremium'] ?? false,
-      isPrivate: data['isPrivate'] ?? false,
-      isVerified: data['isVerified'] ?? false,
+      isPremium: data['is_premium'] ?? false,
+      isPrivate: data['is_private'] ?? false,
+      isVerified: authorProfile?['is_verified'] ?? data['is_verified'] ?? false,
       type: _parseMediaType(data['type']),
     );
   }
@@ -120,20 +91,21 @@ class MediaItem {
       'title': title,
       'description': description,
       'url': url,
-      'thumbnailUrl': thumbnailUrl,
-      'videoUrl': videoUrl,
+      'thumbnail_url': thumbnailUrl,
+      'video_url': videoUrl,
       'duration': duration,
-      'views': views,
-      'likes': likes,
+      'views_count': views,
+      'likes_count': likes,
+      'comments_count': commentsCount,
       'category': category,
-      'authorId': authorId,
-      'userName': userName,
-      'userAvatar': userAvatar,
-      'createdAt': createdAt.toIso8601String(),
+      'author_id': authorId,
+      'user_name': userName,
+      'user_avatar': userAvatar,
+      'created_at': createdAt.toIso8601String(),
       'tags': tags,
-      'isPremium': isPremium,
-      'isPrivate': isPrivate,
-      'isVerified': isVerified,
+      'is_premium': isPremium,
+      'is_private': isPrivate,
+      'is_verified': isVerified,
       'type': type.toString().split('.').last,
     };
   }

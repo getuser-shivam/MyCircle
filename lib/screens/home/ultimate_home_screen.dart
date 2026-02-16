@@ -1,8 +1,8 @@
-import 'dart:ui';
-import '../../providers/media_provider.dart';
-import '../../widgets/media/lazy_load_media_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../widgets/media/lazy_load_media_grid.dart';
+import '../../providers/media_provider.dart';
+import '../../widgets/common/content_guard.dart';
 
 
 
@@ -233,13 +233,8 @@ class _UltimateHomeScreenState extends State<UltimateHomeScreen>
               onRefresh: () => _loadCategoryData(category),
               child: Column(
                 children: [
-                  if (category == 'For You')
-                    _buildTrendingBanner(),
-                  if (category == 'Premium')
-                    _buildPremiumBanner(),
-                  Expanded(
-                    child: LazyLoadMediaGrid(),
-                  ),
+                  if (category == 'For You') _buildTrendingBanner(),
+                  Expanded(child: LazyLoadMediaGrid()),
                 ],
               ),
             );
@@ -366,7 +361,7 @@ class _UltimateHomeScreenState extends State<UltimateHomeScreen>
     );
   }
 
-  Widget _buildPremiumBanner() {
+  Widget _buildPremiumBanner({bool isSubscribed = false}) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(20),
@@ -374,10 +369,10 @@ class _UltimateHomeScreenState extends State<UltimateHomeScreen>
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -395,9 +390,9 @@ class _UltimateHomeScreenState extends State<UltimateHomeScreen>
                 child: const Icon(Icons.diamond_rounded, color: Colors.white, size: 32),
               ),
               const SizedBox(width: 12),
-              const Text(
-                'MyCircle Studio',
-                style: TextStyle(
+              Text(
+                isSubscribed ? 'Premium Active' : 'MyCircle Studio',
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
@@ -407,26 +402,30 @@ class _UltimateHomeScreenState extends State<UltimateHomeScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            'Unlock elite features, unlimited storage, and high-fidelity playback.',
+            isSubscribed 
+              ? 'You have full access to enterprise-grade content and features.' 
+              : 'Unlock elite features, unlimited storage, and high-fidelity playback.',
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
               fontSize: 15,
             ),
           ),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          if (!isSubscribed) ...[
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pushNamed(context, '/subscriptions'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                ),
+                child: const Text('UPGRADE TO PREMIUM', style: TextStyle(fontWeight: FontWeight.w900)),
               ),
-              child: const Text('UPGRADE TO PREMIUM', style: TextStyle(fontWeight: FontWeight.w900)),
             ),
-          ),
+          ],
         ],
       ),
     );
