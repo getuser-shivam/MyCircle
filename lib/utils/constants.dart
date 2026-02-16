@@ -107,7 +107,7 @@ class AppStrings {
 }
 
 class AppColors {
-  static const Color primary = Color(0xFFFF5722); // Firebase Orange
+  static const Color primary = Color(0xFFFF5722); // Vibrant Orange
   static const Color secondary = Color(0xFFFFA000); // Amber 700
   static const Color tertiary = Color(0xFFFFC107); // Amber 500
   static const Color surface = Colors.white;

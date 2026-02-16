@@ -364,9 +364,7 @@ class _UploadScreenState extends State<UploadScreen> {
       final fileName = '${DateTime.now().millisecondsSinceEpoch}_${path.basename(_selectedFile!.path)}';
       final storage = Supabase.instance.client.storage;
       
-      // Note: Supabase SDK doesn't have a built-in progress listener in the same way as Firebase,
-      // but we can simulate it or just show an indeterminate progress.
-      // For a real app, you'd use a custom stream if needed.
+      // Upload with file options for caching
       await storage.from('media').upload(
         fileName,
         _selectedFile!,
