@@ -164,4 +164,17 @@ class NotificationProvider extends ChangeNotifier {
       debugPrint('Error clearing notifications: $e');
     }
   }
+
+  void simulateRealtimeNotification(String title, String body, String type) {
+    final notification = AppNotification(
+      id: DateTime.now().toString(),
+      title: title,
+      body: body,
+      type: type,
+      timestamp: DateTime.now(),
+    );
+    _notifications.insert(0, notification);
+    _unreadCount++;
+    notifyListeners();
+  }
 }
