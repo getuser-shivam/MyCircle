@@ -51,11 +51,11 @@
 - **Desktop Settings**: Comprehensive settings screen with cloud sync via Supabase
 
 ### 🔐 **Enterprise-Grade Features**
-- **Complete Supabase Integration**: Replaced Firebase with comprehensive Supabase service
+- **Comprehensive Supabase Integration**: Enterprise-grade backend with real-time features, authentication, and database
 - **Advanced Error Handling**: Error boundaries, safe async builders, and user-friendly error screens
 - **Accessibility Compliance**: Screen reader support, keyboard navigation, and focus management
 - **Performance Optimization**: Memory-efficient caching, lazy loading, and network optimization
-- **Real-Time Features**: Live streaming, chat, and notifications with Supabase real-time
+- **Real-Time Features**: Live streaming, chat, notifications, and AI interactions with Supabase real-time
 
 ---
 
@@ -103,6 +103,15 @@
 - **Notification Types**: Likes, comments, follows, system alerts
 - **Batch Actions**: Mark all as read, clear notifications
 
+### 🤖 **AI Chat & Companion System**
+- **Intelligent Conversations**: AI-powered chat with context-aware responses and personality
+- **Multimodal Input**: Text, voice, and image inputs with smart recognition
+- **Conversation Insights**: Analytics and insights from chat history
+- **Glassmorphic UI**: Beautiful chat bubbles with animations and themes
+- **Real-Time Sync**: Conversations synced across devices via Supabase
+- **Smart Recommendations**: AI-driven suggestions and companion features
+- **Offline Support**: Cached conversations for offline access
+
 ---
 
 ## 🖥️ Desktop Features & Capabilities
@@ -123,9 +132,13 @@ MyCircle provides a **native desktop experience** optimized for Windows 10/11 wi
 |----------|--------|---------|
 | `Ctrl + Shift + Q` | Show/Hide Window | Global |
 | `Ctrl + Shift + N` | New Media Upload | Global |
+| `Ctrl + Shift + C` | Open AI Chat | Global |
+| `Ctrl + Shift + W` | New Window | Global |
 | `Ctrl + F` | Quick Search | In-App |
 | `Ctrl + ,` | Open Settings | Global |
 | `F11` | Toggle Fullscreen | Media |
+| `Ctrl + M` | Toggle Mute | Media |
+| `Ctrl + Shift + P` | Picture-in-Picture | Media |
 | `Ctrl + W` | Close Window | Global |
 | `Ctrl + Tab` | Switch Tabs | Navigation |
 | `Alt + Left/Right` | Navigate Back/Forward | Navigation |
@@ -159,6 +172,10 @@ MyCircle provides a **native desktop experience** optimized for Windows 10/11 wi
 - **Auto-Startup**: Optional start with Windows
 - **Protocol Handlers**: Handle mycircle:// URLs for deep linking
 - **Windows Hello**: Biometric authentication support
+- **Hardware Acceleration**: GPU-accelerated media playback and rendering
+- **DPI Awareness**: Crisp scaling on high-resolution displays
+- **Multi-Window Architecture**: Support for multiple app windows simultaneously
+- **Picture-in-Picture**: Floating media windows for multitasking
 
 ---
 
@@ -221,10 +238,16 @@ MyCircle provides a **native desktop experience** optimized for Windows 10/11 wi
 | Technology | Purpose |
 |-----------|---------|
 | **Win32 API** | Native Windows integration |
+| **Window Manager** | Advanced window management and controls |
+| **Hotkey Manager** | Global keyboard shortcuts |
+| **System Tray** | System tray integration |
+| **Tray Manager** | Tray icon management |
+| **Desktop Drop** | Drag & drop file handling |
+| **Flutter Acrylic** | Windows transparency effects |
+| **Screen Retriever** | Multi-monitor support |
 | **Windows Notifications** | System notification toasts |
 | **File Picker** | Native file dialogs |
 | **URL Launcher** | Browser integration |
-| **Tray Manager** | System tray management |
 
 ---
 
