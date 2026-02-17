@@ -1,166 +1,273 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import '../models/social_user.dart';
+import '../repositories/auth_repository.dart';
+import '../repositories/user_repository.dart';
+import '../services/supabase_service.dart';
+import '../core/errors/app_exceptions.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
+  final AuthRepository _authRepository;
+  final UserRepository _userRepository;
   
-  User? _currentUser;
+  // State
+  supabase.User? _currentUser;
+  SocialUser? _userProfile;
+  bool _isAuthenticated = false;
+  
+  // Loading states
   bool _isLoading = false;
-  String? _error;
+  bool _isSigningIn = false;
+  bool _isSigningUp = false;
+  bool _isLoadingProfile = false;
   
-  User? get currentUser => _currentUser;
-  bool get isLoggedIn => _supabase.auth.currentUser != null;
+  // Error handling
+  String? _error;
+  String? _signInError;
+  String? _signUpError;
+  String? _profileError;
+
+  AuthProvider() 
+    : _authRepository = AuthRepository(SupabaseService.instance),
+      _userRepository = UserRepository(SupabaseService.instance);
+
+  // Getters
+  supabase.User? get currentUser => _currentUser;
+  SocialUser? get userProfile => _userProfile;
+  bool get isAuthenticated => _isAuthenticated;
+  bool get isLoggedIn => _currentUser != null;
   bool get isLoading => _isLoading;
+  bool get isSigningIn => _isSigningIn;
+  bool get isSigningUp => _isSigningUp;
+  bool get isLoadingProfile => _isLoadingProfile;
   String? get error => _error;
+  String? get signInError => _signInError;
+  String? get signUpError => _signUpError;
+  String? get profileError => _profileError;
 
   Future<void> initialize() async {
-    final session = _supabase.auth.currentSession;
-    if (session != null) {
-      await _fetchUserProfile(session.user.id);
-    }
-
-    _supabase.auth.onAuthStateChange.listen((data) async {
-      final supabase.AuthChangeEvent event = data.event;
-      final supabase.Session? currentSession = data.session;
-
-      if (event == supabase.AuthChangeEvent.signedIn && currentSession != null) {
-        await _fetchUserProfile(currentSession.user.id);
-      } else if (event == supabase.AuthChangeEvent.signedOut) {
-        _currentUser = null;
-        notifyListeners();
+    try {
+      _setLoading(true);
+      final session = _authRepository.currentSession;
+      
+      if (session != null) {
+        await _fetchUserProfile(session.user.id);
+        _isAuthenticated = true;
       }
-    });
-  }
+      
+      _authRepository.onAuthStateChange.listen((data) async {
+        final supabase.AuthChangeEvent event = data.event;
+        final supabase.Session? currentSession = data.session;
 
-  Future<void> login(String email, String password) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-    try {
-      await _supabase.auth.signInWithPassword(email: email, password: password);
-    } on supabase.AuthException catch (e) {
-      _error = e.message;
-      throw Exception(e.message);
+        if (event == supabase.AuthChangeEvent.signedIn && currentSession != null) {
+          await _fetchUserProfile(currentSession.user.id);
+          _isAuthenticated = true;
+        } else if (event == supabase.AuthChangeEvent.signedOut) {
+          _currentUser = null;
+          _userProfile = null;
+          _isAuthenticated = false;
+        }
+        
+        notifyListeners();
+      });
+    } on AuthException catch (e) {
+      _setError('Failed to initialize authentication: ${e.message}');
     } catch (e) {
-      _error = e.toString();
-      throw Exception(e.toString());
+      _setError('An unexpected error occurred during initialization');
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      _setLoading(false);
     }
   }
 
-  Future<void> register(String username, String email, String password) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+  Future<void> signIn({
+    required String email,
+    required String password,
+  }) async {
     try {
-      final response = await _supabase.auth.signUp(
+      _setSigningIn(true);
+      _clearErrors();
+
+      final response = await _authRepository.signIn(
         email: email,
         password: password,
-        data: {'username': username},
       );
 
       if (response.user != null) {
-        // Create user profile in our custom profiles table
-        await _supabase.from('profiles').insert({
-          'id': response.user!.id,
-          'username': username,
-          'email': email,
-          'avatar_url': 'https://i.pravatar.cc/300?u=${response.user!.id}',
-          'is_verified': false,
-          'is_premium': false,
-          'followers_count': 0,
-          'following_count': 0,
-          'posts_count': 0,
-        });
-
-        // Assign default 'user' role
-        await _supabase.from('user_roles').insert({
-          'user_id': response.user!.id,
-          'role': 'user',
-        });
-
+        _currentUser = response.user;
         await _fetchUserProfile(response.user!.id);
+        _isAuthenticated = true;
       }
-    } on supabase.AuthException catch (e) {
-      _error = e.message;
-      throw Exception(e.message);
+    } on AuthException catch (e) {
+      _setSignInError(e.message);
     } catch (e) {
-      _error = e.toString();
-      throw Exception(e.toString());
+      _setSignInError('An unexpected error occurred during sign in');
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      _setSigningIn(false);
     }
   }
 
-  Future<void> logout() async {
-    await _supabase.auth.signOut();
-    _currentUser = null;
-    _error = null;
-    notifyListeners();
+  Future<void> signUp({
+    required String email,
+    required String password,
+    required String username,
+  }) async {
+    try {
+      _setSigningUp(true);
+      _clearErrors();
+
+      final response = await _authRepository.signUp(
+        email: email,
+        password: password,
+        username: username,
+      );
+
+      if (response.user != null) {
+        _currentUser = response.user;
+        _isAuthenticated = true;
+        
+        // Create user profile
+        await _createUserProfile(response.user!.id, username);
+      }
+    } on AuthException catch (e) {
+      _setSignUpError(e.message);
+    } catch (e) {
+      _setSignUpError('An unexpected error occurred during sign up');
+    } finally {
+      _setSigningUp(false);
+    }
   }
 
-  Future<void> _fetchUserProfile(String uid) async {
+  Future<void> signOut() async {
     try {
-      final userData = await _supabase.from('profiles').select().eq('id', uid).single();
+      _setLoading(true);
+      await _authRepository.signOut();
       
-      // Fetch role
-      String role = 'user';
-      try {
-        final roleData = await _supabase.from('user_roles').select('role').eq('user_id', uid).single();
-        role = roleData['role'] ?? 'user';
-      } catch (e) {
-        debugPrint('Role not found for user $uid, defaulting to user');
-      }
-
-      _currentUser = User.fromJson(userData, role: role);
-      notifyListeners();
+      _currentUser = null;
+      _userProfile = null;
+      _isAuthenticated = false;
+      _clearErrors();
+    } on AuthException catch (e) {
+      _setError('Failed to sign out: ${e.message}');
     } catch (e) {
-      debugPrint('Error fetching user profile: $e');
+      _setError('Failed to sign out');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> resetPassword(String email) async {
+    try {
+      _setLoading(true);
+      _clearErrors();
+      
+      await _authRepository.resetPassword(email);
+    } on AuthException catch (e) {
+      _setError(e.message);
+    } catch (e) {
+      _setError('Failed to reset password');
+    } finally {
+      _setLoading(false);
     }
   }
 
   Future<void> updateProfile({
     String? username,
-    String? email,
-    String? avatar,
     String? bio,
+    String? avatarUrl,
   }) async {
-    final user = _supabase.auth.currentUser;
-    if (user == null) throw Exception('Not authenticated');
-
-    _isLoading = true;
-    notifyListeners();
-
+    if (_currentUser == null) return;
+    
     try {
-      final updates = <String, dynamic>{};
-      if (username != null) {
-        updates['username'] = username;
-      }
-      if (email != null) {
-        updates['email'] = email;
-        await _supabase.auth.updateUser(supabase.UserAttributes(email: email));
-      }
-      if (avatar != null) {
-        updates['avatar_url'] = avatar;
-      }
-      if (bio != null) {
-        updates['bio'] = bio;
-      }
+      _setLoadingProfile(true);
+      _clearProfileError();
 
-      if (updates.isNotEmpty) {
-        await _supabase.from('profiles').update(updates).eq('id', user.id);
-        await _fetchUserProfile(user.id);
+      final updatedProfile = await _userRepository.updateProfile(
+        userId: _currentUser!.id,
+        username: username,
+        bio: bio,
+        avatarUrl: avatarUrl,
+      );
+
+      if (updatedProfile != null) {
+        _userProfile = updatedProfile;
       }
+    } on AuthException catch (e) {
+      _setProfileError(e.message);
     } catch (e) {
-      debugPrint('Update profile error: $e');
-      throw e;
+      _setProfileError('Failed to update profile');
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      _setLoadingProfile(false);
     }
   }
-}
 
+  Future<void> _fetchUserProfile(String userId) async {
+    try {
+      _userProfile = await _userRepository.getUserProfile(userId);
+    } catch (e) {
+      // Don't set error for profile fetch, just log it
+      debugPrint('Failed to fetch user profile: $e');
+    }
+  }
+
+  Future<void> _createUserProfile(String userId, String username) async {
+    try {
+      _userProfile = await _userRepository.createProfile(
+        userId: userId,
+        username: username,
+      );
+    } catch (e) {
+      debugPrint('Failed to create user profile: $e');
+    }
+  }
+
+  void _setLoading(bool loading) {
+    _isLoading = loading;
+    notifyListeners();
+  }
+
+  void _setSigningIn(bool signingIn) {
+    _isSigningIn = signingIn;
+    notifyListeners();
+  }
+
+  void _setSigningUp(bool signingUp) {
+    _isSigningUp = signingUp;
+    notifyListeners();
+  }
+
+  void _setLoadingProfile(bool loading) {
+    _isLoadingProfile = loading;
+    notifyListeners();
+  }
+
+  void _setError(String? error) {
+    _error = error;
+    notifyListeners();
+  }
+
+  void _setSignInError(String? error) {
+    _signInError = error;
+    notifyListeners();
+  }
+
+  void _setSignUpError(String? error) {
+    _signUpError = error;
+    notifyListeners();
+  }
+
+  void _setProfileError(String? error) {
+    _profileError = error;
+    notifyListeners();
+  }
+
+  void _clearErrors() {
+    _error = null;
+    _signInError = null;
+    _signUpError = null;
+    _profileError = null;
+  }
+
+  void _clearProfileError() {
+    _profileError = null;
+  }
+}

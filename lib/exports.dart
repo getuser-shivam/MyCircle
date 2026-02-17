@@ -101,6 +101,10 @@ export 'widgets/common/premium_animations.dart';
 export 'widgets/common/premium_navigation_bar.dart';
 export 'widgets/common/premium_floating_action_button.dart';
 export 'widgets/common/premium_app_bar.dart';
+export 'widgets/common/premium_loading_indicator.dart';
+export 'widgets/common/glassmorphic_button.dart';
+export 'widgets/common/glassmorphic_dialog.dart';
+export 'widgets/common/glassmorphic_text_field.dart';
 
 // Widgets - Home
 export 'widgets/home/premium_home_card.dart';

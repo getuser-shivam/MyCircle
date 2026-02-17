@@ -16,44 +16,46 @@ void main() async {
     anonKey: SupabaseOptions.anonKey,
   );
   final prefs = await SharedPreferences.getInstance();
-  final themeProvider = ThemeProvider(prefs);
   
+  // Initialize providers
   final authProvider = AuthProvider();
-  await authProvider.initialize();
-
+  final themeProvider = ThemeProvider(prefs);
   final mediaProvider = MediaProvider();
   final notificationProvider = NotificationProvider();
   final socialProvider = SocialProvider();
   final commentProvider = CommentProvider();
-  final socialGraphProvider = SocialGraphProvider();
   final subscriptionProvider = SubscriptionProvider();
   final antigravityProvider = AntigravityProvider();
+  final desktopProvider = DesktopProvider();
+  final streamProvider = StreamProvider();
+  final streamChatProvider = StreamChatProvider();
+  final streamCombinedProvider = StreamCombinedProvider();
+  final aiChatProvider = AIChatProvider();
+  final analyticsProvider = AnalyticsProvider();
+  final recommendationProvider = RecommendationProvider();
+  final discoveryProvider = DiscoveryProvider();
 
-  final combinedProvider = CombinedProvider(
-    authProvider: authProvider,
-    mediaProvider: mediaProvider,
-    notificationProvider: notificationProvider,
-    socialProvider: socialProvider,
-    themeProvider: themeProvider,
-    commentProvider: commentProvider,
-    socialGraphProvider: socialGraphProvider,
-    subscriptionProvider: subscriptionProvider,
-    antigravityProvider: antigravityProvider,
-  );
-
+  await authProvider.initialize();
+  
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: themeProvider),
-        ChangeNotifierProvider.value(value: authProvider),
-        ChangeNotifierProvider.value(value: mediaProvider),
-        ChangeNotifierProvider.value(value: notificationProvider),
-        ChangeNotifierProvider.value(value: socialProvider),
-        ChangeNotifierProvider.value(value: commentProvider),
-        ChangeNotifierProvider.value(value: socialGraphProvider),
-        ChangeNotifierProvider.value(value: subscriptionProvider),
-        ChangeNotifierProvider.value(value: antigravityProvider),
-        ChangeNotifierProvider.value(value: combinedProvider),
+        ChangeNotifierProvider<AuthProvider>(create: (_) => authProvider),
+        ChangeNotifierProvider<ThemeProvider>(create: (_) => themeProvider),
+        ChangeNotifierProvider<MediaProvider>(create: (_) => mediaProvider),
+        ChangeNotifierProvider<NotificationProvider>(create: (_) => notificationProvider),
+        ChangeNotifierProvider<SocialProvider>(create: (_) => socialProvider),
+        ChangeNotifierProvider<CommentProvider>(create: (_) => commentProvider),
+        ChangeNotifierProvider<SubscriptionProvider>(create: (_) => subscriptionProvider),
+        ChangeNotifierProvider<AntigravityProvider>(create: (_) => antigravityProvider),
+        ChangeNotifierProvider<DesktopProvider>(create: (_) => desktopProvider),
+        ChangeNotifierProvider<StreamProvider>(create: (_) => streamProvider),
+        ChangeNotifierProvider<StreamChatProvider>(create: (_) => streamChatProvider),
+        ChangeNotifierProvider<StreamCombinedProvider>(create: (_) => streamCombinedProvider),
+        ChangeNotifierProvider<AIChatProvider>(create: (_) => aiChatProvider),
+        ChangeNotifierProvider<AnalyticsProvider>(create: (_) => analyticsProvider),
+        ChangeNotifierProvider<RecommendationProvider>(create: (_) => recommendationProvider),
+        ChangeNotifierProvider<DiscoveryProvider>(create: (_) => discoveryProvider),
       ],
       child: const MyCircleApp(),
     ),
