@@ -7,6 +7,7 @@ class ShimmerWidget extends StatelessWidget {
   final BorderRadius? borderRadius;
   final Color? baseColor;
   final Color? highlightColor;
+  final Widget? child;
 
   const ShimmerWidget({
     super.key,
@@ -15,18 +16,19 @@ class ShimmerWidget extends StatelessWidget {
     this.borderRadius,
     this.baseColor,
     this.highlightColor,
+    this.child,
   });
 
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: baseColor ?? Colors.grey[300]!,
-      highlightColor: highlightColor ?? Colors.grey[100]!,
-      child: Container(
+      baseColor: baseColor ?? Colors.grey.withOpacity(0.3),
+      highlightColor: highlightColor ?? Colors.white.withOpacity(0.5),
+      child: child ?? Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white.withOpacity(0.1),
           borderRadius: borderRadius ?? BorderRadius.circular(8),
         ),
       ),
