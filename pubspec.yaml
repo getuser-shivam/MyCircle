@@ -30,6 +30,16 @@ dependencies:
   share_plus: ^10.0.0
   supabase_flutter: ^2.6.0
   fl_chart: ^0.66.2
+  
+  # Desktop dependencies
+  window_manager: ^0.3.8
+  system_tray: ^2.0.3
+  hotkey_manager: ^0.1.8
+  win32: ^5.1.0
+  tray_manager: ^0.2.1
+  desktop_drop: ^0.4.0
+  screen_retriever: ^0.1.9
+  flutter_acrylic: ^1.1.3
 
 dev_dependencies:
   flutter_test:

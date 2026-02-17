@@ -198,7 +198,13 @@ class _MeetMeScreenState extends State<MeetMeScreen> {
             builder: (context) => FilterBottomSheet(
               onApply: (minAge, maxAge, gender, maxDistance) {
                 debugPrint('Filters: Age $minAge-$maxAge, Gender: $gender, Distance: $maxDistance km');
-                // TODO: Apply filters to SocialProvider
+                final socialProvider = Provider.of<SocialProvider>(context, listen: false);
+                socialProvider.applyFilters(
+                  minAge: minAge,
+                  maxAge: maxAge,
+                  gender: gender,
+                  maxDistance: maxDistance,
+                );
               },
             ),
           );

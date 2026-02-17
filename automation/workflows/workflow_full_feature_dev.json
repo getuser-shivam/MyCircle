@@ -1,0 +1,66 @@
+{
+  "name": "Full Feature Dev",
+  "description": "End-to-end feature development: analyze → model → UI → state → test",
+  "steps": [
+    {
+      "name": "1. Analyze Project",
+      "prompt": "Analyze the project at {project_path}. Review the folder structure. Summarize what the app does and list all existing features.",
+      "delay_after": 5.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "2. Design Feature",
+      "prompt": "Based on the project analysis, design and develop feature.",
+      "delay_after": 5.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "3. Create Data Models",
+      "prompt": "Implement the data models for '{feature_name}' as designed in the plan. Create Dart model classes in lib/models/ with:\n- JSON serialization (fromJson / toJson)\n- copyWith method\n- Proper type annotations\nFollow the existing code style in the project.",
+      "delay_after": 5.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "4. Build UI Screens",
+      "prompt": "Build the UI screens for '{feature_name}' in lib/screens/. Create beautiful, responsive Flutter widgets following Material 3 design. Use the existing theme and design patterns from the project. Include proper error states, loading indicators, and empty states.",
+      "delay_after": 5.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "5. Add State Management",
+      "prompt": "Create the state management for '{feature_name}'. Add Provider/ChangeNotifier classes in lib/providers/. Connect the UI screens to the providers. Handle loading states, error states, and data caching. Follow the existing provider patterns in the project.",
+      "delay_after": 5.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "6. Write Tests",
+      "prompt": "Write comprehensive tests for the '{feature_name}' feature:\n- Unit tests for models and providers\n- Widget tests for UI components\nPut tests in the test/ directory mirroring the lib/ structure. Aim for good coverage of edge cases.",
+      "delay_after": 3.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "7. Integration Check",
+      "prompt": "Review all the code created for '{feature_name}'. Check for:\n- Missing imports\n- Navigation routes registered\n- Provider registered in main.dart\n- No compile errors\nFix any issues found and confirm the feature is fully integrated.",
+      "delay_after": 2.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "Step 8",
+      "prompt": "Organize files, Check the Herirarchy, If the components are well connected, What files not required, Commit to Github and change push, Check if all the Git Commits and files in proper well. Update Readme and Changelog.",
+      "delay_after": 50.0,
+      "condition": "",
+      "enabled": true
+    }
+  ],
+  "variables": {
+    "project_path": "../"
+  },
+  "created_at": "2026-02-17T11:38:16.184817"
+}
