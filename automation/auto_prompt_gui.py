@@ -104,7 +104,7 @@ class AutoPromptGUI:
         self._auto_launch_var = tk.BooleanVar(value=True)
         self._auto_focus_var = tk.BooleanVar(value=True)
         self._custom_hotkey_var = tk.StringVar(value="")
-        self._step_cooldown_var = tk.StringVar(value="")  # Empty = use default
+        self._global_delay_var = tk.StringVar(value="")  # Empty = use default delay
         self._loop_var = tk.BooleanVar(value=False)
         self._loop_interval_var = tk.StringVar(value="2")  # 2 mins
         # load saved
@@ -329,10 +329,10 @@ class AutoPromptGUI:
         mode_combo.pack(side=tk.LEFT, padx=(0, 10))
         mode_combo.bind("<<ComboboxSelected>>", self._on_mode_change)
 
-        # Step Cooldown (Global)
-        tk.Label(config_bar, text="Step Cooldown (s):", font=("Segoe UI", 9),
+        # Step Delay Override (Global)
+        tk.Label(config_bar, text="Step Delay Override (s):", font=("Segoe UI", 9),
                  bg=COLORS["bg_card"], fg=COLORS["text_dim"]).pack(side=tk.LEFT, padx=(8, 4))
-        tk.Entry(config_bar, textvariable=self._step_cooldown_var, width=5,
+        tk.Entry(config_bar, textvariable=self._global_delay_var, width=5,
                  font=("Cascadia Code", 9), bg=COLORS["bg_input"], fg=COLORS["text"],
                  relief="flat", justify="center").pack(side=tk.LEFT, padx=(0, 8))
 
@@ -401,17 +401,18 @@ class AutoPromptGUI:
         )
         delete_wf_btn.pack(side=tk.RIGHT)
 
-        # Step delay 
-        tk.Label(wf_actions, text="Delay (s):", font=("Segoe UI", 9),
-                 bg=COLORS["bg_card"], fg=COLORS["text_dim"]).pack(side=tk.RIGHT, padx=(0, 4))
-        self._delay_var = tk.StringVar(value="5")
-        delay_entry = tk.Entry(
-            wf_actions, textvariable=self._delay_var, width=4,
-            font=("Segoe UI", 9), bg=COLORS["bg_input"],
-            fg=COLORS["text"], insertbackground=COLORS["text"],
-            relief="flat", bd=0, justify="center",
+        # Workflow Enabled checkbox
+        self._wf_enabled_var = tk.BooleanVar(value=True)
+        enabled_cb = tk.Checkbutton(
+            wf_actions, text="Enabled", variable=self._wf_enabled_var,
+            bg=COLORS["bg_card"], fg=COLORS["text_dim"],
+            selectcolor=COLORS["bg_dark"], activebackground=COLORS["bg_card"],
+            font=("Segoe UI", 9)
         )
-        delay_entry.pack(side=tk.RIGHT, padx=(0, 8), ipady=2)
+        enabled_cb.pack(side=tk.RIGHT, padx=(4, 0))
+
+        # Step delay (default for new steps) hidden as it's confusing. Use global override or per-step.
+        self._delay_var = tk.StringVar(value="5")
 
         # Scrollable steps list
         steps_canvas_frame = tk.Frame(steps_outer, bg=COLORS["bg_card"])
@@ -677,7 +678,7 @@ class AutoPromptGUI:
         )
         enabled_cb.pack(side=tk.RIGHT, padx=(4, 0))
 
-        # Delay input
+        # Individual Step Delay
         tk.Label(header, text="Delay(s):", font=("Segoe UI", 8),
                  bg=COLORS["bg_input"], fg=COLORS["text_dim"]).pack(side=tk.RIGHT, padx=(4, 0))
         delay_var = tk.StringVar(value=str(step.delay_after))
@@ -965,11 +966,11 @@ class AutoPromptGUI:
         self._stop_btn.config(state="normal")
         self._status_var.set("Running...")
 
-        # Reset step visuals & Apply Global Cooldown
+        # Apply Global Delay Override if set
         global_delay = None
-        if self._step_cooldown_var.get().strip():
+        if self._global_delay_var.get().strip():
             try:
-                global_delay = float(self._step_cooldown_var.get().strip())
+                global_delay = float(self._global_delay_var.get().strip())
             except ValueError:
                 pass
 

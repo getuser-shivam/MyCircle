@@ -1,0 +1,29 @@
+{
+  "name": "The Executive Developer",
+  "description": "High-level project management: Logic → UI → Git → Build",
+  "steps": [
+    {
+      "name": "1. Executive Audit & Organize",
+      "prompt": "Persona: Senior Executive Developer.\nGoal: Audit {project_path} and optimize everything.\nTasks to consider:\n1. GIT: Analyze commit history, plan meaningful COMMITS, update README, and generate a CHANGELOG.\n2. ORGANIZE: Identify misplaced files, redundant logic, and refactor for a clean structure.\n3. UI ENHANCE: Brainstorm and implement premium UI improvements (Glassmorphism, animations).\n4. BETTER: Think deeply about what can be better in the current codebase.\n5. BUILD: Ensure the project builds and runs perfectly.\n\nPlan the first phase of organization and Git cleanup now.",
+      "delay_after": 100.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "2. Refactor & UI Polish",
+      "prompt": "Execute the 'ORGANIZE' and 'UI ENHANCE' plans for {project_path}.\nMove files to proper domains, fix naming, and apply the premium visual styles.\nEnsure state management (Provider) is used correctly throughout.",
+      "delay_after": 200.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "3. Git Excellence & Sync",
+      "prompt": "Finalize the cycle for {project_path}:\n- Write/Update README and CHANGELOG.\n- Categorize and ORGANIZE COMMITS for clarity.\n- Perform final PUSH to origin.\n- Confirm BUILD and RUN status.",
+      "delay_after": 100.0,
+      "condition": "",
+      "enabled": true
+    }
+  ],
+  "variables": {},
+  "created_at": "2026-02-17T17:23:01.632946"
+}

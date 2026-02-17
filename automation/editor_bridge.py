@@ -410,11 +410,20 @@ class EditorBridge:
         user32.SetForegroundWindow(hwnd)
         time.sleep(0.5)
 
-        # 2. Open chat panel with editor-specific hotkey
+        # Step A: Triple Esc reset (clear any open popups/menus/selections)
+        for _ in range(3):
+            self._press_key("escape")
+            time.sleep(0.1)
+
+        # Step B: Focus Editor Group 1 (ensure we aren't stuck in a sidebar/terminal/auxiliary view)
+        self._press_hotkey("ctrl+1")
+        time.sleep(0.4)
+
+        # Step C: Open/Focus chat panel with editor-specific hotkey
         chat_hotkey = editor_config.get("chat_hotkey", "")
         if chat_hotkey:
             self._press_hotkey(chat_hotkey)
-            time.sleep(1.0)  # wait for panel to open
+            time.sleep(1.2)  # wait for panel to open and take focus
 
         # 3. Copy prompt to clipboard
         self._clipboard_set(prompt)

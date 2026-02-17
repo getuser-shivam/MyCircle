@@ -1,5 +1,5 @@
 name: my_circle
-description: A premium Flutter app for media sharing and browsing with an enterprise-grade UI.
+description: Enterprise-grade social discovery and media platform with advanced desktop integration.
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -11,32 +11,38 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  
+  # Core Dependencies
   http: ^1.1.0
   cached_network_image: ^3.3.0
-  video_player: ^2.8.1
-  chewie: ^1.7.4
   provider: ^6.1.1
   shared_preferences: ^2.2.2
-  image_picker: ^1.0.4
-  file_picker: ^10.0.0
-  permission_handler: ^11.1.0
-  connectivity_plus: ^6.0.0
-  flutter_cache_manager: ^3.3.1
   path_provider: ^2.1.1
-  flutter_staggered_grid_view: ^0.7.0
-  shimmer: ^3.0.0
-  infinite_scroll_pagination: ^4.0.0
   url_launcher: ^6.2.1
   share_plus: ^10.0.0
   
-  # AI Chat & Backend
+  # Media & UI
+  video_player: ^2.8.1
+  chewie: ^1.7.4
+  image_picker: ^1.0.4
+  file_picker: ^10.0.0
+  flutter_staggered_grid_view: ^0.7.0
+  shimmer: ^3.0.0
+  infinite_scroll_pagination: ^4.0.0
+  
+  # AI & Backend
   supabase_flutter: ^2.6.0
   fl_chart: ^0.66.2
   lottie: ^2.7.0
   record: ^5.0.4
   google_fonts: ^6.1.0
   
-  # Desktop dependencies
+  # System Integration
+  permission_handler: ^11.1.0
+  connectivity_plus: ^6.0.0
+  flutter_cache_manager: ^3.3.1
+  
+  # Desktop Dependencies
   window_manager: ^0.3.8
   system_tray: ^2.0.3
   hotkey_manager: ^0.1.8

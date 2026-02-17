@@ -274,14 +274,21 @@ class WorkflowEngine:
                             except Exception:
                                 pass
 
-                    # Delay between steps (only as cooldown when NOT using send_and_wait)
-                    if not self.send_and_wait_fn:
-                        if i < total_steps - 1 and step.delay_after > 0:
-                            delay_end = time.time() + step.delay_after
-                            while time.time() < delay_end:
-                                if self._cancel_requested:
-                                    break
-                                self._pause_event.wait(timeout=0.2)
+                    # Delay between steps (cooldown)
+                    # Always apply if delay_after > 0, regardless of send_and_wait_fn status
+                    if i < total_steps - 1 and step.delay_after > 0:
+                        delay_end = time.time() + step.delay_after
+                        while time.time() < delay_end:
+                            if self._cancel_requested:
+                                break
+                            
+                            # Update countdown if callback exists
+                            remaining = max(0, delay_end - time.time())
+                            if self.on_loop_wait:
+                                self.on_loop_wait(remaining)
+                                
+                            time.sleep(0.5)
+                            self._pause_event.wait()
                 
                 # Workflow loop run complete
                 if not self.loop_mode or self._cancel_requested:
@@ -660,6 +667,48 @@ class WorkflowEngine:
             delay_after=5.0,
         ))
         workflows["Autonomous Feature Architect"] = wf5
+
+        # === The Executive Developer ===
+        wf6 = Workflow(
+            name="The Executive Developer",
+            description="High-level project management: Logic → UI → Git → Build"
+        )
+        wf6.add_step(WorkflowStep(
+            name="1. Executive Audit & Organize",
+            prompt=(
+                "Persona: Senior Executive Developer.\n"
+                "Goal: Audit {project_path} and optimize everything.\n"
+                "Tasks to consider:\n"
+                "1. GIT: Analyze commit history, plan meaningful COMMITS, update README, and generate a CHANGELOG.\n"
+                "2. ORGANIZE: Identify misplaced files, redundant logic, and refactor for a clean structure.\n"
+                "3. UI ENHANCE: Brainstorm and implement premium UI improvements (Glassmorphism, animations).\n"
+                "4. BETTER: Think deeply about what can be better in the current codebase.\n"
+                "5. BUILD: Ensure the project builds and runs perfectly.\n\n"
+                "Plan the first phase of organization and Git cleanup now."
+            ),
+            delay_after=10.0,
+        ))
+        wf6.add_step(WorkflowStep(
+            name="2. Refactor & UI Polish",
+            prompt=(
+                "Execute the 'ORGANIZE' and 'UI ENHANCE' plans for {project_path}.\n"
+                "Move files to proper domains, fix naming, and apply the premium visual styles.\n"
+                "Ensure state management (Provider) is used correctly throughout."
+            ),
+            delay_after=20.0,
+        ))
+        wf6.add_step(WorkflowStep(
+            name="3. Git Excellence & Sync",
+            prompt=(
+                "Finalize the cycle for {project_path}:\n"
+                "- Write/Update README and CHANGELOG.\n"
+                "- Categorize and ORGANIZE COMMITS for clarity.\n"
+                "- Perform final PUSH to origin.\n"
+                "- Confirm BUILD and RUN status."
+            ),
+            delay_after=10.0,
+        ))
+        workflows["The Executive Developer"] = wf6
 
         return workflows
 
