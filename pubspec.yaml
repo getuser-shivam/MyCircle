@@ -20,6 +20,7 @@ dependencies:
   path_provider: ^2.1.1
   url_launcher: ^6.2.1
   share_plus: ^10.0.0
+  uuid: ^3.0.7
   
   # Media & UI
   video_player: ^2.8.1

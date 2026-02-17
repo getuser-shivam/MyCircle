@@ -16,6 +16,7 @@ export 'models/dto.dart';
 export 'models/ai_chat.dart';
 export 'models/analytics.dart';
 export 'models/user.dart';
+export 'models/collection.dart';
 
 // Repositories
 export 'repositories/media_repository.dart';
@@ -23,6 +24,7 @@ export 'repositories/user_repository.dart';
 export 'repositories/stream_repository.dart';
 export 'repositories/auth_repository.dart';
 export 'repositories/analytics_repository.dart';
+export 'repositories/collection_repository.dart';
 
 // Providers (Consolidated)
 export 'providers/auth_provider.dart';
@@ -40,14 +42,12 @@ export 'providers/stream_chat_provider.dart';
 export 'providers/stream_combined_provider.dart';
 export 'providers/stream_provider_setup.dart';
 export 'providers/desktop_provider.dart';
-export 'providers/enhanced_media_provider.dart';
-export 'providers/enhanced_auth_provider.dart';
-export 'providers/enhanced_stream_provider.dart';
-export 'providers/enhanced_social_provider.dart';
 export 'providers/ai_chat_provider.dart';
 export 'providers/analytics_provider.dart';
 export 'providers/recommendation_provider.dart';
 export 'providers/discovery_provider.dart';
+export 'providers/collection_provider.dart';
+export 'providers/collection_analytics_provider.dart';
 export 'providers/provider_setup.dart';
 
 // Services
@@ -132,13 +132,15 @@ export 'widgets/common/ai_search_suggestions.dart';
 export 'widgets/common/animations.dart';
 export 'widgets/common/accessibility.dart';
 
-// Widgets - Home
+// Widgets - Collections
+export 'widgets/collections/collection_card.dart';
+export 'widgets/collections/collection_header.dart';
+export 'widgets/collections/collaborative_playlist.dart';
 export 'widgets/home/premium_home_card.dart';
 export 'widgets/home/trending_banner.dart';
 export 'widgets/home/category_tabs.dart';
 
 // Widgets - Media
-export 'widgets/media/enhanced_media_card.dart';
 export 'widgets/media/media_card.dart';
 export 'widgets/media/media_player.dart';
 export 'widgets/media/optimized_media_grid.dart';
