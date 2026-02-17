@@ -28,7 +28,7 @@ class StreamService {
           .range((page - 1) * limit, page * limit - 1);
 
       if (category != null) {
-        query.eq('category', category);
+        query = query.eq('category', category);
       }
 
       final response = await query;
@@ -97,7 +97,7 @@ class StreamService {
               avatar_url
             )
           ''')
-          .in_('status', ['live', 'scheduled'])
+          .in('status', ['live', 'scheduled'])
           .order('viewer_count', ascending: false);
 
       return response.map((data) => LiveStream.fromMap(data)).toList();
@@ -473,7 +473,7 @@ class StreamService {
             )
           ''')
           .eq('streamer_id', userId)
-          .in_('status', ['ended', 'cancelled'])
+          .in('status', ['ended', 'cancelled'])
           .order('created_at', ascending: false)
           .limit(50);
 

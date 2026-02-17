@@ -96,7 +96,11 @@ export 'screens/streaming/streaming_screen.dart';
 
 // Widgets - Common
 export 'widgets/common/glassmorphic_card.dart';
+export 'widgets/common/glassmorphic_container.dart';
 export 'widgets/common/premium_animations.dart';
+export 'widgets/common/premium_navigation_bar.dart';
+export 'widgets/common/premium_floating_action_button.dart';
+export 'widgets/common/premium_app_bar.dart';
 
 // Widgets - Home
 export 'widgets/home/premium_home_card.dart';
@@ -121,6 +125,8 @@ export 'widgets/social/user_card_widget.dart';
 
 // Widgets - Streaming
 export 'widgets/streaming/stream_widget.dart';
+export 'widgets/streaming/stream_card_widget.dart';
+export 'widgets/streaming/stream_card_large.dart';
 
 // Widgets - AI Chat
 export 'widgets/ai_chat/ai_chat_widgets.dart';
