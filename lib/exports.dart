@@ -21,6 +21,7 @@ export 'providers/stream_provider.dart';
 export 'providers/stream_chat_provider.dart';
 export 'providers/stream_combined_provider.dart';
 export 'providers/stream_provider_setup.dart';
+export 'providers/desktop_provider.dart';
 
 // Screens - Home
 export 'screens/home/home_screen.dart';
@@ -59,6 +60,9 @@ export 'screens/user/chat_screen.dart';
 
 // Screens - Dashboard
 export 'screens/dashboard/enterprise_dashboard.dart';
+
+// Screens - Desktop
+export 'screens/desktop/desktop_settings_screen.dart';
 
 // Widgets - Navigation
 export 'widgets/navigation/main_wrapper.dart';
@@ -123,3 +127,4 @@ export 'supabase_options.dart';
 
 // Services
 export 'services/stream_service.dart';
+export 'services/supabase_service.dart';

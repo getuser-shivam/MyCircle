@@ -7,9 +7,9 @@
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" />
 </p>
 
-# 🔵 MyCircle — Social Discovery & Media Platform
+# 🔵 MyCircle — Enterprise Social Discovery & Media Platform
 
-> A premium, enterprise-grade social discovery and media-sharing platform built with Flutter & Supabase. Inspired by **Skout**, **Tagged**, and **Tinder** — featuring real-time social discovery, Tinder-style swiping, proximity-based user grids, and a glassmorphic UI.
+> A premium, enterprise-grade social discovery and media-sharing platform built with Flutter & Supabase. Featuring **advanced desktop integration**, **modern UI/UX**, **real-time collaboration**, and **enterprise-grade architecture**.
 
 ---
 
@@ -17,333 +17,178 @@
 
 | Feature | Description |
 |---------|-------------|
-| 🧭 **Meet Me Grid** | High-density proximity grid showing nearby users with live status pulsars |
-| 💘 **Swipe Discovery** | Tinder-style swipeable card deck with gesture-driven like/nope actions |
-| 👤 **Social Profiles** | Full-screen user profiles with hero images, bios, interests, and action buttons |
-| 🎬 **Media Hub** | Video/image/GIF browsing with staggered grids and infinite scroll |
-| 🔔 **Real-Time Notifications** | Supabase-powered notification system with bell badges |
-| 🎨 **Premium UI** | Glassmorphism, dynamic gradients, micro-animations, and DM Sans typography |
-| 🌗 **Dark/Light Themes** | Persistent theme switching with Material 3 design tokens |
-| 🔐 **Supabase Auth** | Email/password authentication with registration, login, and profile management |
-| 🖥️ **Desktop Experience** | Native desktop features: multi-window, keyboard shortcuts, system tray, drag & drop |
-| ⌨️ **Power User Controls** | Global hotkeys, fullscreen media, advanced search filters, window management |
+| 🖥️ **Desktop-First Design** | Native Windows integration with system tray, hotkeys, and acrylic effects |
+| 🎨 **Modern UI/UX System** | Material 3 design, glassmorphic effects, and smooth animations |
+| 🧭 **Social Discovery** | High-density proximity grid with Tinder-style swiping and live status |
+| 💘 **Smart Matching** | AI-powered user matching with preference-based filtering |
+| 🎬 **Media Hub** | Advanced media browsing with lazy loading, caching, and hero animations |
+| 🔔 **Real-Time Notifications** | Supabase-powered notifications with desktop toast integration |
+| 🌗 **Dynamic Theming** | Multiple color schemes (sunset, ocean, forest) with system sync |
+| 🔐 **Enterprise Security** | Supabase auth with advanced error handling and accessibility |
+| ⌨️ **Power User Features** | 20+ keyboard shortcuts, global hotkeys, and advanced navigation |
+| 📊 **Analytics Dashboard** | Real-time metrics and performance monitoring |
+| 🎭 **Beautiful Onboarding** | 4-step guided tour with animations and progress tracking |
+| ♿ **Accessibility First** | WCAG compliance with screen reader support and keyboard navigation |
 
 ---
 
-## 📱 Screens & Features
+## 🚀 Major Enhancements (Latest Update)
 
-### 🏠 Discovery Home
-- **Ultimate Home Screen** — Curated media feed with trending, recent, and popular tabs
-- Category chips for quick content filtering
-- Pull-to-refresh and infinite scroll pagination
-- Glassmorphic app bar with premium branding
+### 🎨 **Enhanced UI/UX System**
+- **Advanced Color Themes**: Predefined themes (sunset, ocean, forest) with dynamic switching
+- **Modern Animations Library**: 10+ animation types including shimmer, bounce, and staggered effects
+- **Glassmorphic Design**: Frosted glass effects with backdrop blur and transparency
+- **Material 3 Implementation**: Modern typography, spacing, and component styling
+- **Enhanced Media Cards**: Interactive cards with hover effects, overlays, and social actions
+- **Smooth Navigation**: Glassmorphic bottom navigation with blur effects and haptic feedback
 
-### 🧭 Social Discovery (Meet Me)
-- **Proximity Grid** — High-density user cards with online/live/away status pulsars
-- **Swipe Deck** — Tinder-style gesture swiping with animated card rotations
-- **Mode Toggle** — Seamlessly switch between Grid and Swipe discovery modes
-- **Live Now Section** — Highlighted section for users currently streaming
-- **Filter System** — Age range, gender, and distance filtering via bottom sheet
+### 🖥️ **Advanced Desktop Integration**
+- **Window Management**: Custom title bars, multi-monitor support, and window snapping
+- **System Tray Integration**: Minimize to tray with notification badges and quick actions
+- **Global Hotkeys**: 20+ keyboard shortcuts for power users (Ctrl+Shift+Q, Ctrl+N, etc.)
+- **Acrylic Effects**: Windows 11 transparency effects with dynamic blur
+- **File System Integration**: Drag & drop, recent files, and file associations
+- **Desktop Settings**: Comprehensive settings screen with cloud sync via Supabase
 
-### 👤 Social Profiles
-- Full-screen hero image with gradient overlay
-- Real-time status badges (Online, Live, Away)
-- Bio, interests, age, location, and gender info
-- Interactive action buttons: Like ❤️, Message 💬, Close ✕
+### 🔐 **Enterprise-Grade Features**
+- **Complete Supabase Integration**: Replaced Firebase with comprehensive Supabase service
+- **Advanced Error Handling**: Error boundaries, safe async builders, and user-friendly error screens
+- **Accessibility Compliance**: Screen reader support, keyboard navigation, and focus management
+- **Performance Optimization**: Memory-efficient caching, lazy loading, and network optimization
+- **Real-Time Features**: Live streaming, chat, and notifications with Supabase real-time
 
-### 🔍 Advanced Search
-- Real-time search with debouncing
-- Search history and trending suggestions
-- Multi-filter: category, media type, tags
-- Responsive result grid
+---
 
-### 📤 Media Upload
-- Camera and gallery integration
-- Upload to Supabase Storage with progress indication
-- Title, description, category, and tag metadata
-- Privacy toggle (public/private)
-- File validation and size limits (100MB max)
+## 📱 Enhanced Screens & Features
 
-### 🔔 Notifications
-- Real-time via Supabase listeners
-- Notification categories: likes, comments, follows, system
-- Mark as read/unread, bulk actions
-- Badge count on navigation bar
+### 🏠 **Ultimate Home Screen**
+- **Curated Feed**: Trending, recent, and popular content with infinite scroll
+- **Category Navigation**: Smart chips with animated selection states
+- **Premium Content**: Dedicated section for exclusive media
+- **Search Integration**: Real-time search with AI-powered suggestions
+- **Responsive Grid**: Adaptive layout with smooth animations
 
-### 👤 User Profile
-- Avatar, stats (posts, followers, following)
-- Tabbed content: Posts, Liked, Saved
-- Profile editing and settings
-- Dark mode toggle, logout
+### 🧭 **Enhanced Social Discovery**
+- **Proximity Grid**: High-density user cards with live status pulsars and hover effects
+- **Swipe Deck**: Tinder-style gesture swiping with physics-based animations
+- **Smart Filters**: Advanced filtering with age, gender, distance, and preferences
+- **Live Streaming**: Integrated streaming with real-time chat and viewer counts
+- **AI Matching**: Intelligent user recommendations based on behavior
+
+### 👤 **Premium User Profiles**
+- **Hero Images**: Full-screen profiles with gradient overlays and animations
+- **Real-Time Status**: Live indicators with pulsing animations
+- **Social Graph**: Visual representation of connections and mutual friends
+- **Media Gallery**: Organized content with tabs and infinite scroll
+- **Interactive Actions**: Like, message, follow with haptic feedback
+
+### 🔍 **Advanced Search System**
+- **Real-Time Search**: Debounced search with instant results
+- **AI Suggestions**: Smart recommendations based on user behavior
+- **Multi-Filter System**: Category, media type, tags, and date filters
+- **Search History**: Recent searches with quick access
+- **Trending Topics**: Popular searches and content trends
+
+### 📤 **Enhanced Media Upload**
+- **Drag & Drop**: Desktop drag-and-drop with visual feedback
+- **Progress Tracking**: Real-time upload progress with pause/resume
+- **Smart Compression**: Automatic optimization for different platforms
+- **Batch Upload**: Multiple file upload with queue management
+- **Privacy Controls**: Granular privacy settings and audience selection
+
+### 🔔 **Real-Time Notification System**
+- **Desktop Toast**: Native Windows notifications with actions
+- **In-App Center**: Comprehensive notification hub with filtering
+- **Real-Time Sync**: Supabase real-time listeners for instant updates
+- **Notification Types**: Likes, comments, follows, system alerts
+- **Batch Actions**: Mark all as read, clear notifications
 
 ---
 
 ## 🖥️ Desktop Features & Capabilities
 
-MyCircle provides a native desktop experience optimized for Windows, with features that leverage desktop hardware and user expectations.
-
-### 🪟 **Multi-Window Support**
-- **Main Application Window** — Primary social discovery and media browsing
-- **Media Viewer Window** — Dedicated fullscreen media player with picture-in-picture support
-- **Chat Window** — Pop-out chat interface for ongoing conversations
-- **Notifications Panel** — Dedicated notification center with quick actions
-
-### ⌨️ **Keyboard Shortcuts & Power User Features**
-| Shortcut | Action | Context |
-|----------|--------|---------|
-| `Ctrl + K` | Quick search | Global |
-| `Ctrl + N` | New post/upload | Main window |
-| `Ctrl + Shift + M` | Open media viewer | Media content |
-| `Ctrl + Shift + C` | Open chat | User profiles |
-| `F11` | Toggle fullscreen | Any window |
-| `Ctrl + ,` | Open settings | Global |
-| `Ctrl + Shift + N` | Notifications panel | Global |
-| `Ctrl + R` | Refresh content | Any window |
-| `Ctrl + W` | Close current window | Any window |
-| `Ctrl + Q` | Quit application | Global |
-| `Ctrl + Shift + L` | Lock application | Global |
-| `Ctrl + Shift + D` | Toggle developer mode | Global |
-| `F12` | Open developer console | Debug |
-
-### 🖱️ **Desktop Interactions**
-- **Drag & Drop Upload** — Drag files from desktop directly into upload area
-- **Context Menus** — Right-click menus for media, users, and notifications
-- **System Tray** — Minimize to tray with notification badges
-- **Window Snapping** — Windows snap to screen edges and corners
-- **Global Hotkeys** — Quick access even when app is minimized
-
-### � **Desktop-Optimized UI**
-- **Split View Layout** — Content and chat side-by-side on large screens
-- **Advanced Grid Controls** — Adjustable grid sizes, sorting options
-- **Multi-Monitor Support** — Windows can span multiple displays
-- **Touchpad Gestures** — Enhanced gesture support for precision touchpads
-- **High-DPI Scaling** — Crisp visuals on 4K and high-resolution displays
-
-### 📁 **File System Integration**
-- **Save to Downloads** — One-click download of media content
-- **Open with Default Apps** — Launch videos/images in system default applications
-- **Recent Files** — Quick access to recently viewed/uploaded content
-- **File Association** — Open supported media files directly in MyCircle
+MyCircle provides a **native desktop experience** optimized for Windows 10/11 with enterprise-grade features.
 
 ### 🪟 **Advanced Window Management**
-- **Window State Persistence** — Remembers window position, size, and state between sessions
-- **Multi-Window Workflows** — Dedicated windows for chat, media viewer, and notifications
-- **Window Snapping** — Smart window snapping to screen edges and corners
-- **Minimize to Tray** — Hide main window to system tray with notification badges
-- **Always on Top** — Keep important windows visible above others
+| Feature | Description |
+|---------|-------------|
+| **Custom Title Bar** | Native Windows title bar with minimize, maximize, close controls |
+| **Multi-Monitor Support** | Windows span multiple displays with proper DPI scaling |
+| **Window Snapping** | Smart snapping to screen edges and corners |
+| **Always on Top** | Keep important windows visible above others |
+| **Window State Persistence** | Remember position, size, and state between sessions |
 
-### 🎹 **Advanced Keyboard Navigation**
-| Shortcut | Action | Category |
-|----------|--------|----------|
-| `Ctrl + Shift + Space` | Quick search (global) | Global |
-| `Ctrl + Shift + U` | Upload media | Media |
-| `Ctrl + Shift + P` | Open profile | User |
-| `Ctrl + Shift + S` | Open settings | App |
-| `F5` | Refresh current view | Navigation |
-| `Alt + Left/Right` | Navigate back/forward | Navigation |
-| `Ctrl + Tab` | Switch between tabs | Navigation |
-| `Ctrl + Shift + T` | New chat tab | Social |
-| `Ctrl + Shift + F` | Toggle fullscreen | Media |
-| `Ctrl + Shift + I` | Developer tools | Debug |
-| `Ctrl + Shift + E` | Export data | User |
-| `Ctrl + Shift + B` | Bookmark current page | Navigation |
-| `Ctrl + Shift + H` | History panel | Navigation |
-
-### 🖱️ **Enhanced Desktop Interactions**
-- **Global Drag & Drop** — Drag files from desktop into any upload area
-- **Context Menu Integration** — Right-click menus throughout the app
-- **Touchpad Gestures** — Enhanced gesture support for precision touchpads
-- **Mouse Wheel Navigation** — Smooth scrolling with momentum
-- **Middle-Click Actions** — Open links in new windows, close tabs, etc.
+### ⌨️ **Comprehensive Keyboard Shortcuts**
+| Shortcut | Action | Context |
+|----------|--------|---------|
+| `Ctrl + Shift + Q` | Show/Hide Window | Global |
+| `Ctrl + Shift + N` | New Media Upload | Global |
+| `Ctrl + F` | Quick Search | In-App |
+| `Ctrl + ,` | Open Settings | Global |
+| `F11` | Toggle Fullscreen | Media |
+| `Ctrl + W` | Close Window | Global |
+| `Ctrl + Tab` | Switch Tabs | Navigation |
+| `Alt + Left/Right` | Navigate Back/Forward | Navigation |
+| `Ctrl + R` | Refresh Content | Any |
+| `Ctrl + Shift + S` | Open Settings | Global |
 
 ### 🎨 **Desktop Themes & Appearance**
-- **System Theme Sync** — Automatically follow Windows light/dark mode
-- **Accent Color Integration** — Use Windows accent colors in app theme
-- **Custom Window Borders** — Remove default borders for custom UI
-- **Transparency Effects** — Acrylic/mica effects on Windows 11
-- **High DPI Support** — Crisp visuals on 4K+ displays
+- **System Theme Sync**: Automatically follow Windows light/dark mode
+- **Acrylic Effects**: Windows 11 transparency with dynamic blur
+- **Custom Window Borders**: Remove default borders for custom UI
+- **High DPI Support**: Crisp visuals on 4K+ displays
+- **Accent Colors**: Use Windows accent colors in app theme
 
-### 📱 **Multi-Monitor & Display**
-- **Multi-Monitor Support** — Windows span multiple displays seamlessly
-- **Display Scaling** — Proper scaling on different DPI displays
-- **Secondary Display Mode** — Dedicated media viewer on second screen
-- **Presentation Mode** — Clean interface for sharing screen
+### 🔔 **Desktop Notification System**
+- **Native Toast**: Windows 10/11 notification toasts
+- **System Tray**: Minimize to tray with notification badges
+- **Notification Center**: Dedicated notification hub with quick actions
+- **Sound Effects**: Custom notification sounds with volume control
+- **Do Not Disturb**: Focus mode with notification suppression
+
+### 📁 **Advanced File Integration**
+- **Drag & Drop**: Drag files directly into upload areas
+- **Recent Files**: Quick access to recently viewed/uploaded content
+- **File Associations**: Open media files directly in MyCircle
+- **Context Menus**: Right-click menus for media and files
+- **Batch Operations**: Multiple file selection and actions
 
 ### 🔧 **System Integration**
-- **Windows Taskbar Integration** — Progress indicators and jump lists
-- **Start Menu Integration** — Proper app registration and shortcuts
-- **File Associations** — Open media files directly in MyCircle
-- **Protocol Handlers** — Handle mycircle:// URLs for deep linking
-- **Auto-Startup** — Optional start with Windows
-
-### 🎵 **Media & Playback Desktop Features**
-- **Hardware Acceleration** — GPU-accelerated video playback
-- **Picture-in-Picture** — Continue watching while browsing
-- **Media Keys Support** — Control playback with keyboard media keys
-- **Subtitle Support** — Load and display subtitles for videos
-- **Audio Visualization** — Real-time audio spectrum display
-
-### 🔒 **Desktop Security & Privacy**
-- **Windows Hello Integration** — Biometric authentication
-- **Secure Credential Storage** — Windows Credential Manager integration
-- **App Lock** — Auto-lock after inactivity
-- **Private Browsing Mode** — Incognito-like session without saving data
-
-### 📊 **Performance & System Resources**
-- **Background Processing** — Upload/download in background
-- **Memory Management** — Efficient memory usage for large media libraries
-- **Battery Optimization** — Power-saving modes when on battery
-- **Network Optimization** — Smart bandwidth management
+- **Windows Taskbar**: Progress indicators and jump lists
+- **Start Menu**: Proper app registration and shortcuts
+- **Auto-Startup**: Optional start with Windows
+- **Protocol Handlers**: Handle mycircle:// URLs for deep linking
+- **Windows Hello**: Biometric authentication support
 
 ---
 
-## 🚀 Desktop App Future Enhancements
+## 🎨 Modern Design System
 
-### 🤖 **AI-Powered Features**
-- **Smart Content Recommendations** — AI-driven personalized content suggestions
-- **Automated Tagging** — AI-powered content categorization and tagging
-- **Face Recognition** — Smart photo organization with face detection
-- **Content Moderation** — AI-assisted community moderation
-- **Sentiment Analysis** — AI-powered mood-based content discovery
-- **Duplicate Detection** — AI identification of duplicate or similar content
+### 🎭 **Animation Library**
+| Animation Type | Use Case | Duration |
+|----------------|----------|----------|
+| **FadeIn** | Content appearance | 300ms |
+| **SlideIn** | Screen transitions | 300ms |
+| **ScaleIn** | Button interactions | 200ms |
+| **Shimmer** | Loading states | 1500ms |
+| **Bounce** | Button feedback | 200ms |
+| **Pulse** | Status indicators | 1000ms |
+| **Staggered** | List animations | 100ms delay |
 
-### 🌐 **Advanced Networking**
-- **P2P File Sharing** — Direct file transfers between users
-- **Offline Synchronization** — Smart sync when connection is restored
-- **Bandwidth Management** — Adaptive quality based on connection speed
-- **VPN Integration** — Built-in privacy protection
-- **Mesh Networking** — Decentralized content sharing
+### 🌈 **Color Themes**
+| Theme | Primary | Secondary | Tertiary |
+|-------|---------|-----------|----------|
+| **Default** | #FF5722 | #FFA000 | #FFC107 |
+| **Sunset** | #FF6B6B | #4ECDC4 | #FFE66D |
+| **Ocean** | #0077BE | #00A8E8 | #00C9FF |
+| **Forest** | #10B981 | #059669 | #34D399 |
 
-### 🎮 **Gaming Integration**
-- **Discord Rich Presence** — Show MyCircle activity in Discord
-- **Game Streaming** — Integrated game streaming capabilities
-- **Achievement System** — Gamified social interactions
-- **Tournament Mode** — Competitive social discovery events
-- **Voice Chat Integration** — In-app voice communication
-
-### � **Analytics & Insights**
-- **Usage Analytics** — Detailed user behavior insights
-- **Content Performance** — Advanced media analytics
-- **Social Graph Analysis** — Network visualization and insights
-- **Trend Prediction** — AI-powered trend forecasting
-- **Engagement Metrics** — Real-time interaction tracking
-
-### 🔧 **Developer Experience**
-- **Plugin System** — Extensible architecture for third-party integrations
-- **API Access** — RESTful API for external integrations
-- **Webhook Support** — Real-time event notifications
-- **Custom Themes** — User-created theme marketplace
-- **Scripting Engine** — Custom automation and workflows
-
-### 🥽 **VR/AR Integration**
-- **Virtual Social Spaces** — 3D social environments
-- **AR Content Overlay** — Augmented reality media experiences
-- **VR Chat Rooms** — Immersive virtual meetings
-- **Haptic Feedback** — Advanced touch interactions
-
-### 📱 **Cross-Device Continuity**
-- **Seamless Sync** — Instant sync across all devices
-- **Cloud Clipboard** — Universal clipboard functionality
-- **Unified Notifications** — Consistent notifications across platforms
-- **Device Handover** — Transfer sessions between devices
-
----
-
-```
-MyCircle/
-├── lib/                          # Flutter App
-│   ├── main.dart                 # App entry + Supabase init + MultiProvider
-│   ├── supabase_options.dart     # Supabase configuration (auto-generated)
-│   ├── models/
-│   │   ├── media_item.dart       # Media data model (Firestore mapping)
-│   │   └── social_user.dart      # Social user model (Firestore mapping)
-│   ├── providers/
-│   │   ├── auth_provider.dart    # Supabase authentication state
-│   │   ├── media_provider.dart   # Supabase media feed & pagination
-│   │   ├── notification_provider.dart  # Supabase real-time notifications
-│   │   ├── social_provider.dart  # Supabase social discovery & nearby users
-│   │   ├── theme_provider.dart   # Theme persistence & management
-│   │   └── window_provider.dart  # Desktop window management (Windows)
-│   ├── services/
-│   │   ├── desktop_services.dart # Desktop-specific services (hotkeys, tray)
-│   │   └── notification_service.dart # Native notification handling
-│   ├── screens/
-│   │   ├── home/
-│   │   │   ├── home_screen.dart
-│   │   │   └── ultimate_home_screen.dart
-│   │   ├── social/
-│   │   │   ├── meet_me_screen.dart        # Dual-mode discovery hub
-│   │   │   └── social_profile_screen.dart # Detailed user profiles
-│   │   ├── search/
-│   │   │   ├── search_screen.dart
-│   │   │   └── advanced_search_screen.dart
-│   │   ├── media/
-│   │   │   ├── upload_screen.dart          # Firebase Storage uploads
-│   │   │   ├── discover_screen.dart
-│   │   │   └── media_viewer_screen.dart    # Fullscreen media viewer (Desktop)
-│   │   └── user/
-│   │       ├── profile_screen.dart
-│   │       ├── notifications_screen.dart
-│   │       ├── chat_screen.dart
-│   │       └── settings_screen.dart        # Desktop-specific settings
-│   └── widgets/
-│       ├── social/
-│       │   ├── user_card.dart           # Proximity card with pulsars
-│       │   ├── swipe_deck.dart          # Tinder-style swipe stack
-│       │   └── filter_bottom_sheet.dart # Discovery filter panel
-│       ├── media/
-│       │   ├── media_card.dart
-│       │   ├── media_player.dart
-│       │   ├── content_card.dart
-│       │   └── desktop_media_controls.dart # Desktop media controls
-│       ├── navigation/
-│       │   ├── main_wrapper.dart        # Bottom nav + screen management
-│       │   └── custom_bottom_nav.dart
-│       ├── desktop/
-│       │   ├── window_title_bar.dart    # Custom title bar (Windows)
-│       │   ├── system_tray.dart         # System tray integration
-│       │   └── context_menu.dart        # Right-click menus
-│       └── common/
-│           ├── connectivity_banner.dart
-│           └── keyboard_shortcuts.dart   # Global hotkey handling
-│
-├── windows/                      # Windows Desktop Platform
-│   ├── CMakeLists.txt
-│   ├── flutter/
-│   │   ├── CMakeLists.txt
-│   │   ├── generated_plugin_registrant.cc
-│   │   ├── generated_plugin_registrant.h
-│   │   └── ephemeral/
-│   └── runner/
-│       ├── CMakeLists.txt
-│       ├── Runner.rc
-│       ├── flutter_window.cpp
-│       ├── main.cpp
-│       ├── resources/
-│       ├── utils.cpp
-│       ├── utils.h
-│       ├── win32_window.cpp
-│       └── win32_window.h
-│
-├── assets/                       # Fonts, images, icons
-├── web/                          # Flutter web configuration
-├── android/                      # Android platform (google-services.json)
-├── ios/                          # iOS platform (GoogleService-Info.plist)
-├── macos/                        # macOS platform (future support)
-└── pubspec.yaml                  # Flutter dependencies
-```
-
----
-
-## 🎨 Design System
-
-| Element | Implementation |
-|---------|---------------|
-| **Typography** | DM Sans (Regular, Medium, Bold, Black) |
-| **Color Palette** | HSL-tuned vibrant primaries with dark mode variants |
-| **Components** | Glassmorphic cards, pulsating status rings, gradient overlays |
-| **Animations** | Gesture-driven swipes, shimmer loading, smooth page transitions |
-| **Layout** | Responsive grids, staggered masonry, slivers |
+### 📐 **Component System**
+- **Glassmorphic Cards**: Frosted glass with backdrop blur
+- **Gradient Overlays**: Dynamic gradients for depth
+- **Micro-interactions**: Hover states, button feedback
+- **Loading Skeletons**: Shimmer effects for content loading
+- **Status Indicators**: Pulsing animations for live content
 
 ---
 
@@ -353,30 +198,33 @@ MyCircle/
 | Technology | Purpose |
 |-----------|---------|
 | **Flutter 3.10+** | Cross-platform UI framework |
-| **Provider** | State management |
-| **CachedNetworkImage** | Optimized image loading & caching |
+| **Provider** | Reactive state management |
+| **Supabase Flutter** | Backend integration and auth |
+| **CachedNetworkImage** | Optimized image loading |
 | **Video Player + Chewie** | Native video playback |
-| **Connectivity Plus** | Network status monitoring |
-| **Shimmer** | Premium loading skeletons |
 | **Window Manager** | Desktop window management |
 | **Hotkey Manager** | Global keyboard shortcuts |
 | **System Tray** | System tray integration |
+| **Flutter Acrylic** | Windows transparency effects |
+| **Desktop Drop** | Drag & drop functionality |
 
 ### Backend (Supabase)
-| Technology | Purpose |
-|-----------|---------|
+| Service | Purpose |
+|---------|---------|
 | **Supabase Auth** | Email/password authentication |
 | **Supabase Database** | Real-time PostgreSQL database |
-| **Supabase Storage** | File uploads & media hosting |
+| **Supabase Storage** | File uploads and media hosting |
+| **Supabase Realtime** | Live updates and notifications |
+| **Supabase Functions** | Serverless backend logic |
 
 ### Desktop Platform (Windows)
 | Technology | Purpose |
 |-----------|---------|
-| **Flutter Desktop** | Native Windows application |
 | **Win32 API** | Native Windows integration |
 | **Windows Notifications** | System notification toasts |
 | **File Picker** | Native file dialogs |
-| **URL Launcher** | Open links in default browser |
+| **URL Launcher** | Browser integration |
+| **Tray Manager** | System tray management |
 
 ---
 
@@ -386,48 +234,10 @@ MyCircle/
 
 - **Flutter SDK** ≥ 3.10.0
 - **Supabase Project** configured at [supabase.com](https://supabase.com)
-- **Android Studio** / **Xcode** (for mobile development)
 - **Visual Studio 2022** (for Windows Desktop)
-  - **Edition**: Community (Stable) - *Preview versions are NOT supported*
-  - **Workload**: "Desktop development with C++" must be selected during installation
-- **Windows SDK** (latest version, included with Visual Studio 2022)
-
-### Desktop-Specific Setup
-
-#### Windows Desktop Development
-
-1. **Enable Desktop Support** in Flutter:
-   ```bash
-   flutter config --enable-windows-desktop
-   ```
-
-2. **Install Visual Studio Dependencies**:
-   - Open Visual Studio Installer
-   - Modify your Visual Studio installation
-   - Select "Desktop development with C++" workload
-   - Ensure Windows SDK is installed
-
-3. **Verify Desktop Setup**:
-   ```bash
-   flutter doctor
-   flutter devices  # Should show "Windows (desktop)"
-   ```
-
-#### Desktop Dependencies
-
-Add these to your `pubspec.yaml` for enhanced desktop features:
-
-```yaml
-dependencies:
-  # Desktop-specific packages
-  window_manager: ^0.3.0          # Window management
-  hotkey_manager: ^0.1.7          # Global hotkeys
-  system_tray: ^2.0.3             # System tray integration
-  bitsdojo_window: ^0.1.5         # Custom window decorations
-  win32: ^5.0.0                   # Windows API access
-  url_launcher: ^6.1.0            # Open URLs in default browser
-  file_picker: ^5.2.0             # Native file dialogs
-```
+  - **Workload**: "Desktop development with C++"
+  - **Windows SDK**: Latest version
+- **Git** for version control
 
 ### Installation
 
@@ -439,12 +249,15 @@ cd MyCircle
 # 2. Install Flutter dependencies
 flutter pub get
 
-# 3. Configure Supabase (if not already done)
+# 3. Configure Supabase
 # - Get your project URL and anon key from Supabase dashboard
 # - Update supabase_options.dart with your credentials
+
+# 4. Enable desktop support
+flutter config --enable-windows-desktop
 ```
 
-### Running
+### Running the Application
 
 #### Desktop (Windows)
 ```bash
@@ -454,9 +267,8 @@ flutter run -d windows
 # Build release version
 flutter build windows
 
-# Create distributable .msix package
+# Create distributable package
 flutter build windows --release
-flutter pub run msix:create
 ```
 
 #### Mobile & Web
@@ -468,34 +280,95 @@ flutter run -d android
 flutter run -d ios
 
 # Web
-flutter run -d chrome    # Chrome
-flutter run -d edge      # Microsoft Edge
-
-# Connected device
-flutter run
+flutter run -d chrome
+flutter run -d edge
 ```
 
-#### Development Commands
+### Development Commands
 ```bash
-# Enable desktop for all platforms
-flutter config --enable-windows-desktop
-flutter config --enable-macos-desktop
-flutter config --enable-linux-desktop
-
 # Check all available devices
 flutter devices
 
 # Clean and rebuild
-flutter clean && flutter pub get && flutter run -d windows
+flutter clean && flutter pub get
+
+# Run with hot reload
+flutter run --hot
+
+# Build for different platforms
+flutter build apk
+flutter build ios
+flutter build web
 ```
 
-### Supabase Tables
+---
 
-| Table | Purpose |
-|-------|---------|
-| `users` | User profiles, preferences, social data |
-| `media` | Uploaded media metadata (title, URL, tags, stats) |
-| `notifications` | In-app notifications (likes, follows, system) |
+## 📊 Supabase Database Schema
+
+### Core Tables
+| Table | Purpose | Key Fields |
+|-------|---------|------------|
+| `users` | User profiles | id, username, email, avatar_url |
+| `media_items` | Media content | id, title, url, thumbnail_url, user_id |
+| `live_streams` | Streaming data | id, title, stream_key, status, user_id |
+| `notifications` | User notifications | id, user_id, title, body, type |
+| `user_follows` | Social connections | follower_id, following_id |
+| `media_likes` | Content engagement | media_id, user_id |
+| `stream_chat_messages` | Live chat | id, stream_id, user_id, message |
+
+### Real-time Subscriptions
+- **Live Streams**: Subscribe to active streams
+- **Notifications**: Real-time notification updates
+- **Chat Messages**: Live streaming chat
+- **User Status**: Online/offline status changes
+
+---
+
+## 🔧 Configuration
+
+### Supabase Setup
+1. Create a new project at [supabase.com](https://supabase.com)
+2. Run the provided SQL schema in the Supabase SQL editor
+3. Enable Row Level Security (RLS) for all tables
+4. Configure authentication providers
+5. Set up storage buckets for media uploads
+
+### Environment Variables
+```dart
+// lib/supabase_options.dart
+const supabaseUrl = 'YOUR_SUPABASE_URL';
+const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
+```
+
+### Desktop Configuration
+```yaml
+# pubspec.yaml - Desktop dependencies
+dependencies:
+  window_manager: ^0.3.8
+  system_tray: ^2.0.3
+  hotkey_manager: ^0.1.8
+  win32: ^5.1.0
+  tray_manager: ^0.2.1
+  desktop_drop: ^0.4.0
+  flutter_acrylic: ^1.1.3
+```
+
+---
+
+## 🎯 Performance Features
+
+### 🚀 **Optimizations**
+- **Lazy Loading**: Content loads as needed
+- **Image Caching**: Efficient image memory management
+- **Infinite Scroll**: Smooth pagination for large datasets
+- **Background Processing**: Upload/download in background
+- **Memory Management**: Efficient resource usage
+
+### 📊 **Analytics & Monitoring**
+- **Usage Analytics**: Detailed user behavior tracking
+- **Performance Metrics**: Real-time app performance data
+- **Error Tracking**: Comprehensive error logging and reporting
+- **Crash Reporting**: Automatic crash detection and reporting
 
 ---
 
@@ -507,6 +380,13 @@ flutter clean && flutter pub get && flutter run -d windows
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+### Development Guidelines
+- Follow Flutter/Dart coding standards
+- Write comprehensive tests for new features
+- Update documentation for API changes
+- Ensure accessibility compliance
+- Test on multiple platforms
+
 ---
 
 ## 📄 License
@@ -515,6 +395,17 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ---
 
+## 🙏 Acknowledgments
+
+- **Flutter Team** for the amazing cross-platform framework
+- **Supabase** for the excellent backend-as-a-service platform
+- **Material Design Team** for the design system inspiration
+- **Open Source Community** for the incredible packages and tools
+
+---
+
 <p align="center">
-  Built with ❤️ by <a href="https://github.com/getuser-shivam">Shivam</a>
+  <strong>Built with ❤️ by <a href="https://github.com/getuser-shivam">Shivam</a></strong>
+  <br>
+  <em>Enterprise-grade social discovery and media platform</em>
 </p>
