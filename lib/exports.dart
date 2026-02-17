@@ -95,25 +95,44 @@ export 'screens/search/advanced_search_screen.dart';
 export 'screens/streaming/streaming_screen.dart';
 
 // Widgets - Common
-export 'widgets/common/glassmorphic_card.dart';
+// Premium Glassmorphic Components
 export 'widgets/common/glassmorphic_container.dart';
+export 'widgets/common/glassmorphic_card.dart';
+export 'widgets/common/glassmorphic_card_enhanced.dart';
+export 'widgets/common/glassmorphic_card_premium.dart';
+export 'widgets/common/glassmorphic_button.dart';
+export 'widgets/common/glassmorphic_dialog.dart';
+export 'widgets/common/glassmorphic_text_field.dart';
+export 'widgets/common/glassmorphic_list_tile.dart';
+export 'widgets/common/glassmorphic_list_tile_premium.dart';
+export 'widgets/common/glassmorphic_bottom_sheet.dart';
+export 'widgets/common/glassmorphic_bottom_sheet_premium.dart';
 export 'widgets/common/premium_animations.dart';
 export 'widgets/common/premium_navigation_bar.dart';
 export 'widgets/common/premium_floating_action_button.dart';
 export 'widgets/common/premium_app_bar.dart';
 export 'widgets/common/premium_loading_indicator.dart';
-export 'widgets/common/glassmorphic_button.dart';
-export 'widgets/common/glassmorphic_dialog.dart';
-export 'widgets/common/glassmorphic_text_field.dart';
-export 'widgets/common/glassmorphic_card_enhanced.dart';
-export 'widgets/common/glassmorphic_list_tile.dart';
-export 'widgets/common/glassmorphic_bottom_sheet.dart';
+export 'widgets/common/search_bar.dart';
+export 'widgets/common/connectivity_banner.dart';
+export 'widgets/common/offline_banner.dart';
+export 'widgets/common/content_guard.dart';
+export 'widgets/common/ai_search_suggestions.dart';
+export 'widgets/common/animations.dart';
+export 'widgets/common/accessibility.dart';
 
 // Widgets - Home
 export 'widgets/home/premium_home_card.dart';
+export 'widgets/home/trending_banner.dart';
+export 'widgets/home/category_tabs.dart';
 
 // Widgets - Media
 export 'widgets/media/enhanced_media_card.dart';
+export 'widgets/media/media_card.dart';
+export 'widgets/media/media_player.dart';
+export 'widgets/media/optimized_media_grid.dart';
+export 'widgets/media/lazy_load_media_grid.dart';
+export 'widgets/media/content_card.dart';
+export 'widgets/media/category_chips.dart';
 
 // Widgets - Navigation
 export 'widgets/navigation/bottom_navigation_bar.dart';
