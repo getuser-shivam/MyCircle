@@ -140,12 +140,12 @@ class AuthProvider extends ChangeNotifier {
   Future<void> signOut() async {
     try {
       _setLoading(true);
+      _clearErrors();
       await _authRepository.signOut();
       
       _currentUser = null;
       _userProfile = null;
       _isAuthenticated = false;
-      _clearErrors();
     } on AuthException catch (e) {
       _setError('Failed to sign out: ${e.message}');
     } catch (e) {
@@ -204,7 +204,6 @@ class AuthProvider extends ChangeNotifier {
     try {
       _userProfile = await _userRepository.getUserProfile(userId);
     } catch (e) {
-      // Don't set error for profile fetch, just log it
       debugPrint('Failed to fetch user profile: $e');
     }
   }
@@ -265,9 +264,11 @@ class AuthProvider extends ChangeNotifier {
     _signInError = null;
     _signUpError = null;
     _profileError = null;
+    notifyListeners();
   }
 
   void _clearProfileError() {
     _profileError = null;
+    notifyListeners();
   }
 }
