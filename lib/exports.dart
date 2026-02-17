@@ -97,6 +97,8 @@ export 'widgets/common/connectivity_banner.dart';
 export 'widgets/common/offline_banner.dart';
 export 'widgets/common/content_guard.dart';
 export 'widgets/common/ai_search_suggestions.dart';
+export 'widgets/common/animations.dart';
+export 'widgets/common/accessibility.dart';
 
 // Widgets - Forms
 export 'widgets/forms/search_form.dart';
@@ -109,6 +111,9 @@ export 'widgets/feedback/error_widget.dart';
 
 // Widgets - Enterprise
 export 'widgets/enterprise/premium_components.dart';
+
+// Widgets - Onboarding
+export 'widgets/onboarding/onboarding_screen.dart';
 
 // Utils
 export 'utils/constants.dart';
