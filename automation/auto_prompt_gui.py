@@ -101,6 +101,10 @@ class AutoPromptGUI:
         self._active_workflow: Optional[Workflow] = None
         self._step_frames = []
         self._all_workflows = dict(self.engine.builtin_workflows)
+        self._auto_launch_var = tk.BooleanVar(value=True)
+        self._auto_focus_var = tk.BooleanVar(value=True)
+        self._custom_hotkey_var = tk.StringVar(value="")
+        self._step_cooldown_var = tk.StringVar(value="")  # Empty = use default
         self._loop_var = tk.BooleanVar(value=False)
         self._loop_interval_var = tk.StringVar(value="2")  # 2 mins
         # load saved
@@ -324,6 +328,13 @@ class AutoPromptGUI:
         )
         mode_combo.pack(side=tk.LEFT, padx=(0, 10))
         mode_combo.bind("<<ComboboxSelected>>", self._on_mode_change)
+
+        # Step Cooldown (Global)
+        tk.Label(config_bar, text="Step Cooldown (s):", font=("Segoe UI", 9),
+                 bg=COLORS["bg_card"], fg=COLORS["text_dim"]).pack(side=tk.LEFT, padx=(8, 4))
+        tk.Entry(config_bar, textvariable=self._step_cooldown_var, width=5,
+                 font=("Cascadia Code", 9), bg=COLORS["bg_input"], fg=COLORS["text"],
+                 relief="flat", justify="center").pack(side=tk.LEFT, padx=(0, 8))
 
         # ── Vertical split: steps editor on top, execution log on bottom ──
         content_pane = tk.PanedWindow(right, orient=tk.VERTICAL,
@@ -656,7 +667,6 @@ class AutoPromptGUI:
         name_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
         name_var.trace_add("write", lambda *a, i=index, v=name_var: self._update_step_name(i, v.get()))
 
-        # Enabled toggle
         enabled_var = tk.BooleanVar(value=step.enabled)
         enabled_cb = tk.Checkbutton(
             header, text="Enabled", variable=enabled_var,
@@ -666,6 +676,19 @@ class AutoPromptGUI:
             command=lambda i=index, v=enabled_var: self._toggle_step(i, v.get()),
         )
         enabled_cb.pack(side=tk.RIGHT, padx=(4, 0))
+
+        # Delay input
+        tk.Label(header, text="Delay(s):", font=("Segoe UI", 8),
+                 bg=COLORS["bg_input"], fg=COLORS["text_dim"]).pack(side=tk.RIGHT, padx=(4, 0))
+        delay_var = tk.StringVar(value=str(step.delay_after))
+        delay_entry = tk.Entry(
+            header, textvariable=delay_var, width=4,
+            font=("Segoe UI", 8), bg=COLORS["bg_input"],
+            fg=COLORS["text"], insertbackground=COLORS["text"],
+            relief="flat", bd=0, justify="center"
+        )
+        delay_entry.pack(side=tk.RIGHT, padx=(0, 2))
+        delay_var.trace_add("write", lambda *a, i=index, v=delay_var: self._update_step_delay(i, v.get()))
 
         # Move / delete buttons
         btn_frame = tk.Frame(header, bg=COLORS["bg_input"])
@@ -720,6 +743,13 @@ class AutoPromptGUI:
     def _update_step_prompt(self, index: int, text_widget: tk.Text):
         if self._active_workflow and 0 <= index < len(self._active_workflow.steps):
             self._active_workflow.steps[index].prompt = text_widget.get("1.0", "end-1c")
+
+    def _update_step_delay(self, index: int, value: str):
+        if self._active_workflow and 0 <= index < len(self._active_workflow.steps):
+            try:
+                self._active_workflow.steps[index].delay_after = float(value)
+            except ValueError:
+                pass  # Ignore invalid input while typing
 
     def _toggle_step(self, index: int, enabled: bool):
         if self._active_workflow and 0 <= index < len(self._active_workflow.steps):
@@ -935,9 +965,19 @@ class AutoPromptGUI:
         self._stop_btn.config(state="normal")
         self._status_var.set("Running...")
 
-        # Reset step visuals
+        # Reset step visuals & Apply Global Cooldown
+        global_delay = None
+        if self._step_cooldown_var.get().strip():
+            try:
+                global_delay = float(self._step_cooldown_var.get().strip())
+            except ValueError:
+                pass
+
         for step in self._active_workflow.steps:
             step.status = "pending"
+            if global_delay is not None:
+                step.delay_after = global_delay
+        
         self._render_steps()
 
         # Update loop settings

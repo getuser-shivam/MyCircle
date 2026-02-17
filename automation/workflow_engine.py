@@ -537,37 +537,129 @@ class WorkflowEngine:
         # === Analyze, Fix & Sync ===
         wf4 = Workflow(
             name="Analyze, Fix & Sync",
-            description="Continuous improvement: analyze needs → fix/refactor → GitHub sync"
+            description="Deep project maintenance: analyze → organize → GitHub sync"
         )
         wf4.add_step(WorkflowStep(
             name="1. Analyze Needs",
             prompt=(
-                "Analyze the project at {project_path}. "
-                "1. Run 'flutter analyze' and identify core issues.\n"
-                "2. Check 'git status' for uncommitted changes.\n"
-                "3. Identify what needs to be fixed, refactored, or organized."
+                "Deeply analyze the project at {project_path} and identify fixes needed. "
+                "Tasks:\n"
+                "- Run and review 'flutter analyze' results for errors/warnings.\n"
+                "- Review 'git status' and 'git diff' for uncommitted or dirty code.\n"
+                "- Identify files that are too large or logically misplaced.\n"
+                "Provide a summary of what needs to be fixed and a plan for organization."
             ),
             delay_after=5.0,
         ))
         wf4.add_step(WorkflowStep(
-            name="2. Organize & Refactor",
+            name="2. Organize & Fix",
             prompt=(
-                "Based on the analysis, organize the file structure and fix issues. "
-                "Move related widgets into subfolders, ensure coding standards are met, "
-                "and fix any syntax or linting errors found."
+                "Execute the maintenance plan for {project_path}:\n"
+                "- Fix the syntax errors and linting warnings identified in analysis.\n"
+                "- Organize the 'lib/' structure: group related widgets, providers, and models into sub-directories.\n"
+                "- Ensure all files have proper exports and matching naming conventions (lowercase_with_underscores).\n"
+                "Refactor code for better readability and structure."
             ),
             delay_after=10.0,
         ))
         wf4.add_step(WorkflowStep(
             name="3. Sync to GitHub",
             prompt=(
-                "Commit all changes to the local repository with a clear message "
-                "summarizing the fixes and organization done. "
-                "Push the changes to the remote branch on GitHub."
+                "Finalize the maintenance cycle and sync to GitHub.\n"
+                "Tasks:\n"
+                "- Run a final 'flutter analyze' to ensure no new errors were introduced.\n"
+                "- Commit all changes locally with a professional, detailed message (e.g., 'refactor: organize lib structure and fix linting errors').\n"
+                "- Push the changes to the origin branch.\n"
+                "Confirm when the sync is complete."
             ),
             delay_after=5.0,
         ))
         workflows["Analyze, Fix & Sync"] = wf4
+
+        # === Autonomous Feature Architect ===
+        wf5 = Workflow(
+            name="Autonomous Feature Architect",
+            description="End-to-end full-stack development: discovery → implementation → test → deploy"
+        )
+        wf5.add_step(WorkflowStep(
+            name="1. Audit & Blueprint",
+            prompt=(
+                "You are the Lead Mobile Architect for 'MyCircle', a premium media app.\n"
+                "Analyze {project_path} and identify the next high-value feature or critical refactor needed.\n"
+                "Constraints:\n"
+                "- Architecture: MVVM with Provider for state management.\n"
+                "- Backend: Supabase (Auth, Database, Storage).\n"
+                "- UI Style: Premium Glassmorphism (Flutter Acrylic) & DM Sans typography.\n"
+                "Output a technical blueprint including:\n"
+                "- New models/entities needed (mapped to Supabase tables).\n"
+                "- Logic layers (Providers/Repositories).\n"
+                "- UI screen designs and widget breakdown.\n"
+                "- Provide a clear execution plan."
+            ),
+            delay_after=5.0,
+        ))
+        wf5.add_step(WorkflowStep(
+            name="2. Core Logic Implementation",
+            prompt=(
+                "Implement the logic layer for the blueprint in {project_path}.\n"
+                "Think step-by-step about the state flow:\n"
+                "1. Create Data Models & DTOs (ensure `fromJson`/`toJson` for Supabase).\n"
+                "2. Implement Repositories/Services (isolate Supabase calls here).\n"
+                "3. Implement Providers (`ChangeNotifier`) to manage state and expose getters.\n"
+                "Rules:\n"
+                "- Use the `AntigravityProvider` pattern.\n"
+                "- Handle loading states (`_isLoading`) and error handling gracefully.\n"
+                "- Ensure strict type safety."
+            ),
+            delay_after=10.0,
+        ))
+        wf5.add_step(WorkflowStep(
+            name="3. Premium UI Development",
+            prompt=(
+                "Build the UI for the new feature in {project_path}.\n"
+                "Aesthetics: 'Ultimate Home Screen' quality.\n"
+                "- Use `flutter_acrylic` for window effects (if desktop).\n"
+                "- Use `Chewie` if video playback is involved.\n"
+                "- Implement smooth animations and glassmorphism gradients.\n"
+                "- Use `Consumer<Provider>` to reactively rebuild widgets.\n"
+                "Focus on a premium, wow-factor user experience."
+            ),
+            delay_after=10.0,
+        ))
+        wf5.add_step(WorkflowStep(
+            name="4. Verification & Testing",
+            prompt=(
+                "Secure the feature in {project_path} with tests.\n"
+                "- Write unit tests for the new Providers and Repositories (mock Supabase calls).\n"
+                "- Write widget tests for critical UI components (pumpWidget, verify finders).\n"
+                "- Run 'flutter test' to ensure everything passes.\n"
+                "Verify high code coverage for the new module."
+            ),
+            delay_after=10.0,
+        ))
+        wf5.add_step(WorkflowStep(
+            name="5. Polish & Performance",
+            prompt=(
+                "Final cleanup for {project_path}.\n"
+                "- Run 'flutter analyze' and fix ALL linting issues.\n"
+                "- Optimize performance: use `const` constructors, `RepaintBoundary` for complex animations.\n"
+                "- Ensure all public members are documented.\n"
+                "- Check for memory leaks (disposed controllers).\n"
+                "Make the code production-ready."
+            ),
+            delay_after=5.0,
+        ))
+        wf5.add_step(WorkflowStep(
+            name="6. Sync & Ship",
+            prompt=(
+                "Commit and push the new feature for {project_path}.\n"
+                "- Create a detailed commit message describing the architecture and features added.\n"
+                "- Push the changes to GitHub.\n"
+                "Provide a final summary of the new feature."
+            ),
+            delay_after=5.0,
+        ))
+        workflows["Autonomous Feature Architect"] = wf5
 
         return workflows
 

@@ -9,6 +9,26 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "build/**"
+    - "lib/generated/**"
+  
+  errors:
+    # Treat missing documentation as warnings
+    missing_documentation: warning
+    
+    # Treat unused imports as errors
+    unused_import: error
+    
+    # Treat unused local variables as errors
+    unused_local_variable: error
+    
+    # Treat dead code as errors
+    dead_code: error
+
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`
