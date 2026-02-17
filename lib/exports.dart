@@ -1,3 +1,10 @@
+// Core
+export 'core/constants/app_constants.dart';
+export 'core/theme/app_theme.dart';
+export 'core/errors/app_exceptions.dart';
+export 'core/extensions/string_extensions.dart';
+export 'core/extensions/widget_extensions.dart';
+
 // Models
 export 'models/media_item.dart';
 export 'models/social_user.dart';
@@ -6,12 +13,16 @@ export 'models/stream_model.dart';
 export 'models/stream_chat_model.dart';
 export 'models/stream_viewer_model.dart';
 export 'models/dto.dart';
+export 'models/ai_chat.dart';
+export 'models/analytics.dart';
+export 'models/user.dart';
 
 // Repositories
 export 'repositories/media_repository.dart';
 export 'repositories/user_repository.dart';
 export 'repositories/stream_repository.dart';
 export 'repositories/auth_repository.dart';
+export 'repositories/analytics_repository.dart';
 
 // Providers
 export 'providers/auth_provider.dart';
@@ -33,6 +44,14 @@ export 'providers/enhanced_media_provider.dart';
 export 'providers/enhanced_auth_provider.dart';
 export 'providers/enhanced_stream_provider.dart';
 export 'providers/enhanced_social_provider.dart';
+export 'providers/ai_chat_provider.dart';
+export 'providers/analytics_provider.dart';
+export 'providers/recommendation_provider.dart';
+export 'providers/discovery_provider.dart';
+
+// Services
+export 'services/supabase_service.dart';
+export 'services/ai_chat_service.dart';
 
 // Screens - Home
 export 'screens/home/home_screen.dart';
@@ -48,6 +67,83 @@ export 'screens/media/upload_screen.dart';
 
 // Screens - Premium
 export 'screens/premium/subscription_tier_screen.dart';
+
+// Screens - Discovery
+export 'screens/discovery/premium_discovery_screen.dart';
+
+// Screens - User
+export 'screens/user/enhanced_profile_screen.dart';
+
+// Screens - AI Chat
+export 'screens/ai_chat/ai_chat_home_screen.dart';
+export 'screens/ai_chat/chat_screens.dart';
+export 'screens/ai_chat/enhanced_chat_screen.dart';
+
+// Screens - Analytics
+export 'screens/analytics/creator_analytics_dashboard.dart';
+
+// Screens - Dashboard
+export 'screens/dashboard/enterprise_dashboard.dart';
+
+// Screens - Desktop
+export 'screens/desktop/desktop_settings_screen.dart';
+
+// Screens - Search
+export 'screens/search/advanced_search_screen.dart';
+
+// Screens - Streaming
+export 'screens/streaming/streaming_screen.dart';
+
+// Widgets - Common
+export 'widgets/common/glassmorphic_card.dart';
+export 'widgets/common/premium_animations.dart';
+
+// Widgets - Home
+export 'widgets/home/premium_home_card.dart';
+
+// Widgets - Media
+export 'widgets/media/enhanced_media_card.dart';
+
+// Widgets - Navigation
+export 'widgets/navigation/bottom_navigation_bar.dart';
+
+// Widgets - Loading
+export 'widgets/loading/shimmer_widget.dart';
+
+// Widgets - Notifications
+export 'widgets/notifications/notification_widget.dart';
+
+// Widgets - Settings
+export 'widgets/settings/theme_selector_widget.dart';
+
+// Widgets - Social
+export 'widgets/social/user_card_widget.dart';
+
+// Widgets - Streaming
+export 'widgets/streaming/stream_widget.dart';
+
+// Widgets - AI Chat
+export 'widgets/ai_chat/ai_chat_widgets.dart';
+
+// Widgets - Analytics
+export 'widgets/analytics/analytics_overview_card.dart';
+
+// Widgets - Enterprise
+export 'widgets/enterprise/enterprise_widgets.dart';
+
+// Widgets - Feedback
+export 'widgets/feedback/feedback_widget.dart';
+
+// Widgets - Forms
+export 'widgets/forms/enhanced_form_fields.dart';
+
+// Widgets - Onboarding
+export 'widgets/onboarding/onboarding_widgets.dart';
+
+// Utils
+export 'utils/helpers.dart';
+export 'utils/validators.dart';
+export 'utils/formatters.dart';
 
 // Screens - Search
 export 'screens/search/search_screen.dart';

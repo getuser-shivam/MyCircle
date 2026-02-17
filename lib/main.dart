@@ -5,6 +5,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Local imports
 import 'exports.dart';
+import 'core/constants/app_constants.dart';
+import 'core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,19 +68,19 @@ class MyCircleApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
-          title: 'MyCircle',
-          debugShowCheckedModeBanner: false,
+          title: AppConstants.appName,
+          debugShowCheckedModeBanner: AppConstants.enableDebugBanner,
           theme: themeProvider.lightTheme,
           darkTheme: themeProvider.darkTheme,
           themeMode: themeProvider.themeMode,
           routes: {
-            '/': (context) => const MainWrapper(),
-            '/subscriptions': (context) => const SubscriptionTierScreen(),
-            '/advanced-search': (context) => const AdvancedSearchScreen(),
-            '/upload': (context) => const UploadScreen(),
+            AppConstants.homeRoute: (context) => const MainWrapper(),
+            AppConstants.subscriptionsRoute: (context) => const SubscriptionTierScreen(),
+            AppConstants.searchRoute: (context) => const AdvancedSearchScreen(),
+            AppConstants.uploadRoute: (context) => const UploadScreen(),
           },
           onGenerateRoute: (settings) {
-            if (settings.name == '/media') {
+            if (settings.name == AppConstants.mediaDetailRoute) {
               final args = settings.arguments as Map<String, dynamic>;
               return MaterialPageRoute(
                 builder: (context) => MediaDetailScreen(media: args['media']),
@@ -86,7 +88,7 @@ class MyCircleApp extends StatelessWidget {
             }
             return null;
           },
-          initialRoute: '/',
+          initialRoute: AppConstants.homeRoute,
         );
       },
     );
