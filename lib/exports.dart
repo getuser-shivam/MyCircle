@@ -105,6 +105,9 @@ export 'widgets/common/premium_loading_indicator.dart';
 export 'widgets/common/glassmorphic_button.dart';
 export 'widgets/common/glassmorphic_dialog.dart';
 export 'widgets/common/glassmorphic_text_field.dart';
+export 'widgets/common/glassmorphic_card_enhanced.dart';
+export 'widgets/common/glassmorphic_list_tile.dart';
+export 'widgets/common/glassmorphic_bottom_sheet.dart';
 
 // Widgets - Home
 export 'widgets/home/premium_home_card.dart';
