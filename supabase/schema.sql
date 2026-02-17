@@ -79,7 +79,67 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   media_id UUID REFERENCES public.media(id) ON DELETE CASCADE,
   content TEXT,
   is_read BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 7. Creator Analytics Table
+CREATE TABLE IF NOT EXISTS public.creator_analytics (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  creator_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  period_date DATE NOT NULL,
+  views INTEGER DEFAULT 0,
+  likes INTEGER DEFAULT 0,
+  comments INTEGER DEFAULT 0,
+  shares INTEGER DEFAULT 0,
+  engagement_rate DECIMAL(5,4) DEFAULT 0,
+  new_followers INTEGER DEFAULT 0,
+  total_revenue DECIMAL(10,2) DEFAULT 0,
+  demographic_data JSONB DEFAULT '{}',
+  geographic_data JSONB DEFAULT '{}',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 8. Content Performance Table
+CREATE TABLE IF NOT EXISTS public.content_performance (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  media_id UUID REFERENCES public.media(id) ON DELETE CASCADE NOT NULL,
+  creator_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  views INTEGER DEFAULT 0,
+  watch_time_seconds INTEGER DEFAULT 0,
+  retention_rate DECIMAL(5,4) DEFAULT 0,
+  revenue_generated DECIMAL(10,2) DEFAULT 0,
+  traffic_sources JSONB DEFAULT '{}',
+  performance_date DATE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 9. Revenue Transactions Table
+CREATE TABLE IF NOT EXISTS public.revenue_transactions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  creator_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  transaction_type TEXT CHECK (transaction_type IN ('ad', 'subscription', 'sponsorship', 'donation')) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  source TEXT,
+  media_id UUID REFERENCES public.media(id) ON DELETE SET NULL,
+  metadata JSONB DEFAULT '{}',
+  transaction_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 10. Creator Payouts Table
+CREATE TABLE IF NOT EXISTS public.creator_payouts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  creator_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  total_amount DECIMAL(10,2) NOT NULL,
+  period_start DATE NOT NULL,
+  period_end DATE NOT NULL,
+  status TEXT CHECK (status IN ('pending', 'processing', 'paid', 'failed')) DEFAULT 'pending',
+  payout_method JSONB DEFAULT '{}',
+  processed_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- ENABLE ROW LEVEL SECURITY (RLS)
@@ -89,6 +149,10 @@ ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE likes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE follows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE creator_analytics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE content_performance ENABLE ROW LEVEL SECURITY;
+ALTER TABLE revenue_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE creator_payouts ENABLE ROW LEVEL SECURITY;
 
 -- POLICIES (Basic Enterprise Defaults)
 -- Everyone can view public profiles
@@ -102,3 +166,19 @@ CREATE POLICY "Public media is viewable by everyone" ON media FOR SELECT USING (
 CREATE POLICY "Users can insert own media" ON media FOR INSERT WITH CHECK (auth.uid() = author_id);
 CREATE POLICY "Users can update own media" ON media FOR UPDATE USING (auth.uid() = author_id);
 CREATE POLICY "Users can delete own media" ON media FOR DELETE USING (auth.uid() = author_id);
+
+-- Analytics policies - Creators can only view their own analytics
+CREATE POLICY "Creators can view own analytics" ON creator_analytics FOR SELECT USING (auth.uid() = creator_id);
+CREATE POLICY "Creators can update own analytics" ON creator_analytics FOR UPDATE USING (auth.uid() = creator_id);
+
+-- Content performance policies
+CREATE POLICY "Creators can view own content performance" ON content_performance FOR SELECT USING (auth.uid() = creator_id);
+CREATE POLICY "Creators can update own content performance" ON content_performance FOR UPDATE USING (auth.uid() = creator_id);
+
+-- Revenue transactions policies
+CREATE POLICY "Creators can view own revenue transactions" ON revenue_transactions FOR SELECT USING (auth.uid() = creator_id);
+CREATE POLICY "Creators can insert own revenue transactions" ON revenue_transactions FOR INSERT WITH CHECK (auth.uid() = creator_id);
+
+-- Creator payouts policies
+CREATE POLICY "Creators can view own payouts" ON creator_payouts FOR SELECT USING (auth.uid() = creator_id);
+CREATE POLICY "Creators can update own payouts" ON creator_payouts FOR UPDATE USING (auth.uid() = creator_id);
