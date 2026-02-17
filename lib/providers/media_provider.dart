@@ -1,11 +1,11 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/media_item.dart';
-export '../models/media_item.dart';
+import '../services/media_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class MediaProvider extends ChangeNotifier {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  final MediaService _mediaService = MediaService();
   
   // Separate controllers for different feeds to avoid collisions
   final PagingController<int, MediaItem> _latestPagingController =
@@ -50,7 +50,7 @@ class MediaProvider extends ChangeNotifier {
 
   Future<void> _fetchPage(PagingController<int, MediaItem> controller, int pageKey, {String? category, String? query}) async {
     try {
-      final newItems = await _getMediaFromSupabase(
+      final newItems = await _mediaService.fetchMedia(
         limit: _pageSize,
         category: category,
         query: query,
@@ -68,57 +68,21 @@ class MediaProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<MediaItem>> _getMediaFromSupabase({
-    required int limit,
-    String? category,
-    String? query,
-    int offset = 0,
-  }) async {
-    var supabaseQuery = _supabase
-        .from('media')
-        .select('*, profiles(username, avatar_url, is_verified)')
-        .order('created_at', ascending: false)
-        .range(offset, offset + limit - 1);
-
-    if (category != null && category != 'all') {
-      supabaseQuery = supabaseQuery.eq('category', category);
-    }
-    
-    if (query != null && query.isNotEmpty) {
-      supabaseQuery = supabaseQuery.ilike('title', '%$query%');
-    }
-
-    final List<dynamic> data = await supabaseQuery;
-    return data.map((item) => MediaItem.fromMap(item as Map<String, dynamic>)).toList();
-  }
-
   Future<void> _loadCategories() async {
-    _categories = [
-      'all',
-      'trending',
-      'popular',
-      'new',
-      'hot',
-      'top_rated',
-      'most_viewed',
-    ];
+    _categories = await _mediaService.fetchCategories();
     notifyListeners();
   }
 
   Future<void> _loadTrendingMedia() async {
     _isLoading = true;
+    _error = null;
     notifyListeners();
 
     try {
-      final List<dynamic> data = await _supabase
-          .from('media')
-          .select('*, profiles(username, avatar_url, is_verified)')
-          .order('likes_count', ascending: false)
-          .limit(10);
-      
-      _trendingMedia = data.map((item) => MediaItem.fromMap(item as Map<String, dynamic>)).toList();
-    } catch (error) {
-      debugPrint('Load trending media error: $error');
+      _trendingMedia = await _mediaService.fetchTrendingMedia();
+    } catch (e) {
+      _error = e.toString();
+      debugPrint('Load trending media error: $e');
     } finally {
       _isLoading = false;
       notifyListeners();

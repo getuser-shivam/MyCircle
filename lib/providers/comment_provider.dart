@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/comment.dart';
+import '../services/comment_service.dart';
 
 class CommentProvider extends ChangeNotifier {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  final CommentService _commentService = CommentService();
+  final SupabaseClient _supabase = Supabase.instance.client; // Keep for auth checks
   final Map<String, List<Comment>> _comments = {}; // mediaId -> comments
   bool _isLoading = false;
+  String? _error;
 
   Map<String, List<Comment>> get comments => _comments;
   bool get isLoading => _isLoading;
+  String? get error => _error;
 
   Future<void> fetchComments(String mediaId) async {
     _isLoading = true;
+    _error = null;
     notifyListeners();
 
     try {
-      final List<dynamic> data = await _supabase
-          .from('comments')
-          .select('*, profiles(username, avatar_url)')
-          .eq('media_id', mediaId)
-          .order('created_at', ascending: true);
-
-      _comments[mediaId] = data.map((item) => Comment.fromMap(item)).toList();
+      _comments[mediaId] = await _commentService.fetchComments(mediaId);
     } catch (e) {
+      _error = e.toString();
       debugPrint('Error fetching comments: $e');
     } finally {
       _isLoading = false;
@@ -38,21 +38,30 @@ class CommentProvider extends ChangeNotifier {
     final user = _supabase.auth.currentUser;
     if (user == null) throw Exception('Not authenticated');
 
-    try {
-      await _supabase.from('comments').insert({
-        'media_id': mediaId,
-        'user_id': user.id,
-        'content': content,
-        'parent_id': parentId,
-      });
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
 
-      // Update local state or re-fetch
+    try {
+      await _commentService.postComment(
+        mediaId: mediaId,
+        userId: user.id,
+        content: content,
+        parentId: parentId,
+      );
+
+      // Re-fetch comments after posting
       await fetchComments(mediaId);
     } catch (e) {
+      _error = e.toString();
       debugPrint('Error posting comment: $e');
-      rethrow;
+      throw e;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
+}
 
   Future<void> likeComment(String commentId, String mediaId) async {
     try {

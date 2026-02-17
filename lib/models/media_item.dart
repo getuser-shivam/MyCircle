@@ -45,7 +45,7 @@ class MediaItem {
     required this.type,
   });
 
-  factory MediaItem.fromMap(Map<String, dynamic> data) {
+  factory MediaItem.fromJson(Map<String, dynamic> data) {
     final authorProfile = data['profiles'] as Map<String, dynamic>?;
     
     return MediaItem(

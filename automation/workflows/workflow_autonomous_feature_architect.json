@@ -1,0 +1,52 @@
+{
+  "name": "Autonomous Feature Architect",
+  "description": "End-to-end full-stack development: discovery → implementation → test → deploy",
+  "steps": [
+    {
+      "name": "1. Audit & Blueprint",
+      "prompt": "You are the Lead Mobile Architect for 'MyCircle', a premium media app.\nAnalyze {project_path} and identify the next high-value feature or critical refactor needed.\nConstraints:\n- Architecture: MVVM with Provider for state management.\n- Backend: Supabase (Auth, Database, Storage).\n- UI Style: Premium Glassmorphism (Flutter Acrylic) & DM Sans typography.\nOutput a technical blueprint including:\n- New models/entities needed (mapped to Supabase tables).\n- Logic layers (Providers/Repositories).\n- UI screen designs and widget breakdown.\n- Provide a clear execution plan.",
+      "delay_after": 100.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "2. Core Logic Implementation",
+      "prompt": "Implement the logic layer for the blueprint in {project_path}.\nThink step-by-step about the state flow:\n1. Create Data Models & DTOs (ensure `fromJson`/`toJson` for Supabase).\n2. Implement Repositories/Services (isolate Supabase calls here).\n3. Implement Providers (`ChangeNotifier`) to manage state and expose getters.\nRules:\n- Use the `AntigravityProvider` pattern.\n- Handle loading states (`_isLoading`) and error handling gracefully.\n- Ensure strict type safety.",
+      "delay_after": 100.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "3. Premium UI Development",
+      "prompt": "Build the UI for the new feature in {project_path}.\nAesthetics: 'Ultimate Home Screen' quality.\n- Use `flutter_acrylic` for window effects (if desktop).\n- Use `Chewie` if video playback is involved.\n- Implement smooth animations and glassmorphism gradients.\n- Use `Consumer<Provider>` to reactively rebuild widgets.\nFocus on a premium, wow-factor user experience.",
+      "delay_after": 100.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "4. Verification & Testing",
+      "prompt": "Secure the feature in {project_path} with tests.\n- Write unit tests for the new Providers and Repositories (mock Supabase calls).\n- Write widget tests for critical UI components (pumpWidget, verify finders).\n- Run 'flutter test' to ensure everything passes.\nVerify high code coverage for the new module.",
+      "delay_after": 100.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "5. Polish & Performance",
+      "prompt": "Final cleanup for {project_path}.\n- Run 'flutter analyze' and fix ALL linting issues.\n- Optimize performance: use `const` constructors, `RepaintBoundary` for complex animations.\n- Ensure all public members are documented.\n- Check for memory leaks (disposed controllers).\nMake the code production-ready.",
+      "delay_after": 100.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "6. Sync & Ship",
+      "prompt": "Commit and push the new feature for {project_path}.\n- Create a detailed commit message describing the architecture and features added.\n- Push the changes to GitHub.\nProvide a final summary of the new feature.",
+      "delay_after": 100.0,
+      "condition": "",
+      "enabled": true
+    }
+  ],
+  "variables": {
+    "project_path": "../"
+  },
+  "created_at": "2026-02-17T14:06:57.437843"
+}

@@ -21,7 +21,7 @@ class Comment {
     this.userAvatar,
   });
 
-  factory Comment.fromMap(Map<String, dynamic> data) {
+  factory Comment.fromJson(Map<String, dynamic> data) {
     return Comment(
       id: data['id']?.toString() ?? '',
       mediaId: data['media_id']?.toString() ?? '',
@@ -33,5 +33,19 @@ class Comment {
       userName: data['profiles']?['username'] ?? 'User',
       userAvatar: data['profiles']?['avatar_url'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'media_id': mediaId,
+      'user_id': userId,
+      'content': content,
+      'parent_id': parentId,
+      'likes_count': likesCount,
+      'created_at': createdAt.toIso8601String(),
+      'user_name': userName,
+      'user_avatar': userAvatar,
+    };
   }
 }

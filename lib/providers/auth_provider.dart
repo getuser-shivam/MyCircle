@@ -1,47 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
-class User {
-  final String id;
-  final String username;
-  final String email;
-  final String avatar;
-  final String role; // 'user', 'creator', 'moderator', 'admin'
-  final bool isVerified;
-  final bool isPremium;
-  final int followersCount;
-  final int followingCount;
-  final int postsCount;
-
-  User({
-    required this.id,
-    required this.username,
-    required this.email,
-    required this.avatar,
-    this.role = 'user',
-    this.isVerified = false,
-    this.isPremium = false,
-    this.followersCount = 0,
-    this.followingCount = 0,
-    this.postsCount = 0,
-  });
-
-  factory User.fromMap(Map<String, dynamic> data, {String? role}) {
-    return User(
-      id: data['id'] ?? '',
-      username: data['username'] ?? '',
-      email: data['email'] ?? '',
-      avatar: data['avatar'] ?? 'https://i.pravatar.cc/300',
-      role: role ?? data['role'] ?? 'user',
-      isVerified: data['is_verified'] ?? false,
-      isPremium: data['is_premium'] ?? false,
-      followersCount: data['followers_count'] ?? 0,
-      followingCount: data['following_count'] ?? 0,
-      postsCount: data['posts_count'] ?? 0,
-    );
-  }
-}
-
 class AuthProvider extends ChangeNotifier {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
   
@@ -156,7 +115,7 @@ class AuthProvider extends ChangeNotifier {
         debugPrint('Role not found for user $uid, defaulting to user');
       }
 
-      _currentUser = User.fromMap(userData, role: role);
+      _currentUser = User.fromJson(userData, role: role);
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching user profile: $e');
