@@ -5,49 +5,63 @@
     {
       "name": "1. Audit & Blueprint",
       "prompt": "You are the Lead Mobile Architect for 'MyCircle', a premium media app.\nAnalyze {project_path} and identify the next high-value feature or critical refactor needed.\nConstraints:\n- Architecture: MVVM with Provider for state management.\n- Backend: Supabase (Auth, Database, Storage).\n- UI Style: Premium Glassmorphism (Flutter Acrylic) & DM Sans typography.\nOutput a technical blueprint including:\n- New models/entities needed (mapped to Supabase tables).\n- Logic layers (Providers/Repositories).\n- UI screen designs and widget breakdown.\n- Provide a clear execution plan.",
-      "delay_after": 100.0,
+      "delay_after": 10.0,
       "condition": "",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "2. Core Logic Implementation",
       "prompt": "Implement the logic layer for the blueprint in {project_path}.\nThink step-by-step about the state flow:\n1. Create Data Models & DTOs (ensure `fromJson`/`toJson` for Supabase).\n2. Implement Repositories/Services (isolate Supabase calls here).\n3. Implement Providers (`ChangeNotifier`) to manage state and expose getters.\nRules:\n- Use the `AntigravityProvider` pattern.\n- Handle loading states (`_isLoading`) and error handling gracefully.\n- Ensure strict type safety.",
       "delay_after": 100.0,
       "condition": "",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "3. Premium UI Development",
       "prompt": "Build the UI for the new feature in {project_path}.\nAesthetics: 'Ultimate Home Screen' quality.\n- Use `flutter_acrylic` for window effects (if desktop).\n- Use `Chewie` if video playback is involved.\n- Implement smooth animations and glassmorphism gradients.\n- Use `Consumer<Provider>` to reactively rebuild widgets.\nFocus on a premium, wow-factor user experience.",
       "delay_after": 100.0,
       "condition": "",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "4. Verification & Testing",
       "prompt": "Secure the feature in {project_path} with tests.\n- Write unit tests for the new Providers and Repositories (mock Supabase calls).\n- Write widget tests for critical UI components (pumpWidget, verify finders).\n- Run 'flutter test' to ensure everything passes.\nVerify high code coverage for the new module.",
       "delay_after": 100.0,
       "condition": "",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "5. Polish & Performance",
       "prompt": "Final cleanup for {project_path}.\n- Run 'flutter analyze' and fix ALL linting issues.\n- Optimize performance: use `const` constructors, `RepaintBoundary` for complex animations.\n- Ensure all public members are documented.\n- Check for memory leaks (disposed controllers).\nMake the code production-ready.",
       "delay_after": 100.0,
       "condition": "",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "6. Sync & Ship",
       "prompt": "Commit and push the new feature for {project_path}.\n- Create a detailed commit message describing the architecture and features added.\n- Push the changes to GitHub.\nProvide a final summary of the new feature.",
       "delay_after": 100.0,
       "condition": "",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "Step 7",
       "prompt": "Is the files organize, heriarchy and tree well, if any files need to be removed or updated, is the git ignore, readme, changelog updated. Is the Git Commits in well-order well. And when run the app.",
       "delay_after": 100.0,
+      "condition": "",
+      "enabled": false
+    },
+    {
+      "name": "Step 8",
+      "prompt": "You are acting as:\n\n- Enterprise Software Architect\n- Flutter Desktop Technical Lead\n- Backend Security Auditor\n- DevOps Governance Reviewer\n\nThis is an ENTERPRISE application.\n\nEnforce scalability, security, auditability, and maintainability.\n\nReject shortcuts.\nReject temporary hacks.\nReject architectural violations.\n\nFollow sections strictly.\n\n=========================================================\n1️⃣ ENTERPRISE ARCHITECTURE GOVERNANCE\n=========================================================\n\nValidate Clean Architecture compliance:\n\nLayers must be:\n\n- Presentation (Flutter UI)\n- Application (Use cases / Controllers)\n- Domain (Entities, pure Dart)\n- Data (Repositories, Supabase implementation)\n- Core (Utilities, shared logic)\n\nRules:\n\n- Domain layer must NOT import Flutter.\n- Presentation must NOT directly access Supabase.\n- Supabase must be abstracted behind repository interfaces.\n- No global mutable state.\n- Dependency injection must exist.\n- No feature should exceed 500 lines per file.\n- No God services.\n\nIf violation found:\n- Mark as ARCHITECTURAL BREACH.\n- Provide refactor blueprint.\n\n=========================================================\n2️⃣ WINDOWS ENTERPRISE STABILITY CHECK\n=========================================================\n\nValidate:\n\n- Windows build reproducible.\n- flutter build windows succeeds without warnings.\n- No absolute paths.\n- Proper use of path_provider.\n- App metadata properly defined.\n- Version consistency across pubspec + Windows runner.\n- No blocking operations on UI thread.\n- Streams properly disposed.\n- Controllers disposed.\n\nIf failure:\n- Mark as STABILITY RISK.\n- Provide correction strategy.\n\n=========================================================\n3️⃣ ENTERPRISE SECURITY – SUPABASE\n=========================================================\n\nValidate:\n\n- No Supabase keys hardcoded.\n- .env used and ignored in git.\n- RLS assumed and enforced.\n- No client-side filtering for secure data.\n- Proper auth guard.\n- Secure local storage for tokens.\n- Session refresh implemented.\n- No open .select('*') in production logic.\n- Proper pagination.\n- Error logging strategy defined.\n- No sensitive logs printed in production.\n\nClassify issues:\n\n- CRITICAL SECURITY BREACH\n- HIGH RISK\n- MEDIUM RISK\n\nProvide mitigation plan.\n\n=========================================================\n4️⃣ DEPENDENCY & SUPPLY CHAIN CONTROL\n=========================================================\n\nValidate pubspec.yaml:\n\n- Every dependency justified.\n- No abandoned packages.\n- No duplicate functionality libraries.\n- Version constraints locked properly.\n- flutter_lints enabled.\n- analysis_options.yaml strict.\n\nReject if:\n- Over-dependency.\n- Experimental unstable packages in enterprise app.\n\n=========================================================\n5️⃣ ENTERPRISE GIT GOVERNANCE\n=========================================================\n\nValidate:\n\n- .gitignore complete (Flutter + Windows + Supabase).\n- No build artifacts committed.\n- No secrets committed.\n- Branch naming follows strategy:\n  - feature/\n  - fix/\n  - refactor/\n  - chore/\n- Conventional commits enforced.\n- Commits are atomic.\n- No vague commit messages.\n\nReject if:\n- \"update\"\n- \"fix bug\"\n- multiple features in single commit\n\nProvide improved commit examples.\n\n=========================================================\n6️⃣ CODE QUALITY ENFORCEMENT\n=========================================================\n\nDetect:\n\n- Large widgets.\n- setState misuse.\n- Missing mounted checks.\n- Async without await.\n- Futures not handled.\n- StreamSubscription leaks.\n- TODO without tracking.\n- Debug prints in production code.\n- Repeated logic.\n\nMark as:\n\n- BLOCKER\n- HIGH PRIORITY\n- CLEANUP\n\nProvide corrected patterns.\n\n=========================================================\n7️⃣ PERFORMANCE & SCALABILITY CHECK\n=========================================================\n\nEnterprise readiness requires:\n\n- Pagination in data-heavy views.\n- Caching layer.\n- Lazy loading.\n- No API calls inside build().\n- Minimal rebuilds.\n- const constructors used.\n- Efficient list rendering.\n- No heavy JSON parsing on UI thread.\n- No synchronous file IO blocking.\n\nFlag scalability risks.\n\n=========================================================\n8️⃣ DOCUMENTATION GOVERNANCE\n=========================================================\n\nREADME must include:\n\n- Architecture overview.\n- Folder structure.\n- Flutter version.\n- Windows setup steps.\n- Supabase configuration.\n- Environment variables explanation.\n- How to run (dev).\n- How to build (release).\n- Deployment instructions.\n- Troubleshooting section.\n\nCHANGELOG must:\n\n- Follow semantic versioning.\n- Document breaking changes.\n- Reflect version in pubspec.\n\nReject if missing.\n\n=========================================================\n9️⃣ TESTING ENTERPRISE STANDARD\n=========================================================\n\nValidate:\n\n- Unit tests for business logic.\n- Widget tests for critical flows.\n- Supabase calls mocked.\n- Authentication flow tested.\n- Error scenarios tested.\n- Windows build tested in CI.\n\nEstimate coverage.\n\nFlag critical gaps.\n\n=========================================================\n🔟 FINAL ENTERPRISE SCORECARD\n=========================================================\n\nScore 0–100:\n\n- Architecture Integrity\n- Windows Stability\n- Security\n- Scalability\n- Code Quality\n- Git Governance\n- Documentation\n- Enterprise Readiness\n\nThen list:\n\n🚨 RELEASE BLOCKERS\n⚠️ HIGH RISK AREAS\n🛠 REQUIRED IMPROVEMENTS\n✨ OPTIONAL OPTIMIZATIONS\n\nDo not give motivational text.\nOnly engineering assessment.",
+      "delay_after": 5.0,
+      "condition": "",
+      "enabled": true
+    },
+    {
+      "name": "Step 9",
+      "prompt": "Always GIT COMMIT ORGANISE, DEVELOP NEW FEATURES ADD EXISTING ENHANCE AND ALWAYS README GIT AND ORGANISE FILES AND ANALIZE AND UPGRADE AND GO ON..BUKLD FLUTTER WINDOWS AND SO ON",
+      "delay_after": 5.0,
       "condition": "",
       "enabled": true
     }

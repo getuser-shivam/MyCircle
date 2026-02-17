@@ -51,9 +51,13 @@ export 'providers/collection_analytics_provider.dart';
 export 'providers/provider_setup.dart';
 
 // Services
-export 'services/supabase_service.dart';
 export 'services/ai_chat_service.dart';
+export 'services/comment_service.dart';
+export 'services/media_service.dart';
 export 'services/stream_service.dart';
+export 'services/stream_chat_service.dart';
+export 'services/stream_viewer_service.dart';
+export 'services/supabase_service.dart';
 
 // Screens - Home
 export 'screens/home/home_screen.dart';
