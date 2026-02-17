@@ -142,6 +142,8 @@ class LiveStream {
     );
   }
 
+  factory LiveStream.fromJson(Map<String, dynamic> data) => LiveStream.fromMap(data);
+
   static StreamStatus _parseStatus(dynamic status) {
     final value = status?.toString().toLowerCase();
     if (value == 'scheduled') return StreamStatus.scheduled;
@@ -191,6 +193,8 @@ class LiveStream {
       'updated_at': updatedAt.toIso8601String(),
     };
   }
+
+  Map<String, dynamic> toJson() => toMap();
 
   LiveStream copyWith({
     String? id,

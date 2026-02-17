@@ -78,6 +78,8 @@ class SocialUser {
     );
   }
 
+  factory SocialUser.fromJson(Map<String, dynamic> data) => SocialUser.fromMap(data);
+
   static Gender _parseGender(dynamic gender) {
     final value = gender?.toString().toLowerCase();
     if (value == 'male') return Gender.male;
@@ -108,6 +110,8 @@ class SocialUser {
       'bio': bio,
     };
   }
+
+  Map<String, dynamic> toJson() => toMap();
 
   SocialUser copyWith({
     String? id,

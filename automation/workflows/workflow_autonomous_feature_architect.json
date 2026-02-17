@@ -43,6 +43,13 @@
       "delay_after": 100.0,
       "condition": "",
       "enabled": true
+    },
+    {
+      "name": "Step 7",
+      "prompt": "Is the files organize, heriarchy and tree well, if any files need to be removed or updated, is the git ignore, readme, changelog updated. Is the Git Commits in well-order well. And when run the app.",
+      "delay_after": 100.0,
+      "condition": "",
+      "enabled": true
     }
   ],
   "variables": {

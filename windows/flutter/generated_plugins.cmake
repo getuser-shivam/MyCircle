@@ -3,15 +3,20 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  cloud_firestore
+  app_links
   connectivity_plus
+  desktop_drop
   file_selector_windows
-  firebase_auth
-  firebase_core
-  firebase_storage
+  flutter_acrylic
+  hotkey_manager
   permission_handler_windows
+  record_windows
+  screen_retriever
   share_plus
+  system_tray
+  tray_manager
   url_launcher_windows
+  window_manager
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

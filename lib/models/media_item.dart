@@ -72,6 +72,8 @@ class MediaItem {
     );
   }
 
+  factory MediaItem.fromMap(Map<String, dynamic> data) => MediaItem.fromJson(data);
+
   static MediaType _parseMediaType(String? type) {
     if (type == null) return MediaType.gif;
     switch (type.toLowerCase()) {
@@ -109,4 +111,6 @@ class MediaItem {
       'type': type.toString().split('.').last,
     };
   }
+
+  Map<String, dynamic> toMap() => toJson();
 }

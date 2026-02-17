@@ -54,9 +54,7 @@ dev_dependencies:
   # Code Generation & Testing
   build_runner: ^2.4.7
   mockito: ^5.4.2
-  mockito_annotation: ^2.4.1
   very_good_analysis: ^5.1.0
-  test_coverage: ^0.2.2
 
 flutter:
   uses-material-design: true

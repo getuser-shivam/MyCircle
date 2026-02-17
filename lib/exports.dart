@@ -5,6 +5,13 @@ export 'models/comment.dart';
 export 'models/stream_model.dart';
 export 'models/stream_chat_model.dart';
 export 'models/stream_viewer_model.dart';
+export 'models/dto.dart';
+
+// Repositories
+export 'repositories/media_repository.dart';
+export 'repositories/user_repository.dart';
+export 'repositories/stream_repository.dart';
+export 'repositories/auth_repository.dart';
 
 // Providers
 export 'providers/auth_provider.dart';
@@ -22,6 +29,10 @@ export 'providers/stream_chat_provider.dart';
 export 'providers/stream_combined_provider.dart';
 export 'providers/stream_provider_setup.dart';
 export 'providers/desktop_provider.dart';
+export 'providers/enhanced_media_provider.dart';
+export 'providers/enhanced_auth_provider.dart';
+export 'providers/enhanced_stream_provider.dart';
+export 'providers/enhanced_social_provider.dart';
 
 // Screens - Home
 export 'screens/home/home_screen.dart';
