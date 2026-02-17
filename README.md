@@ -144,6 +144,12 @@ MyCircle provides a **native desktop experience** optimized for Windows 10/11 wi
 | `Alt + Left/Right` | Navigate Back/Forward | Navigation |
 | `Ctrl + R` | Refresh Content | Any |
 | `Ctrl + Shift + S` | Open Settings | Global |
+| `Ctrl + Shift + M` | Multi-Window Mode | Global |
+| `Ctrl + Shift + T` | Taskbar Thumbnail | Media |
+| `Ctrl + Shift + J` | Jump List Actions | Global |
+| `Ctrl + Shift + B` | Background Tasks | Global |
+| `F1` | Accessibility Help | Any |
+| `Ctrl + Shift + A` | Advanced Settings | Global |
 
 ### 🎨 **Desktop Themes & Appearance**
 - **System Theme Sync**: Automatically follow Windows light/dark mode
@@ -176,6 +182,46 @@ MyCircle provides a **native desktop experience** optimized for Windows 10/11 wi
 - **DPI Awareness**: Crisp scaling on high-resolution displays
 - **Multi-Window Architecture**: Support for multiple app windows simultaneously
 - **Picture-in-Picture**: Floating media windows for multitasking
+
+### 🚀 **Advanced Desktop Enhancements**
+
+#### **Multi-Window Support**
+- **Independent Windows**: Main app, media viewer, chat, and settings windows
+- **Window Communication**: Seamless data sharing between windows
+- **Custom Layouts**: Save and restore window arrangements
+- **Tabbed Interface**: Organize content in tabs within windows
+
+#### **Power & Performance**
+- **Sleep/Resume Handling**: Graceful handling of system sleep/wake cycles
+- **Battery Optimization**: Reduced resource usage on battery power
+- **Background Processing**: Uploads/downloads continue in background
+- **Memory Management**: Intelligent caching and resource cleanup
+
+#### **System Integration Advanced**
+- **Taskbar Thumbnails**: Live preview thumbnails for media content
+- **Jump Lists**: Quick access to recent and frequent actions
+- **Clipboard Integration**: Enhanced copy/paste with rich content support
+- **File Preview**: Thumbnail previews in file selection dialogs
+- **Context Menus**: Rich right-click menus with custom actions
+
+#### **Accessibility & Usability**
+- **Screen Reader Support**: Full compatibility with Windows Narrator
+- **High Contrast Mode**: Support for system high contrast themes
+- **Keyboard Navigation**: Complete keyboard accessibility
+- **Magnifier Integration**: Works with Windows Magnifier tool
+- **Focus Management**: Proper focus indicators and navigation
+
+#### **Cloud Sync & Backup**
+- **Supabase-Powered Sync**: Real-time sync across multiple devices
+- **Offline Support**: Full functionality without internet connection
+- **Automatic Backup**: Settings and preferences backed up to cloud
+- **Conflict Resolution**: Smart merging of changes from multiple devices
+
+#### **Plugin Architecture**
+- **Extensible Design**: Support for third-party plugins and extensions
+- **Plugin Marketplace**: Built-in marketplace for community plugins
+- **Custom Themes**: User-created themes and UI customizations
+- **Automation Scripts**: User-defined automation and workflows
 
 ---
 
