@@ -2,6 +2,9 @@ import '../../providers/media_provider.dart';
 import '../../widgets/media/category_chips.dart';
 import '../../widgets/media/media_card.dart';
 import '../../widgets/media/media_player.dart';
+import '../../widgets/common/glassmorphic_card_premium.dart';
+import '../../widgets/common/premium_app_bar.dart';
+import '../../widgets/common/premium_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -34,6 +37,18 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PremiumAppBar(
+        title: 'MyCircle',
+        showBackButton: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.white),
+            onPressed: () {
+              // Navigate to search
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -104,12 +119,9 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildTabBar() {
-    return Container(
+    return GlassmorphicCardPremium(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(25),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
@@ -144,16 +156,31 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
                 itemCount: 10, // Mock data count
                 itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Media ${index + 1}',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
+                  return GlassmorphicCardPremium(
+                    margin: const EdgeInsets.all(4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Media ${index + 1}',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Premium Content ${index + 1}',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
                     ),
                   );
                 },

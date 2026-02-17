@@ -35,6 +35,7 @@ void main() async {
   final recommendationProvider = RecommendationProvider();
   final discoveryProvider = DiscoveryProvider();
 
+  // Initialize providers
   await authProvider.initialize();
   
   runApp(
