@@ -55,6 +55,22 @@ class MediaProvider extends ChangeNotifier {
   String get searchQuery => _searchQuery;
   List<String> get selectedCategories => _selectedCategories;
 
+  // Convenience API for widgets expecting a simple selectedCategory
+  String? get selectedCategory =>
+      _selectedCategories.isNotEmpty ? _selectedCategories.first : null;
+
+  void selectCategory(String category) {
+    _selectedCategories = [category];
+    notifyListeners();
+    // Optionally refresh media based on new category
+    fetchMedia();
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
+
   Future<void> fetchMedia({int page = 1, int limit = 20}) async {
     try {
       _setLoading(true);

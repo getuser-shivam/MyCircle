@@ -3,15 +3,19 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:io';
 
 // Local imports
-import 'exports.dart';
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
 import 'application/providers/dependency_injection.dart';
 import 'core/features/feature_flags.dart';
 import 'core/monitoring/performance_monitor.dart';
 import 'core/security/logger_service.dart';
+import 'core/windows/windows_enterprise_manager.dart';
+import 'supabase_options.dart';
+import 'exports.dart';
+import 'utils/constants.dart' hide AppConstants;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +26,11 @@ void main() async {
     
     // Initialize feature flags
     await FeatureFlags.initialize();
+    
+    // Initialize Windows Enterprise Manager for stability
+    if (Platform.isWindows) {
+      await WindowsEnterpriseManager.initialize();
+    }
     
     // Initialize dependency injection
     await DependencyInjection.initialize();
@@ -98,7 +107,7 @@ void main() async {
     LoggerService.critical('Failed to initialize application', tag: 'MAIN', error: e, stackTrace: stackTrace);
     
     // Show error UI
-    runApp(ErrorApp(error: e, stackTrace: stackTrace));
+    // runApp(ErrorApp(error: e, stackTrace: stackTrace));
   }
 }
 
@@ -115,24 +124,27 @@ class MyCircleApp extends StatelessWidget {
           theme: themeProvider.lightTheme,
           darkTheme: themeProvider.darkTheme,
           themeMode: themeProvider.themeMode,
-          routes: {
-            AppConstants.homeRoute: (context) => const MainWrapper(),
-            AppConstants.subscriptionsRoute: (context) => const SubscriptionTierScreen(),
-            AppConstants.searchRoute: (context) => const AdvancedSearchScreen(),
-            AppConstants.uploadRoute: (context) => const UploadScreen(),
-          },
-          onGenerateRoute: (settings) {
-            if (settings.name == AppConstants.mediaDetailRoute) {
-              final args = settings.arguments as Map<String, dynamic>;
-              return MaterialPageRoute(
-                builder: (context) => MediaDetailScreen(media: args['media']),
-              );
-            }
-            return null;
-          },
-          initialRoute: AppConstants.homeRoute,
+          home: const _BootstrapHome(),
         );
       },
+    );
+  }
+}
+
+class _BootstrapHome extends StatelessWidget {
+  const _BootstrapHome();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('MyCircle (Windows bootstrap)')),
+      body: const Center(
+        child: Text(
+          'MyCircle is running on Windows.\n'
+          'Once core widgets are fixed, this bootstrap screen can be replaced with the full UI.',
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }

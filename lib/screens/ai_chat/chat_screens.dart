@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/ai_chat_provider.dart';
-import '../providers/antigravity_provider.dart';
-import '../models/ai_chat.dart';
-import '../widgets/ai_chat/message_bubble.dart';
-import '../widgets/ai_chat/companion_selector.dart';
+import '../../providers/ai_chat_provider.dart';
+import '../../providers/antigravity_provider.dart';
+import '../../models/ai_chat.dart';
+import '../../widgets/ai_chat/message_bubble.dart';
+import '../../widgets/ai_chat/companion_selector.dart';
+
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});

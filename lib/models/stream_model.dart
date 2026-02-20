@@ -58,6 +58,7 @@ class LiveStream {
   final String streamerId;
   final String streamerName;
   final String streamerAvatar;
+  final bool isVerified;
   final String thumbnailUrl;
   final String streamUrl;
   final String streamKey;
@@ -87,6 +88,7 @@ class LiveStream {
     required this.streamerId,
     required this.streamerName,
     required this.streamerAvatar,
+    this.isVerified = false,
     required this.thumbnailUrl,
     required this.streamUrl,
     required this.streamKey,
@@ -118,6 +120,7 @@ class LiveStream {
       streamerId: data['streamer_id']?.toString() ?? '',
       streamerName: data['streamer_name'] ?? '',
       streamerAvatar: data['streamer_avatar'] ?? '',
+      isVerified: (data['is_verified'] ?? data['verified'] ?? false) == true,
       thumbnailUrl: data['thumbnail_url'] ?? '',
       streamUrl: data['stream_url'] ?? '',
       streamKey: data['stream_key'] ?? '',
@@ -170,6 +173,7 @@ class LiveStream {
       'streamer_id': streamerId,
       'streamer_name': streamerName,
       'streamer_avatar': streamerAvatar,
+      'is_verified': isVerified,
       'thumbnail_url': thumbnailUrl,
       'stream_url': streamUrl,
       'stream_key': streamKey,
@@ -203,6 +207,7 @@ class LiveStream {
     String? streamerId,
     String? streamerName,
     String? streamerAvatar,
+    bool? isVerified,
     String? thumbnailUrl,
     String? streamUrl,
     String? streamKey,
@@ -232,6 +237,7 @@ class LiveStream {
       streamerId: streamerId ?? this.streamerId,
       streamerName: streamerName ?? this.streamerName,
       streamerAvatar: streamerAvatar ?? this.streamerAvatar,
+      isVerified: isVerified ?? this.isVerified,
       thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
       streamUrl: streamUrl ?? this.streamUrl,
       streamKey: streamKey ?? this.streamKey,

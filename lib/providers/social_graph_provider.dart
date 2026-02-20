@@ -27,7 +27,7 @@ class SocialGraphProvider extends ChangeNotifier {
         _followingIds.add(item['following_id']);
       }
     } catch (e) {
-      debugPrint('Error fetching following: $e');
+      LoggerService.debug('Error fetching following: $e', tag: 'SOCIAL');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -48,7 +48,7 @@ class SocialGraphProvider extends ChangeNotifier {
       
       // Update counters (optional: handle in Supabase via Triggers)
     } catch (e) {
-      debugPrint('Error following user: $e');
+      LoggerService.debug('Error following user: $e', tag: 'SOCIAL');
     }
   }
 
@@ -65,7 +65,7 @@ class SocialGraphProvider extends ChangeNotifier {
       _followingIds.remove(targetUserId);
       notifyListeners();
     } catch (e) {
-      debugPrint('Error unfollowing user: $e');
+      LoggerService.debug('Error unfollowing user: $e', tag: 'SOCIAL');
     }
   }
 

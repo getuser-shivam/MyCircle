@@ -710,6 +710,88 @@ class WorkflowEngine:
         ))
         workflows["The Executive Developer"] = wf6
 
+        # === Enterprise Solution Architect ===
+        wf7 = Workflow(
+            name="Enterprise Solution Architect",
+            description="High-governance architecture, security, and stability enforcement"
+        )
+        
+        # Define the base enterprise instruction
+        ent_base = (
+            "You are acting as:\n"
+            "- Enterprise Software Architect\n"
+            "- Flutter Desktop Technical Lead\n"
+            "- Backend Security Auditor\n"
+            "- DevOps Governance Reviewer\n\n"
+            "This is an ENTERPRISE application. Enforce scalability, security, auditability, and maintainability.\n"
+            "Reject shortcuts. Reject temporary hacks. Reject architectural violations. Follow sections strictly."
+        )
+
+        wf7.add_step(WorkflowStep(
+            name="1. Enterprise Audit & Scorecard",
+            prompt=(
+                f"{ent_base}\n\n"
+                "=========================================================\n"
+                "STEP 1: ARCHITECTURE, SECURITY & EXTERNAL AUDIT\n"
+                "=========================================================\n"
+                "Analyze {project_path} focusing on:\n"
+                "1️⃣ ENTERPRISE ARCHITECTURE GOVERNANCE (Clean Architecture, DI, Layer constraints)\n"
+                "3️⃣ ENTERPRISE SECURITY – SUPABASE (RLS, keys, auth guards, pagination)\n"
+                "4️⃣ DEPENDENCY & SUPPLY CHAIN CONTROL (pubspec analysis, linting)\n"
+                "🔟 FINAL ENTERPRISE SCORECARD (Score 0–100 for current state)\n\n"
+                "Output: Detailed Audit report, Scorecard, and list of ARCHITECTURAL BREACHES / SECURITY RISKS."
+            ),
+            delay_after=10.0,
+        ))
+
+        wf7.add_step(WorkflowStep(
+            name="2. Governed Implementation & Quality",
+            prompt=(
+                f"{ent_base}\n\n"
+                "=========================================================\n"
+                "STEP 2: IMPLEMENTATION & CODE QUALITY ENFORCEMENT\n"
+                "=========================================================\n"
+                "Identify and implement the next high-value feature/refactor for {project_path}.\n"
+                "Enforce:\n"
+                "6️⃣ CODE QUALITY (Large widgets, setState misuse, leaks, async handling)\n"
+                "7️⃣ PERFORMANCE & SCALABILITY (Caching, lazy loading, API efficiency)\n"
+                "Apply the 'refactor blueprint' identified in Audit step. Ensure zero lint warnings."
+            ),
+            delay_after=20.0,
+        ))
+
+        wf7.add_step(WorkflowStep(
+            name="3. Stability & Hardening",
+            prompt=(
+                f"{ent_base}\n\n"
+                "=========================================================\n"
+                "STEP 3: WINDOWS STABILITY & SECURITY MITIGATION\n"
+                "=========================================================\n"
+                "Verify and harden {project_path}:\n"
+                "2️⃣ WINDOWS ENTERPRISE STABILITY (Reproducible build, disposables, UI thread blocking)\n"
+                "9️⃣ TESTING ENTERPRISE STANDARD (Unit/Widget tests, CI readiness, coverage estimate)\n"
+                "Execute the security mitigation plan for any HIGH/CRITICAL risks identified."
+            ),
+            delay_after=15.0,
+        ))
+
+        wf7.add_step(WorkflowStep(
+            name="4. Documentation & Git Registry",
+            prompt=(
+                f"{ent_base}\n\n"
+                "=========================================================\n"
+                "STEP 4: GIT GOVERNANCE & DOCUMENTATION\n"
+                "=========================================================\n"
+                "Finalize the release for {project_path}:\n"
+                "5️⃣ ENTERPRISE GIT GOVERNANCE (Atomic commits, branch naming, atomic structure)\n"
+                "8️⃣ DOCUMENTATION GOVERNANCE (README overview, setup, CHANGELOG semver)\n"
+                "Generate improved commit messages and finalize all governance registry files."
+            ),
+            delay_after=10.0,
+        ))
+        
+        workflows["Enterprise Solution Architect"] = wf7
+
         return workflows
 
     def save_workflow(self, workflow: Workflow, save_dir: str) -> str:

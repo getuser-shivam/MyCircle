@@ -61,8 +61,6 @@ class CommentProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-}
-
   Future<void> likeComment(String commentId, String mediaId) async {
     try {
       // In a real app, use a RPC call or a formal likes table

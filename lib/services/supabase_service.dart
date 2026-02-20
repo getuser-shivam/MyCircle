@@ -19,6 +19,8 @@ class SupabaseService {
     _prefs = await SharedPreferences.getInstance();
   }
 
+  SupabaseClient get client => _client;
+
   // Authentication
   Future<AuthResponse> signInWithEmail(String email, String password) async {
     try {

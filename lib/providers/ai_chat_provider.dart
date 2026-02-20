@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/ai_chat.dart';
 import '../services/ai_chat_service.dart';
 import 'antigravity_provider.dart';
+import '../core/security/logger_service.dart';
 
 class AIChatProvider extends ChangeNotifier {
   final AIChatRepository _chatRepository;
@@ -61,7 +62,7 @@ class AIChatProvider extends ChangeNotifier {
       ]);
     } catch (e) {
       _error = e.toString();
-      debugPrint('AIChatProvider initialization error: $e');
+      LoggerService.error('AIChatProvider initialization error: $e', tag: 'AI_CHAT');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -116,7 +117,7 @@ class AIChatProvider extends ChangeNotifier {
       }
     } catch (e) {
       _error = e.toString();
-      debugPrint('Create conversation error: $e');
+      LoggerService.error('Create conversation error: $e', tag: 'AI_CHAT');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -134,7 +135,7 @@ class AIChatProvider extends ChangeNotifier {
       await _loadMessages(conversationId);
     } catch (e) {
       _error = 'Conversation not found';
-      debugPrint('Select conversation error: $e');
+      LoggerService.error('Select conversation error: $e', tag: 'AI_CHAT');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -155,7 +156,7 @@ class AIChatProvider extends ChangeNotifier {
       }
     } catch (e) {
       _error = e.toString();
-      debugPrint('Delete conversation error: $e');
+      LoggerService.error('Delete conversation error: $e', tag: 'AI_CHAT');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -216,7 +217,7 @@ class AIChatProvider extends ChangeNotifier {
 
     } catch (e) {
       _error = e.toString();
-      debugPrint('Send message error: $e');
+      LoggerService.error('Send message error: $e', tag: 'AI_CHAT');
     } finally {
       _isSendingMessage = false;
       _isTyping = false;
@@ -270,7 +271,7 @@ class AIChatProvider extends ChangeNotifier {
         );
       }
     } catch (e) {
-      debugPrint('Generate recommendations error: $e');
+      LoggerService.debug('Generate recommendations error: $e', tag: 'AI_CHAT');
     }
   }
 
@@ -325,7 +326,7 @@ class AIChatProvider extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('Increment companion usage error: $e');
+      LoggerService.debug('Increment companion usage error: $e', tag: 'AI_CHAT');
     }
   }
 
@@ -348,7 +349,7 @@ class AIChatProvider extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('Mark recommendation viewed error: $e');
+      LoggerService.debug('Mark recommendation viewed error: $e', tag: 'AI_CHAT');
     }
   }
 
@@ -363,7 +364,7 @@ class AIChatProvider extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('Mark recommendation interacted error: $e');
+      LoggerService.debug('Mark recommendation interacted error: $e', tag: 'AI_CHAT');
     }
   }
 

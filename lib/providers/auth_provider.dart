@@ -204,7 +204,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       _userProfile = await _userRepository.getUserProfile(userId);
     } catch (e) {
-      debugPrint('Failed to fetch user profile: $e');
+      LoggerService.error('Failed to fetch user profile: $e', tag: 'AUTH');
     }
   }
 
@@ -215,7 +215,7 @@ class AuthProvider extends ChangeNotifier {
         username: username,
       );
     } catch (e) {
-      debugPrint('Failed to create user profile: $e');
+      LoggerService.error('Failed to create user profile: $e', tag: 'AUTH');
     }
   }
 

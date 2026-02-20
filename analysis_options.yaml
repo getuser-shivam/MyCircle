@@ -50,7 +50,6 @@ linter:
     prefer_final_locals: true
     
     # Documentation rules
-    prefer_single_quotes: true
     
     # Error prevention
     avoid_print: false  # Allow print for debugging

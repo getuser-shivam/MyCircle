@@ -2,8 +2,17 @@
 export 'core/constants/app_constants.dart';
 export 'core/theme/app_theme.dart';
 export 'core/errors/app_exceptions.dart';
-export 'core/extensions/string_extensions.dart';
+export 'core/extensions/string_extensions.dart' hide StringExtension;
 export 'core/extensions/widget_extensions.dart';
+
+// Security
+export 'core/security/auth_guard.dart';
+export 'core/security/secure_storage_service.dart';
+export 'core/security/logger_service.dart';
+export 'core/security/windows_input_validation_service.dart';
+
+// Windows Enterprise
+export 'core/windows/windows_enterprise_manager.dart';
 
 // Models
 export 'models/media_item.dart';
@@ -45,7 +54,7 @@ export 'providers/desktop_provider.dart';
 export 'providers/ai_chat_provider.dart';
 export 'providers/analytics_provider.dart';
 export 'providers/recommendation_provider.dart';
-export 'providers/discovery_provider.dart';
+export 'providers/discovery_provider.dart' hide DiscoveryMode;
 export 'providers/collection_provider.dart';
 export 'providers/collection_analytics_provider.dart';
 export 'providers/provider_setup.dart';
@@ -81,7 +90,7 @@ export 'screens/discovery/premium_discovery_screen.dart';
 export 'screens/user/profile_screen.dart';
 export 'screens/user/enhanced_profile_screen.dart';
 export 'screens/user/notifications_screen.dart';
-export 'screens/user/chat_screen.dart';
+export 'screens/user/chat_screen.dart' hide ChatScreen;
 
 // Screens - Social
 export 'screens/social/meet_me_screen.dart';
@@ -90,7 +99,7 @@ export 'screens/social/social_profile_screen.dart';
 // Screens - AI Chat
 export 'screens/ai_chat/ai_chat_home_screen.dart';
 export 'screens/ai_chat/chat_screens.dart';
-export 'screens/ai_chat/enhanced_chat_screen.dart';
+export 'screens/ai_chat/enhanced_chat_screen.dart' hide Animate;
 
 // Screens - Analytics
 export 'screens/analytics/creator_analytics_dashboard.dart';
@@ -112,7 +121,7 @@ export 'screens/streaming/stream_setup_screen.dart';
 export 'screens/streaming/stream_dashboard_screen.dart';
 
 // Widgets - Common (Premium Glassmorphic Components)
-export 'widgets/common/glassmorphic_container.dart';
+export 'widgets/common/glassmorphic_container.dart' hide GlassmorphicButton, GlassmorphicContainer, GlassmorphicTextField;
 export 'widgets/common/glassmorphic_card.dart';
 export 'widgets/common/glassmorphic_card_enhanced.dart';
 export 'widgets/common/glassmorphic_card_premium.dart';
@@ -120,7 +129,7 @@ export 'widgets/common/glassmorphic_button.dart';
 export 'widgets/common/glassmorphic_dialog.dart';
 export 'widgets/common/glassmorphic_text_field.dart';
 export 'widgets/common/glassmorphic_list_tile.dart';
-export 'widgets/common/glassmorphic_list_tile_premium.dart';
+export 'widgets/common/glassmorphic_list_tile.dart';
 export 'widgets/common/glassmorphic_bottom_sheet.dart';
 export 'widgets/common/glassmorphic_bottom_sheet_premium.dart';
 export 'widgets/common/premium_animations.dart';
@@ -153,7 +162,7 @@ export 'widgets/media/content_card.dart';
 export 'widgets/media/category_chips.dart';
 
 // Widgets - Navigation
-export 'widgets/navigation/bottom_navigation_bar.dart';
+// missing bottom_navigation_bar.dart
 export 'widgets/navigation/main_wrapper.dart';
 export 'widgets/navigation/navigation_bar.dart';
 
@@ -161,21 +170,21 @@ export 'widgets/navigation/navigation_bar.dart';
 export 'widgets/loading/shimmer_widget.dart';
 
 // Widgets - Notifications
-export 'widgets/notifications/notification_widget.dart';
+// missing notification_widget.dart
 export 'widgets/notifications/notification_card.dart';
 
 // Widgets - Settings
-export 'widgets/settings/theme_selector_widget.dart';
+// missing theme_selector_widget.dart
 
 // Widgets - Social
-export 'widgets/social/user_card_widget.dart';
+// missing user_card_widget.dart
 export 'widgets/social/swipe_deck.dart';
 export 'widgets/social/filter_bottom_sheet.dart';
 
 // Widgets - Streaming
-export 'widgets/streaming/stream_widget.dart';
+// missing stream_widget.dart
 export 'widgets/streaming/stream_card_widget.dart';
-export 'widgets/streaming/stream_card_large.dart';
+export 'widgets/streaming/stream_card_large.dart' hide StreamCardLarge;
 
 // Widgets - AI Chat
 export 'widgets/ai_chat/ai_chat_widget_library.dart';
@@ -184,7 +193,7 @@ export 'widgets/ai_chat/companion_avatar.dart';
 export 'widgets/ai_chat/conversation_insights_panel.dart';
 export 'widgets/ai_chat/glassmorphic_message_bubble.dart';
 export 'widgets/ai_chat/multimodal_input.dart';
-export 'widgets/ai_chat/smart_recommendation_card.dart';
+export 'widgets/ai_chat/smart_recommendation_card.dart' hide SmartRecommendationCard;
 
 // Widgets - Analytics
 export 'widgets/analytics/analytics_overview_card.dart';
@@ -192,22 +201,22 @@ export 'widgets/analytics/content_performance_widget.dart';
 export 'widgets/analytics/revenue_overview_widget.dart';
 
 // Widgets - Enterprise
-export 'widgets/enterprise/enterprise_widgets.dart';
+// missing enterprise_widgets.dart
 export 'widgets/enterprise/premium_components.dart';
 
 // Widgets - Feedback
 export 'widgets/feedback/error_widget.dart';
-export 'widgets/feedback/feedback_widget.dart';
+// missing feedback_widget.dart
 
 // Widgets - Forms
-export 'widgets/forms/enhanced_form_fields.dart';
+// missing enhanced_form_fields.dart
 export 'widgets/forms/search_form.dart';
 
 // Widgets - Onboarding
-export 'widgets/onboarding/onboarding_widgets.dart';
+// missing onboarding_widgets.dart
 
 // Widgets - Discovery
-export 'widgets/discovery/discovery_pulse_animation.dart';
+export 'widgets/discovery/discovery_pulse_animation.dart' hide ParticlePainter;
 export 'widgets/discovery/personalized_feed_widget.dart';
 export 'widgets/discovery/smart_recommendation_card.dart';
 export 'widgets/discovery/trending_discovery_widget.dart';
@@ -219,7 +228,7 @@ export 'widgets/desktop/desktop_title_bar.dart';
 export 'utils/helpers.dart';
 export 'utils/validators.dart';
 export 'utils/formatters.dart';
-export 'utils/constants.dart';
+export 'utils/constants.dart' hide AppConstants;
 
 // Config
 export 'supabase_options.dart';

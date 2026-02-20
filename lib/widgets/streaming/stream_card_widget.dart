@@ -39,7 +39,7 @@ class StreamCard extends StatelessWidget {
               ),
               Expanded(
                 flex: 2,
-                child: _buildStreamInfo(),
+                child: _buildStreamInfo(context),
               ),
             ],
           ),
@@ -203,7 +203,7 @@ class StreamCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStreamInfo() {
+  Widget _buildStreamInfo(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(

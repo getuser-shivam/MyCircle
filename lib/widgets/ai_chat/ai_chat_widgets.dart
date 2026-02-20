@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/ai_chat.dart';
-import '../providers/ai_chat_provider.dart';
+import '../../models/ai_chat.dart';
+import '../../providers/ai_chat_provider.dart';
 import 'package:provider/provider.dart';
 
 class MessageBubble extends StatelessWidget {

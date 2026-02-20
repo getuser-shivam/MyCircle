@@ -62,9 +62,9 @@ class SubscriptionProvider extends ChangeNotifier {
       }).eq('id', user.id);
 
       // In a real app, integrate Stripe/RevenueCat here
-      debugPrint('Subscribed to $tierId successfully');
+      LoggerService.debug('Subscribed to $tierId successfully', tag: 'SUBSCRIPTION');
     } catch (e) {
-      debugPrint('Subscription error: $e');
+      LoggerService.error('Subscription error: $e', tag: 'SUBSCRIPTION');
       rethrow;
     } finally {
       _isLoading = false;

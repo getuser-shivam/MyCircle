@@ -7,8 +7,9 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../core/security/logger_service.dart';
 
-class DesktopProvider extends ChangeNotifier with TrayListenerMixin {
+class DesktopProvider extends ChangeNotifier {
   final SharedPreferences _prefs;
   bool _isWindowMaximized = false;
   bool _isAlwaysOnTop = false;
@@ -135,7 +136,7 @@ class DesktopProvider extends ChangeNotifier with TrayListenerMixin {
 
     await systemTray.setContextMenu(menu);
     systemTray.registerSystemTrayEventHandler((eventName) {
-      debugPrint('eventName: $eventName');
+      LoggerService.debug('eventName: $eventName', tag: 'DESKTOP');
     });
   }
 
@@ -146,7 +147,7 @@ class DesktopProvider extends ChangeNotifier with TrayListenerMixin {
 
   Future<void> _openSettings() async {
     // Navigate to settings screen
-    debugPrint('Opening settings...');
+    LoggerService.debug('Opening settings...', tag: 'DESKTOP');
   }
 
   Future<void> _exitApp() async {
@@ -157,7 +158,7 @@ class DesktopProvider extends ChangeNotifier with TrayListenerMixin {
     _isSystemTrayEnabled = !_isSystemTrayEnabled;
     await _prefs.setBool('system_tray_enabled', _isSystemTrayEnabled);
     
-    if (_isSystemTryEnabled) {
+    if (_isSystemTrayEnabled) {
       await _setupSystemTray();
     } else {
       await SystemTray().destroySystemTray();
@@ -228,12 +229,12 @@ class DesktopProvider extends ChangeNotifier with TrayListenerMixin {
 
   void _openMediaUpload() {
     // Navigate to media upload screen
-    debugPrint('Opening media upload...');
+    LoggerService.debug('Opening media upload...', tag: 'DESKTOP');
   }
 
   void _openSearch() {
     // Open search dialog
-    debugPrint('Opening search...');
+    LoggerService.debug('Opening search...', tag: 'DESKTOP');
   }
 
   // Acrylic Effect (Windows 11)
@@ -339,7 +340,7 @@ class DesktopProvider extends ChangeNotifier with TrayListenerMixin {
             .eq('user_id', user.id);
       }
     } catch (e) {
-      debugPrint('Error syncing desktop settings: $e');
+      LoggerService.error('Error syncing desktop settings: $e', tag: 'DESKTOP');
     }
   }
 
@@ -365,7 +366,7 @@ class DesktopProvider extends ChangeNotifier with TrayListenerMixin {
         }
       }
     } catch (e) {
-      debugPrint('Error loading desktop settings from Supabase: $e');
+      LoggerService.error('Error loading desktop settings from Supabase: $e', tag: 'DESKTOP');
     }
   }
 
@@ -396,32 +397,32 @@ class DesktopProvider extends ChangeNotifier with TrayListenerMixin {
 class _WindowListener extends WindowListener {
   @override
   void onWindowEvent(String eventName) {
-    debugPrint('Window event: $eventName');
+    LoggerService.debug('Window event: $eventName', tag: 'DESKTOP');
   }
 
   @override
   void onWindowClose() async {
     // Handle window close event
-    debugPrint('Window closing...');
+    LoggerService.debug('Window closing...', tag: 'DESKTOP');
   }
 
   @override
   void onWindowMaximize() {
-    debugPrint('Window maximized');
+    LoggerService.debug('Window maximized', tag: 'DESKTOP');
   }
 
   @override
   void onWindowUnmaximize() {
-    debugPrint('Window unmaximized');
+    LoggerService.debug('Window unmaximized', tag: 'DESKTOP');
   }
 
   @override
   void onWindowMinimize() {
-    debugPrint('Window minimized');
+    LoggerService.debug('Window minimized', tag: 'DESKTOP');
   }
 
   @override
   void onWindowRestore() {
-    debugPrint('Window restored');
+    LoggerService.debug('Window restored', tag: 'DESKTOP');
   }
 }

@@ -63,7 +63,7 @@ class _MeetMeScreenState extends State<MeetMeScreen> {
               return SwipeDeck(
                 users: provider.nearbyUsers,
                 onSwipe: (user, isLiked) {
-                  debugPrint('Swiped ${user.username}: ${isLiked ? 'Liked' : 'Nope'}');
+        LoggerService.debug('Swiped ${user.username}: ${isLiked ? 'Liked' : 'Nope'}', tag: 'SOCIAL');
                 },
               );
             },
@@ -197,7 +197,7 @@ class _MeetMeScreenState extends State<MeetMeScreen> {
             backgroundColor: Colors.transparent,
             builder: (context) => FilterBottomSheet(
               onApply: (minAge, maxAge, gender, maxDistance) {
-                debugPrint('Filters: Age $minAge-$maxAge, Gender: $gender, Distance: $maxDistance km');
+                LoggerService.debug('Filters: Age $minAge-$maxAge, Gender: $gender, Distance: $maxDistance km', tag: 'SOCIAL');
                 final socialProvider = Provider.of<SocialProvider>(context, listen: false);
                 socialProvider.applyFilters(
                   minAge: minAge,

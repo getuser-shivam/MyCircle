@@ -60,10 +60,11 @@ class StreamProviderSetup {
   static StreamChatProvider watchChatProvider(BuildContext context) {
     return context.watch<StreamChatProvider>();
   }
+}
 
-  /// A convenience widget that provides streaming functionality
-  /// to its descendants with proper error handling
-  static class StreamProviderWrapper extends StatelessWidget {
+/// A convenience widget that provides streaming functionality
+/// to its descendants with proper error handling
+class StreamProviderWrapper extends StatelessWidget {
     final Widget child;
     final Function(Object)? onError;
 
@@ -75,7 +76,7 @@ class StreamProviderSetup {
 
     @override
     Widget build(BuildContext context) {
-      return withStreamingProviders(
+      return StreamProviderSetup.withStreamingProviders(
         child: Consumer<StreamCombinedProvider>(
           builder: (context, provider, _) {
             // Handle errors
@@ -92,8 +93,8 @@ class StreamProviderSetup {
     }
   }
 
-  /// A builder widget that provides streaming state to its callback
-  static class StreamBuilder extends StatelessWidget {
+/// A builder widget that provides streaming state to its callback
+class StreamBuilder extends StatelessWidget {
     final Widget Function(
       BuildContext context,
       StreamCombinedProvider provider,
@@ -126,8 +127,8 @@ class StreamProviderSetup {
     }
   }
 
-  /// A selector widget that rebuilds only when the selected value changes
-  static class StreamSelector<T> extends StatelessWidget {
+/// A selector widget that rebuilds only when the selected value changes
+class StreamSelector<T> extends StatelessWidget {
     final T Function(StreamCombinedProvider provider) selector;
     final Widget Function(BuildContext context, T value) builder;
 
@@ -147,7 +148,6 @@ class StreamProviderSetup {
       );
     }
   }
-}
 
 /// Extension methods for easy access to streaming providers
 extension StreamProviderContext on BuildContext {

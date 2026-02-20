@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/semantics.dart';
 
 class AccessibilityHelper {
   static void announceForAccessibility(BuildContext context, String message) {
@@ -166,9 +167,8 @@ class _DefaultErrorWidget extends StatelessWidget {
                   Expanded(
                     child: FilledButton(
                       onPressed: () {
-                        setState(() {
-                          // Reset error state
-                        });
+                        // In the default widget we can simply pop the current route
+                        Navigator.of(context).maybePop();
                       },
                       child: const Text('Try Again'),
                     ),

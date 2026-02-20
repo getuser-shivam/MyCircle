@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../models/stream_model.dart';
 import '../../models/stream_viewer_model.dart';
 import '../../services/stream_service.dart';
+import '../core/security/logger_service.dart';
 
 class StreamProvider extends ChangeNotifier {
   final StreamService _streamService = StreamService();
@@ -113,7 +114,7 @@ class StreamProvider extends ChangeNotifier {
         controller.appendPage(newStreams, pageKey + _pageSize);
       }
     } catch (error) {
-      debugPrint('Fetch live streams error: $error');
+      LoggerService.error('Fetch live streams error: $error', tag: 'STREAM');
       controller.error = error;
       _setError('Failed to load live streams: $error');
     }
@@ -139,7 +140,7 @@ class StreamProvider extends ChangeNotifier {
         controller.appendPage(newStreams, pageKey + _pageSize);
       }
     } catch (error) {
-      debugPrint('Fetch scheduled streams error: $error');
+      LoggerService.error('Fetch scheduled streams error: $error', tag: 'STREAM');
       controller.error = error;
       _setError('Failed to load scheduled streams: $error');
     }
@@ -163,7 +164,7 @@ class StreamProvider extends ChangeNotifier {
         controller.appendPage(newStreams, pageKey + _pageSize);
       }
     } catch (error) {
-      debugPrint('Search streams error: $error');
+      LoggerService.error('Search streams error: $error', tag: 'STREAM');
       controller.error = error;
       _setError('Failed to search streams: $error');
     }
@@ -222,7 +223,7 @@ class StreamProvider extends ChangeNotifier {
       _trendingStreams = streams;
       notifyListeners();
     } catch (e) {
-      debugPrint('Load trending streams error: $e');
+      LoggerService.error('Load trending streams error: $e', tag: 'STREAM');
       _setError('Failed to load trending streams: $e');
     } finally {
       _setLoading(false);
@@ -243,7 +244,7 @@ class StreamProvider extends ChangeNotifier {
       _followingStreams = streams;
       notifyListeners();
     } catch (e) {
-      debugPrint('Load following streams error: $e');
+      LoggerService.error('Load following streams error: $e', tag: 'STREAM');
       _setError('Failed to load following streams: $e');
     } finally {
       _setLoading(false);
@@ -265,7 +266,7 @@ class StreamProvider extends ChangeNotifier {
       _nearbyStreams = streams;
       notifyListeners();
     } catch (e) {
-      debugPrint('Load nearby streams error: $e');
+      LoggerService.error('Load nearby streams error: $e', tag: 'STREAM');
       _setError('Failed to load nearby streams: $e');
     } finally {
       _setLoading(false);
@@ -289,7 +290,7 @@ class StreamProvider extends ChangeNotifier {
       
       notifyListeners();
     } catch (e) {
-      debugPrint('Load streams by category error: $e');
+      LoggerService.error('Load streams by category error: $e', tag: 'STREAM');
       _setError('Failed to load streams by category: $e');
     } finally {
       _setLoading(false);
@@ -309,7 +310,7 @@ class StreamProvider extends ChangeNotifier {
       _currentStream = stream.isNotEmpty ? stream.first : null;
       notifyListeners();
     } catch (e) {
-      debugPrint('Load stream by ID error: $e');
+      LoggerService.error('Load stream by ID error: $e', tag: 'STREAM');
       _setError('Failed to load stream: $e');
     } finally {
       _setLoading(false);
@@ -338,7 +339,7 @@ class StreamProvider extends ChangeNotifier {
       notifyListeners();
       return stream;
     } catch (e) {
-      debugPrint('Create stream error: $e');
+      LoggerService.error('Create stream error: $e', tag: 'STREAM');
       _setError('Failed to create stream: $e');
       rethrow;
     } finally {
@@ -368,7 +369,7 @@ class StreamProvider extends ChangeNotifier {
       
       notifyListeners();
     } catch (e) {
-      debugPrint('Start stream error: $e');
+      LoggerService.error('Start stream error: $e', tag: 'STREAM');
       _setError('Failed to start stream: $e');
     } finally {
       _setLoading(false);
@@ -397,7 +398,7 @@ class StreamProvider extends ChangeNotifier {
       
       notifyListeners();
     } catch (e) {
-      debugPrint('End stream error: $e');
+      LoggerService.error('End stream error: $e', tag: 'STREAM');
       _setError('Failed to end stream: $e');
     } finally {
       _setLoading(false);
@@ -411,7 +412,7 @@ class StreamProvider extends ChangeNotifier {
       await loadStreamById(streamId);
       await loadStreamViewers(streamId);
     } catch (e) {
-      debugPrint('Join stream error: $e');
+      LoggerService.error('Join stream error: $e', tag: 'STREAM');
       _setError('Failed to join stream: $e');
     }
   }
@@ -426,7 +427,7 @@ class StreamProvider extends ChangeNotifier {
       _streamStats = null;
       notifyListeners();
     } catch (e) {
-      debugPrint('Leave stream error: $e');
+      LoggerService.error('Leave stream error: $e', tag: 'STREAM');
       _setError('Failed to leave stream: $e');
     }
   }

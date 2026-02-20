@@ -15,7 +15,7 @@ try {
 # Check Visual Studio installation
 try {
     $vsWhere = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-    $vsPath = $vsWhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+    $vsPath = & $vsWhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
     if ($vsPath) {
         Write-Host "Visual Studio found at: $vsPath" -ForegroundColor Cyan
     } else {
